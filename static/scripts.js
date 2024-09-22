@@ -27,6 +27,8 @@ async function login() {
 
       if (document.getElementById('pword').value == req_pword) {
         // Log in
+        console.log("LOGGED IN")
+        hide_stuff()
       } else {
         console.log("FAIL")
         // Empty pword textbox, error message
@@ -53,15 +55,30 @@ async function register() {
     // passcode = assign_passcode()
     // Register
 
-  const { data, error } = await supabase
+
+  const { data, error } = await supaclient
   .from('credentials')
   .insert([
-    { usenname: (document.getElementById('reg-uname')), other_column: 'otherValue' },
+    { username: (document.getElementById('reg-uname').value), passcode: createPasscode() },
   ])
   .select()
   } else {
     console.log("NAH")
     // Already in use
   }
+}
 
+function createPasscode() {
+  const characters = 'ABCDEFGHJKLMNPQRSTWXYZabcdefghjklmnpqrstwxyz123456789';
+  let randomString = '';
+  for (let i = 0; i < 6; i++) {
+      const randomIndex = Math.floor(Math.random() * characters.length);
+      randomString += characters[randomIndex];
+  }
+  return randomString;
+}
+
+function hide_stuff() {
+  document.querySelector('#login-form').classList.add('d-none');
+  document.getElementById('reg-form').classList.add('d-none');
 }
