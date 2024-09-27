@@ -1,6 +1,7 @@
-// document.addEventListener('DOMContentLoaded', () => {
-//     console.log('JavaScript is working!');
-// });
+document.addEventListener('DOMContentLoaded', () => {
+  // reg_pcode = document.getElementById("reg-pcode")
+  // reg_pcode.textContent = "Hello"
+  });
 
 async function login() {
   let supaclient = supabase.createClient('https://srhywkedxssxlsjrholj.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNyaHl3a2VkeHNzeGxzanJob2xqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MjYzOTYxNjUsImV4cCI6MjA0MTk3MjE2NX0.lUZUAm20JIH3aoUxmyCAcr8l-A3_S3FpTaHuljrwm50')
@@ -17,7 +18,10 @@ async function login() {
     let found = regs_unames.indexOf(document.getElementById('uname').value)
 
     if (found == -1) {
-      // Message saying username not found
+      document.getElementById('login-fail').textContent = ("Username not recognised")
+      document.getElementById('pword').value = ""
+      document.getElementById('uname').value = ""
+
       // Deactivate textboxes while things are happening, loading sign?
     } else {
       let {data, error} = await supaclient.from('credentials').select('passcode')
@@ -26,14 +30,11 @@ async function login() {
       req_pword = data[(found)].passcode
 
       if (document.getElementById('pword').value == req_pword) {
-        // Log in
-        console.log("LOGGED IN")
         document.getElementById('login-page').classList.add('d-none');
-
-        // hide_stuff()
+        document.getElementById('main-page').classList.remove('d-none');
       } else {
-        console.log("FAIL")
-        // Empty pword textbox, error message
+        document.getElementById('login-fail').textContent = ("Passcode is incorrect")
+        document.getElementById('pword').value = ""
       }
     }
   } catch (error) {
@@ -60,8 +61,7 @@ async function register() {
     ])
     .select()
   } else {
-    console.log("NAH")
-    // Already in use
+    document.getElementById("reg-pcode").textContent = ("Unsuccessful. Username already in use.")
   }
 }
 
@@ -72,6 +72,7 @@ function createPasscode() {
     const randomIndex = Math.floor(Math.random() * characters.length);
     randomString += characters[randomIndex];
   }
+  document.getElementById("reg-pcode").textContent = ("Account registered successfully. Your passcode is " + randomString)
   return randomString;
 }
 
