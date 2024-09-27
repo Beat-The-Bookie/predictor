@@ -1,12 +1,14 @@
 document.addEventListener('DOMContentLoaded', () => {
-  // reg_pcode = document.getElementById("reg-pcode")
-  // reg_pcode.textContent = "Hello"
-  });
+  user = ""
+});
 
 async function login() {
   let supaclient = supabase.createClient('https://srhywkedxssxlsjrholj.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNyaHl3a2VkeHNzeGxzanJob2xqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MjYzOTYxNjUsImV4cCI6MjA0MTk3MjE2NX0.lUZUAm20JIH3aoUxmyCAcr8l-A3_S3FpTaHuljrwm50')
 
   try {
+
+    user = document.getElementById('uname').value
+
     let { data , error } = await supaclient.from('credentials').select('username')
 
     if (error) throw error
@@ -48,10 +50,12 @@ async function register() {
   if (error) throw error
   regs_unames = []
 
-  for ((uname) in (data)) {
+  for (uname in data) {
     regs_unames.push(data[uname].username)
   }
+
   let found = regs_unames.indexOf(document.getElementById('reg-uname').value)
+
   if (found == -1) {
     console.log("REG")
     const { data, error } = await supaclient
@@ -76,7 +80,27 @@ function createPasscode() {
   return randomString;
 }
 
-function hide_stuff() {
-  document.getElementById('login-page').classList.add('d-none');
-  // document.getElementById('reg-form').classList.add('d-none');
+// function openTab(open_tab) {
+//   tabs = document.getElementsByClassName("tab-content")
+//   for (let tab = 1; tab < length(tabs); tab++) {
+
+//   }
+// }
+
+function change_tab(tab) {
+  navs = document.getElementsByClassName('nav-link')
+  console.log("NAVS", navs)
+  for (let nav = 0; nav < navs.length; nav++) {
+    navs[nav].classList = ('nav-link')
+  }
+  document.getElementById(tab+'-tab').classList.add('active')
+
+  tabs = document.getElementsByClassName('tab-pane')
+  console.log("TABS", tabs)
+  for (let tab = 0; tab < tabs.length; tab++) {
+    tabs[tab].classList = ('tab-pane')
+  }
+
+  document.getElementById(tab).classList.add('show')
+  document.getElementById(tab).classList.add('active')
 }
