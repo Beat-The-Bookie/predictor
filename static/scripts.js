@@ -1,9 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
 });
 
-const api_key = '47fadf7cd3ca4b48a8f8272f3be8ed8b'
-const prem_id = 'PL'
-
 async function login() {
   let supaclient = supabase.createClient('https://srhywkedxssxlsjrholj.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNyaHl3a2VkeHNzeGxzanJob2xqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MjYzOTYxNjUsImV4cCI6MjA0MTk3MjE2NX0.lUZUAm20JIH3aoUxmyCAcr8l-A3_S3FpTaHuljrwm50')
 
@@ -36,6 +33,7 @@ async function login() {
       if (document.getElementById('pword').value == req_pword) {
         document.getElementById('login-page').classList.add('d-none');
         document.getElementById('main-page').classList.remove('d-none');
+        retrive_prem_info()
       } else {
         document.getElementById('login-fail').textContent = ("Passcode is incorrect")
         document.getElementById('pword').value = ""
@@ -115,4 +113,52 @@ async function user_team_list(uname) {
   .update(data)
   .eq('username', uname)
   .select()
+}
+
+async function retrive_prem_info() {
+  let supaclient = supabase.createClient('https://srhywkedxssxlsjrholj.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNyaHl3a2VkeHNzeGxzanJob2xqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MjYzOTYxNjUsImV4cCI6MjA0MTk3MjE2NX0.lUZUAm20JIH3aoUxmyCAcr8l-A3_S3FpTaHuljrwm50')
+
+  let { data , error } = await supaclient.from('Predictions').select('*').eq('username','all_teams_prem')
+
+  let html_prem_info = `<table class="table table-bordered border-primary">
+                          <thead>
+                            <tr>
+                              <th scope="col">#</th>
+                              <th scope="col">Team</th>
+                              <th scope="col">Last Season</th>
+                              <th scope="col">Odds to Win</th>
+                            </tr>
+                          </thead>
+                            <tbody class="table-group-divider">
+                              <tr>
+                                <th scope="row">1</th>
+                                <td>Mark</td>
+                                <td>Otto</td>
+                                <td>@mdo</td>
+                              </tr>
+                              <tr>
+                                <th scope="row">2</th>
+                                <td>Jacob</td>
+                                <td>Thornton</td>
+                                <td>@fat</td>
+                              </tr>
+                              <tr>
+                                <th scope="row">3</th>
+                                <td colspan="2">Larry the Bird</td>
+                                <td>@twitter</td>
+                              </tr>
+                            </tbody>
+                            </table>`
+
+
+
+
+
+
+
+
+
+  // html_prem_info += `</table>`
+  document.querySelector('#prem-table').innerHTML = html_prem_info
+
 }
