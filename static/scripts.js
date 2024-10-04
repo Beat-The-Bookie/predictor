@@ -2,6 +2,9 @@ document.addEventListener('DOMContentLoaded', () => {
   user = ""
 });
 
+const api_key = '47fadf7cd3ca4b48a8f8272f3be8ed8b'
+const prem_id = 'PL'
+
 async function login() {
   let supaclient = supabase.createClient('https://srhywkedxssxlsjrholj.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNyaHl3a2VkeHNzeGxzanJob2xqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MjYzOTYxNjUsImV4cCI6MjA0MTk3MjE2NX0.lUZUAm20JIH3aoUxmyCAcr8l-A3_S3FpTaHuljrwm50')
 
@@ -104,3 +107,32 @@ function change_tab(tab) {
   document.getElementById(tab).classList.add('show')
   document.getElementById(tab).classList.add('active')
 }
+
+// This function will need to be called when the user has logged in successfully
+
+
+
+
+// When the user has registered
+async function create_preds() {
+  url = 'https://cors-anywhere.herokuapp.com/http://api.football-data.org/v4/competitions/PL/teams'
+  try {
+    const response = await fetch(url, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-Auth-Token': api_key // Use your API key here
+        }
+    });
+
+    if (!response.ok) {
+        throw new Error('Network response was not ok ' + response.statusText);
+    }
+
+    const data = await response.json();
+    console.log(JSON.stringify(data, null, 2))
+  } catch (error) {
+    console.error('There was a problem with the fetch operation:', error);
+  }
+}
+create_preds()
