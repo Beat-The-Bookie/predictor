@@ -1,5 +1,4 @@
 document.addEventListener('DOMContentLoaded', () => {
-  user = ""
 });
 
 const api_key = '47fadf7cd3ca4b48a8f8272f3be8ed8b'
@@ -60,7 +59,6 @@ async function register() {
   let found = regs_unames.indexOf(document.getElementById('reg-uname').value)
 
   if (found == -1) {
-    console.log("REG")
     const { data, error } = await supaclient
     .from('credentials')
     .insert([
@@ -70,6 +68,7 @@ async function register() {
   } else {
     document.getElementById("reg-pcode").textContent = ("Unsuccessful. Username already in use.")
   }
+  user_team_list(document.getElementById('reg-uname').value)
 }
 
 function createPasscode() {
@@ -83,23 +82,14 @@ function createPasscode() {
   return randomString;
 }
 
-// function openTab(open_tab) {
-//   tabs = document.getElementsByClassName("tab-content")
-//   for (let tab = 1; tab < length(tabs); tab++) {
-
-//   }
-// }
-
 function change_tab(tab) {
   navs = document.getElementsByClassName('nav-link')
-  console.log("NAVS", navs)
   for (let nav = 0; nav < navs.length; nav++) {
     navs[nav].classList = ('nav-link')
   }
   document.getElementById(tab+'-tab').classList.add('active')
 
   tabs = document.getElementsByClassName('tab-pane')
-  console.log("TABS", tabs)
   for (let tab = 0; tab < tabs.length; tab++) {
     tabs[tab].classList = ('tab-pane')
   }
@@ -108,31 +98,21 @@ function change_tab(tab) {
   document.getElementById(tab).classList.add('active')
 }
 
-// This function will need to be called when the user has logged in successfully
+// When the user has registered, team list to be created
+async function user_team_list(uname) {
+  let supaclient = supabase.createClient('https://srhywkedxssxlsjrholj.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNyaHl3a2VkeHNzeGxzanJob2xqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MjYzOTYxNjUsImV4cCI6MjA0MTk3MjE2NX0.lUZUAm20JIH3aoUxmyCAcr8l-A3_S3FpTaHuljrwm50')
 
+  let { data , error } = await supaclient.from('Predictions').select('*').eq('username','all_teams_prem')
 
+  delete data[0].username
 
+  let {d, e} = await supaclient
+  .from('Predictions')
+  .insert([{'username':uname}])
 
-// When the user has registered
-async function create_preds() {
-  url = 'https://cors-anywhere.herokuapp.com/http://api.football-data.org/v4/competitions/PL/teams'
-  try {
-    const response = await fetch(url, {
-        method: 'GET',
-        headers: {
-            'Content-Type': 'application/json',
-            'X-Auth-Token': api_key // Use your API key here
-        }
-    });
-
-    if (!response.ok) {
-        throw new Error('Network response was not ok ' + response.statusText);
-    }
-
-    const data = await response.json();
-    console.log(JSON.stringify(data, null, 2))
-  } catch (error) {
-    console.error('There was a problem with the fetch operation:', error);
-  }
+  const { da, err } = await supaclient
+  .from('Predictions')
+  .update(data)
+  .eq('username', uname)
+  .select()
 }
-create_preds()
