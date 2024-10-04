@@ -12,4 +12,6 @@ API_KEY = "47fadf7cd3ca4b48a8f8272f3be8ed8b"
 supabase: Client = create_client('https://srhywkedxssxlsjrholj.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNyaHl3a2VkeHNzeGxzanJob2xqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MjYzOTYxNjUsImV4cCI6MjA0MTk3MjE2NX0.lUZUAm20JIH3aoUxmyCAcr8l-A3_S3FpTaHuljrwm50')
 
 collect = team_info_collector(supabase=supabase, foot_api=API_KEY)
-collect.update_teams()
+# collect.update_teams()
+collect.last_season_results()
+
