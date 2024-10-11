@@ -58,10 +58,13 @@ class team_info_collector:
         # Make the request to the API
         response = requests.get(url, headers=headers)
 
+        url = f"https://api.football-data.org/v4/competitions/ELC/standings?season=2023"
+
+        response_2 = requests.get(url, headers=headers)
+
         places = ['1st', '2nd', '3rd']
         for i in range(4,18):
             places.append(str(i)+'th')
-        print("PLACES", places)
 
         columns = []
         for i in range(1,21):
@@ -69,13 +72,9 @@ class team_info_collector:
 
         data = self.supabase.table('Predictions').select('*').eq('username', 'all_teams_prem').execute()
 
-        print("DATA", data)
-
         mid = data.data
 
         all_teams = [value for key, value in mid[0].items() if key != 'username']
-
-        print(all_teams)
 
         # Check if the request was successful
         if response.status_code == 200:
@@ -95,11 +94,55 @@ class team_info_collector:
             for team in range(len(team_list)):
                 found = all_teams.index(team_list[team])
                 last_finishes[found] = places[(team)]
-            print("LF", last_finishes)
             
             # Identifies the places where the promoted teams are in the list
             something = [index for index, element in enumerate(last_finishes) if element == None]
             print("SOMETHING", something)
+
+            data_2 = response_2.json()
+            standings_2 = data_2['standings']
+
+            champ_team_list = []            
+            for a in standings_2:
+                for team_entry in a['table']:  # Iterate through the teams
+                    if len(champ_team_list) < 6:
+                        team_name = team_entry['team']['name']  # Extract the team name
+                        champ_team_list.append(team_name)
+            print("CHAMP", champ_team_list)
+            champ_places = ['1st (Championship)', '2nd (Championship)']
+
+            for team in range(len(champ_places)):
+                found = all_teams.index(champ_team_list[team])
+                last_finishes[found] = champ_places[team]
+                print("FOUND", found)
+
+            champ_places = ['3rd (Championship)']
+            for i in range(3):
+                champ_places.append(str(i+4)+'th (Championship)')
+            print("CHAMP PLACES", champ_places)
+            champ_team_list = champ_team_list[2:]
+            print("CTL", champ_team_list)
+            for place in range(len(champ_places)):
+                try:
+                    found = all_teams.index(champ_team_list[place])
+                    last_finishes[found] = champ_places[place]
+                except ValueError:
+                    print(f"Value not found in the list")
+
+            # Create a list for the column names
+            columns = []
+            for i in range(1,21):
+                columns.append(str(i))
+
+            # Zip the columns to the team names
+            update_data = dict(zip(columns, last_finishes))
+
+
+
+
+            row_id = 'all_teams_prem_last_finish'
+            response = self.supabase.table('Predictions').update(update_data).match({'username': row_id}).execute()
+
 
             # Call the football API for the champonship and identify where they finished
             # Update the list accordingly, i.e '1st (Championship)
