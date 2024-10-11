@@ -118,7 +118,12 @@ async function user_team_list(uname) {
 async function retrive_prem_info() {
   let supaclient = supabase.createClient('https://srhywkedxssxlsjrholj.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNyaHl3a2VkeHNzeGxzanJob2xqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MjYzOTYxNjUsImV4cCI6MjA0MTk3MjE2NX0.lUZUAm20JIH3aoUxmyCAcr8l-A3_S3FpTaHuljrwm50')
 
-  let { data , error } = await supaclient.from('Predictions').select('*').eq('username','all_teams_prem')
+  let { data , error } = await supaclient.from('Predictions').select('*').or('username.eq.all_teams_prem_last_finish,username.eq.all_teams_prem')
+  let teams = data[0]
+  // data, error = await supaclient.from('Predictions').select('*').eq('username','all_teams_prem_last_finish')
+  let pos = data[1]
+  delete teams['username']
+  delete pos['username']
 
   let html_prem_info = `<table class="table table-bordered border-primary">
                           <thead>
@@ -129,26 +134,43 @@ async function retrive_prem_info() {
                               <th scope="col">Odds to Win</th>
                             </tr>
                           </thead>
-                            <tbody class="table-group-divider">
-                              <tr>
-                                <th scope="row">1</th>
-                                <td>Mark</td>
-                                <td>Otto</td>
-                                <td>@mdo</td>
-                              </tr>
-                              <tr>
-                                <th scope="row">2</th>
-                                <td>Jacob</td>
-                                <td>Thornton</td>
-                                <td>@fat</td>
-                              </tr>
-                              <tr>
-                                <th scope="row">3</th>
-                                <td colspan="2">Larry the Bird</td>
-                                <td>@twitter</td>
-                              </tr>
-                            </tbody>
-                            </table>`
+                          <tbody class="table-group-divider">`
+  for (let i = 1; i < 21; i++) {
+  // for (team in teams) {
+    console.log("TEAM")
+    html_prem_info += `<tr>
+                          <th scope="row">${i}</th>
+                          <td>${teams[i.toString()]}</td>
+                          <td>${pos[i.toString()]}</td>
+                          <td>N/A</td>
+                        </tr>
+                          `
+  }
+  html_prem_info += `</tbody>
+  </thead>`
+
+  //                           <tbody class="table-group-divider">
+  //                             <tr>
+  //                               <th scope="row">1</th>
+  //                               <td>Mark</td>
+  //                               <td>Otto</td>
+  //                               <td>@mdo</td>
+  //                             </tr>
+  //                             <tr>
+  //                               <th scope="row">2</th>
+  //                               <td>Jacob</td>
+  //                               <td>Thornton</td>
+  //                               <td>@fat</td>
+  //                             </tr>
+  //                             <tr>
+  //                               <th scope="row">3</th>
+  //                               <td colspan="2">Larry the Bird</td>
+  //                               <td>@twitter</td>
+  //                             </tr>
+  //                           </tbody>
+
+  // `
+  html_prem_info +=`</table>`
 
 
 
