@@ -1,9 +1,11 @@
 import requests
+import json
 
 class team_info_collector:
-    def __init__(self, supabase, foot_api):
+    def __init__(self, supabase, foot_api, odds_api):
         self.supabase = supabase
         self.foot_api = foot_api
+        self.odds_api = odds_api
 
     def update_teams(self):
       
@@ -137,27 +139,114 @@ class team_info_collector:
             # Zip the columns to the team names
             update_data = dict(zip(columns, last_finishes))
 
-
-
-
             row_id = 'all_teams_prem_last_finish'
             response = self.supabase.table('Predictions').update(update_data).match({'username': row_id}).execute()
-
-
-            # Call the football API for the champonship and identify where they finished
-            # Update the list accordingly, i.e '1st (Championship)
-            # Upload to SupaBase
-            # Display on the website
-
-
 
         else:
             print(f"Error: {response.status_code} - {response.text}")
 
 
+    def get_odds(self):
+        
+        # Betfair API credentials
+        username = 'email'
+        password = 'password'
+        app_key = self.odds_api
+
+        # API endpoint for login
+        login_url = 'https://identitysso.betfair.com/api/login'
+
+        # Set the login data
+        login_data = {
+            "username": username,
+            "password": password
+        }
+
+        # Make the login request
+        response = requests.post(login_url, json=login_data, headers={'X-Application': app_key})
+        # print("172", response.text)
+
+        # Check if the login was successful
+        if response.status_code == 200:
+            print("HERE")
+            # session_token = response.json()
+            print("H2")
+            # print(f"Session Token: {session_token}")
+        else:
+            print(f"Login failed: {response.status_code}, {response.text}")
 
 
+        # Betfair endpoint to list competitions
+        competitions_url = "https://api.betfair.com/exchange/betting/rest/v1.0/listCompetitions/"
 
+        # Headers for the request
+        headers = {
+            'X-Application': app_key,
+            'X-Authentication': 'x7Czq3i2RV0nLKrEQrEwRql/BncIuAoSiqJmeVUaxt8=',
+            'Content-Type': 'application/json'
+        }
 
+        # Sending request to get football competitions
+        payload = json.dumps({
+            "filter": {"eventTypeIds": ["1"]}  # EventTypeId 1 represents football
+        })
 
+        response = requests.post(competitions_url, headers=headers, data=payload)
 
+        if response.status_code == 200:
+            competitions = response.json()
+            for competition in competitions:
+                if competition['competition']['name'] == "English Premier League":
+                    premier_league_id = competition['competition']['id']
+                    print(f"Premier League Competition ID: {premier_league_id}")
+        else:
+            print(f"Error: {response.status_code}, {response.text}")
+
+        # Betfair endpoint to list market catalogue
+        market_catalogue_url = "https://api.betfair.com/exchange/betting/rest/v1.0/listMarketCatalogue/"
+
+        # Payload to get the outright winner market
+        payload = json.dumps({
+            "filter": {
+                "competitionIds": [premier_league_id],  # Use the Premier League ID obtained previously
+                "marketTypeCodes": ["OUTRIGHT"]          # Looking for the outright winner market
+            },
+            "maxResults": 1,                            # Limit results to one market
+            "marketProjection": ["MARKET_START_TIME", "RUNNER_DESCRIPTION"]
+        })
+
+        response = requests.post(market_catalogue_url, headers=headers, data=payload)
+        print(response.status_code)
+        print(response.text)
+
+        if response.status_code == 200:
+            markets = response.json()
+            print("MARKETS", markets)
+            if markets:
+                print("1", markets[0]['marketId'])
+                outright_market_id = markets[0]['marketId']
+                print(f"Outright Market ID: {outright_market_id}")
+        else:
+            print(f"Error: {response.status_code}, {response.text}")
+
+        print("OMD", outright_market_id)
+        # Betfair endpoint to list market book
+        market_book_url = "https://api.betfair.com/exchange/betting/rest/v1.0/listMarketBook/"
+
+        # Payload to get the market book for the outright winner
+        payload = json.dumps({
+            "marketIds": [outright_market_id],  # Use the market ID obtained previously
+            "priceProjection": {
+                "priceData": ["EX_BEST_OFFERS"]  # Get the best available odds
+            }
+        })
+
+        response = requests.post(market_book_url, headers=headers, data=payload)
+
+        if response.status_code == 200:
+            market_book = response.json()
+            if market_book:
+                for runner in market_book[0]['runners']:
+                    print(f"Team: {runner['description']['runnerName']}, Odds: {runner['ex']['availableToBack']}")
+        else:
+            print(f"Error: {response.status_code}, {response.text}")
