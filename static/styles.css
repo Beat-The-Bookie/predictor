@@ -7,3 +7,49 @@ body {
 h1 {
     color: #007bff;
 }
+  
+.container {
+max-width: 600px;
+margin: 50px auto;
+padding: 20px;
+background: white;
+border-radius: 8px;
+box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+
+table {
+width: 100%;
+border-collapse: collapse;
+}
+
+th, td {
+padding: 15px;
+text-align: left;
+border-bottom: 1px solid #ddd;
+}
+
+tr {
+cursor: move;
+}
+
+tr:hover {
+background-color: #f1f1f1;
+}
+  
+/* Style for the table */
+#sortableTable {
+    width: 100%;
+    border-collapse: collapse;
+}
+th, td {
+    border: 1px solid #ccc;
+    padding: 8px;
+    text-align: left;
+}
+/* Make the first column static */
+#sortableTable td:first-child {
+    position: sticky;
+    left: 0;
+    background: #fff; /* Make background white to hide overlaps */
+    z-index: 1; /* Ensure it appears above other columns */
+}

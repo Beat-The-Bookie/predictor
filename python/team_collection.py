@@ -43,8 +43,8 @@ class team_info_collector:
         update_data = dict(zip(columns, team_name_list))
 
         # Specify the ID of the row you want to update
-        row_id = 'all_teams_prem'
-
+        # row_id = 'all_teams_prem'
+        row_id = 'will_dev'
         # Update the row in the table 'your_table_name'
         response = self.supabase.table('Predictions').update(update_data).match({'username': row_id}).execute()
 
@@ -99,7 +99,6 @@ class team_info_collector:
             
             # Identifies the places where the promoted teams are in the list
             something = [index for index, element in enumerate(last_finishes) if element == None]
-            print("SOMETHING", something)
 
             data_2 = response_2.json()
             standings_2 = data_2['standings']
@@ -110,20 +109,16 @@ class team_info_collector:
                     if len(champ_team_list) < 6:
                         team_name = team_entry['team']['name']  # Extract the team name
                         champ_team_list.append(team_name)
-            print("CHAMP", champ_team_list)
-            champ_places = ['1st (Championship)', '2nd (Championship)']
+            champ_places = ['1st (Champ)', '2nd (Champ)']
 
             for team in range(len(champ_places)):
                 found = all_teams.index(champ_team_list[team])
                 last_finishes[found] = champ_places[team]
-                print("FOUND", found)
 
-            champ_places = ['3rd (Championship)']
+            champ_places = ['3rd (Champ)']
             for i in range(3):
-                champ_places.append(str(i+4)+'th (Championship)')
-            print("CHAMP PLACES", champ_places)
+                champ_places.append(str(i+4)+'th (Champ)')
             champ_team_list = champ_team_list[2:]
-            print("CTL", champ_team_list)
             for place in range(len(champ_places)):
                 try:
                     found = all_teams.index(champ_team_list[place])
