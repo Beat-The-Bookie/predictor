@@ -1,4 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
+  const user = ""
 });
 
 async function login() {
@@ -31,7 +32,7 @@ async function login() {
 
       if (document.getElementById('pword').value == req_pword) {
         document.getElementById('login-page').classList.add('d-none');
-        document.getElementById('main-page').classList.remove('d-none');
+        document.getElementById('main-page-pre').classList.remove('d-none');
         retrieve_prem_info()
         add_pred_table(document.getElementById('uname').value)
       } else {
@@ -124,7 +125,12 @@ async function retrieve_prem_info() {
   delete teams['username']
   delete pos['username']
 
-  let html_prem_info = `<table class="table table-bordered border-primary">
+  let html_prem_info = `            <div class="row justify-content-center">
+              <div class="col">
+                <h3>Premier League Teams</h3>
+              </div>
+            </div>
+            <table class="table table-bordered border-primary">
                           <thead>
                             <tr>
                               <th scope="col">#</th>
@@ -155,11 +161,16 @@ async function add_pred_table(uname) {
   let supaclient = supabase.createClient('https://srhywkedxssxlsjrholj.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNyaHl3a2VkeHNzeGxzanJob2xqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MjYzOTYxNjUsImV4cCI6MjA0MTk3MjE2NX0.lUZUAm20JIH3aoUxmyCAcr8l-A3_S3FpTaHuljrwm50')
   let { data , error } = await supaclient.from('Predictions').select('*').eq('username', uname)
   delete data[0]['username']
-  html_pred = `<table id="sortableTable">
+  html_pred = `<div class="row justify-content-center">
+              <div class="col">
+                <h3>Your Predictions</h3>
+              </div>
+            </div>
+            <table id="sortableTable" class="table table-bordered border-primary">
   <thead>
     <tr>
       <th>Position</th>
-      <th>Item</th>
+      <th>Team</th>
     </tr>
   </thead>
   <tbody id="table-body">`
@@ -168,7 +179,7 @@ async function add_pred_table(uname) {
   //                 <div data-id=${i} class="list-group-item">${data[0][i.toString()]}</div>`
       html_pred += `<tr>
                       <td>${i}</td>
-                      <td class="draggable-item">${data[0][i.toString()]}</td>
+                      <td class="draggable-item" id="pred-team-${i}">${data[0][i.toString()]}</td>
                     </tr>`
   }
 
@@ -201,13 +212,12 @@ function updatePositions(tableBody) {
 
 async function check_new_order() {
   var newOrder = [];
-      document.querySelectorAll('#table-body tr').forEach(function(row) {
-        newOrder.push(row.textContent.substring(20));
+      document.querySelectorAll('#table-body .draggable-item').forEach(function(row) {
+        newOrder.push(row.textContent);
       });
 
       // Log or use the new order
       console.log("New Order of Team IDs: ", newOrder);
-      console.log("ONE LENGTH", newOrder[0].length())
   let supaclient = supabase.createClient('https://srhywkedxssxlsjrholj.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNyaHl3a2VkeHNzeGxzanJob2xqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MjYzOTYxNjUsImV4cCI6MjA0MTk3MjE2NX0.lUZUAm20JIH3aoUxmyCAcr8l-A3_S3FpTaHuljrwm50')
   console.log("UNAME", document.getElementById('uname').value)
 
@@ -232,4 +242,8 @@ async function check_new_order() {
 // Need a button for save changes, and a button for cancel changes.
 function save_changes() {
   let supaclient = supabase.createClient('https://srhywkedxssxlsjrholj.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNyaHl3a2VkeHNzeGxzanJob2xqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MjYzOTYxNjUsImV4cCI6MjA0MTk3MjE2NX0.lUZUAm20JIH3aoUxmyCAcr8l-A3_S3FpTaHuljrwm50')
+}
+
+function reset_changes() {
+  add_pred_table(user)
 }

@@ -51,7 +51,7 @@
       </div>
     </div>
   </div>
-  <div class="container d-none" id="main-page" style="margin-left: 0px; margin-right: 0px;">
+  <div class="container d-none" id="main-page-pre" style="margin-left: 24px; margin-right: 24px;">
     <div class="card">
       <div class="card-header bg-primary text-white">
         Predictions 2025/2026
@@ -71,15 +71,11 @@
              Eventually, a league system. -->
           </div>
           <div class="tab-pane" id="nav-prem" role="tabpanel" tabindex="0">
-            <div class="row justify-content-center">
-              <div class="col-sm-3">
-                <h3>Your Predictions</h3>
-              </div>
-            </div>
             <div class="row justify-content-around">
-              <div class="col-md-5" id="prem-table"></div>
+              <div class="col-md-6" id="prem-table"></div>
               <div class="col-md-5 list-group" id="pred-table"></div>
-              <button onclick="check_new_order()">Commit</button>
+              <button onclick="check_new_order()">Save Changes</button>
+              <button onclick="reset_changes()">Cancel Changes</button>
             </div>
 
           </div>
@@ -90,8 +86,37 @@
       </div>
     </div>
   </div>
-</body>
-</html>
-
+  <div class="container d-none" id="main-page-post" style="margin-left: 24px; margin-right: 24px;">
+    <div class="card">
+      <div class="card-header bg-primary text-white">
+        Predictions 2025/2026
+      </div>
+      <div class="card-body">
+        <nav>
+          <div class="nav nav-tabs" id="nav-tab" role="tablist">
+            <button class="nav-link active" id="nav-home-tab" type="button" role="tab" onclick="change_tab('nav-home')">Home</button>
+            <button class="nav-link" id="nav-prem-tab" type="button" role="tab" onclick="change_tab('nav-prem')">Premier League</button>
+            <button class="nav-link" id="nav-other-tab"  type="button" role="tab" onclick="change_tab('nav-other')">Contact</button>
+          </div>
+        </nav>
+        <div class="tab-content" id="nav-tabContent">
+          <div class="tab-pane show active" id="nav-home" role="tabpanel" tabindex="0">
+            <!-- Here, I need a home page. Needs to have a description of what the game is, what features it has.
+             Passcode and username details? Deadline details,
+             Eventually, a league system. -->
+          </div>
+          <div class="tab-pane" id="nav-prem" role="tabpanel" tabindex="0">
+            <div class="row justify-content-around">
+              <div class="col-md-6" id="prem-table"></div>
+              <div class="col-md-5 list-group" id="pred-table"></div>
+            </div>
+          </div>
+          <div class="tab-pane" id="nav-other" role="tabpanel" tabindex="0">
+            <!-- This can be replaced by other leagues. TBD -->
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </body>
 </html>
