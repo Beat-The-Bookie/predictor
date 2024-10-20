@@ -1,14 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Static Website</title>
-    <link rel="stylesheet" href="styles.css">
-    <script src="https://unpkg.com/@supabase/supabase-js"></script>
-    <script src="scripts.js"></script>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.14.0/Sortable.min.js"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Static Website</title>
+  <link rel="stylesheet" href="styles.css">
+  <script src="https://unpkg.com/@supabase/supabase-js"></script>
+  <script src="scripts.js"></script>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.14.0/Sortable.min.js"></script>
 </head>
 <body>
   <div class="container" id="login-page">
@@ -58,28 +58,27 @@
       </div>
       <div class="card-body">
         <nav>
-          <div class="nav nav-tabs" id="nav-tab" role="tablist">
-            <button class="nav-link active" id="nav-home-tab" type="button" role="tab" onclick="change_tab('nav-home')">Home</button>
-            <button class="nav-link" id="nav-prem-tab" type="button" role="tab" onclick="change_tab('nav-prem')">Premier League</button>
-            <button class="nav-link" id="nav-other-tab"  type="button" role="tab" onclick="change_tab('nav-other')">Contact</button>
+          <div class="nav nav-tabs" id="pre-nav-tab" role="tablist">
+            <button class="nav-link active" id="pre-nav-home-tab" type="button" role="tab" onclick="change_tab('pre-nav-home')">Home</button>
+            <button class="nav-link" id="pre-nav-prem-tab" type="button" role="tab" onclick="change_tab('pre-nav-prem')">Premier League</button>
+            <button class="nav-link" id="pre-nav-other-tab"  type="button" role="tab" onclick="change_tab('pre-nav-other')">Contact</button>
           </div>
         </nav>
         <div class="tab-content" id="nav-tabContent">
-          <div class="tab-pane show active" id="nav-home" role="tabpanel" tabindex="0">
+          <div class="tab-pane show active" id="pre-nav-home" role="tabpanel" tabindex="0">
             <!-- Here, I need a home page. Needs to have a description of what the game is, what features it has.
              Passcode and username details? Deadline details,
              Eventually, a league system. -->
           </div>
-          <div class="tab-pane" id="nav-prem" role="tabpanel" tabindex="0">
+          <div class="tab-pane" id="pre-nav-prem" role="tabpanel" tabindex="0">
             <div class="row justify-content-around">
               <div class="col-md-6" id="prem-table"></div>
               <div class="col-md-5 list-group" id="pred-table"></div>
               <button onclick="check_new_order()">Save Changes</button>
               <button onclick="reset_changes()">Cancel Changes</button>
             </div>
-
           </div>
-          <div class="tab-pane" id="nav-other" role="tabpanel" tabindex="0">
+          <div class="tab-pane" id="pre-nav-other" role="tabpanel" tabindex="0">
             <!-- This can be replaced by other leagues. TBD -->
           </div>
         </div>
@@ -93,7 +92,7 @@
       </div>
       <div class="card-body">
         <nav>
-          <div class="nav nav-tabs" id="nav-tab" role="tablist">
+          <div class="nav nav-tabs" id="post-nav-tab" role="tablist">
             <button class="nav-link active" id="post-nav-home-tab" type="button" role="tab" onclick="change_tab('post-nav-home')">Home</button>
             <button class="nav-link" id="post-nav-prem-tab" type="button" role="tab" onclick="change_tab('post-nav-prem')">Premier League</button>
             <button class="nav-link" id="post-nav-other-tab"  type="button" role="tab" onclick="change_tab('post-nav-other')">Contact</button>
