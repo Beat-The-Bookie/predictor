@@ -19,7 +19,7 @@
             <label for="uname" class="form-label">Username</label>
           </div>
           <div class="col-6">
-            <input type="text" id="uname">
+            <input type="text" id="uname" class="form-control">
           </div>
         </div>
         <div class="row">
@@ -27,7 +27,7 @@
             <label for="pword" class="form-label">Passcode</label>
           </div>
           <div class="col-6">
-            <input type="text" id="pword">
+            <input type="text" id="pword" class="form-control">
           </div>
         </div>
         <button class="btn btn-primary" onclick="login()">Login</button>
@@ -94,24 +94,24 @@
       <div class="card-body">
         <nav>
           <div class="nav nav-tabs" id="nav-tab" role="tablist">
-            <button class="nav-link active" id="nav-home-tab" type="button" role="tab" onclick="change_tab('nav-home')">Home</button>
-            <button class="nav-link" id="nav-prem-tab" type="button" role="tab" onclick="change_tab('nav-prem')">Premier League</button>
-            <button class="nav-link" id="nav-other-tab"  type="button" role="tab" onclick="change_tab('nav-other')">Contact</button>
+            <button class="nav-link active" id="post-nav-home-tab" type="button" role="tab" onclick="change_tab('post-nav-home')">Home</button>
+            <button class="nav-link" id="post-nav-prem-tab" type="button" role="tab" onclick="change_tab('post-nav-prem')">Premier League</button>
+            <button class="nav-link" id="post-nav-other-tab"  type="button" role="tab" onclick="change_tab('post-nav-other')">Contact</button>
           </div>
         </nav>
         <div class="tab-content" id="nav-tabContent">
-          <div class="tab-pane show active" id="nav-home" role="tabpanel" tabindex="0">
+          <div class="tab-pane show active" id="post-nav-home" role="tabpanel" tabindex="0">
             <!-- Here, I need a home page. Needs to have a description of what the game is, what features it has.
              Passcode and username details? Deadline details,
              Eventually, a league system. -->
           </div>
-          <div class="tab-pane" id="nav-prem" role="tabpanel" tabindex="0">
+          <div class="tab-pane" id="post-nav-prem" role="tabpanel" tabindex="0">
             <div class="row justify-content-around">
-              <div class="col-md-6" id="prem-table"></div>
-              <div class="col-md-5 list-group" id="pred-table"></div>
+              <div class="col-md-4" id="locked-pred-table"></div>
+              <div class="col-md-6" id="current-prem-table"></div>
             </div>
           </div>
-          <div class="tab-pane" id="nav-other" role="tabpanel" tabindex="0">
+          <div class="tab-pane" id="post-nav-other" role="tabpanel" tabindex="0">
             <!-- This can be replaced by other leagues. TBD -->
           </div>
         </div>

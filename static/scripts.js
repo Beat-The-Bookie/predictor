@@ -33,8 +33,12 @@ async function login() {
       if (document.getElementById('pword').value == req_pword) {
         document.getElementById('login-page').classList.add('d-none');
         document.getElementById('main-page-pre').classList.remove('d-none');
+        // document.getElementById('main-page-post').classList.remove('d-none')
         retrieve_prem_info()
         add_pred_table(document.getElementById('uname').value)
+        // add_locked_preds(document.getElementById('uname').value)
+        // add_prem_table()
+
       } else {
         document.getElementById('login-fail').textContent = ("Passcode is incorrect")
         document.getElementById('pword').value = ""
@@ -179,7 +183,7 @@ async function add_pred_table(uname) {
   //                 <div data-id=${i} class="list-group-item">${data[0][i.toString()]}</div>`
       html_pred += `<tr>
                       <td>${i}</td>
-                      <td class="draggable-item" id="pred-team-${i}">${data[0][i.toString()]}</td>
+                      <td class="draggable-item">${data[0][i.toString()]}</td>
                     </tr>`
   }
 
@@ -216,10 +220,7 @@ async function check_new_order() {
         newOrder.push(row.textContent);
       });
 
-      // Log or use the new order
-      console.log("New Order of Team IDs: ", newOrder);
   let supaclient = supabase.createClient('https://srhywkedxssxlsjrholj.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNyaHl3a2VkeHNzeGxzanJob2xqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MjYzOTYxNjUsImV4cCI6MjA0MTk3MjE2NX0.lUZUAm20JIH3aoUxmyCAcr8l-A3_S3FpTaHuljrwm50')
-  console.log("UNAME", document.getElementById('uname').value)
 
 
   // newOrder is the teams
@@ -246,4 +247,79 @@ function save_changes() {
 
 function reset_changes() {
   add_pred_table(user)
+}
+
+async function add_locked_preds(uname) {
+  let supaclient = supabase.createClient('https://srhywkedxssxlsjrholj.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNyaHl3a2VkeHNzeGxzanJob2xqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MjYzOTYxNjUsImV4cCI6MjA0MTk3MjE2NX0.lUZUAm20JIH3aoUxmyCAcr8l-A3_S3FpTaHuljrwm50')
+  let { data , error } = await supaclient.from('Predictions').select('*').eq('username', uname)
+  let scores = await fetch_scores()
+  console.log("SCORES", scores)
+  // fetch_scores().then(result => {
+  //   scores = result
+  // })
+  // console.log("SCORES", scores)
+  // console.log("DATA", data[0])
+  delete data[0]['username']
+  html_pred = `<div class="row justify-content-center">
+              <div class="col">
+                <h3>Your Predictions</h3>
+              </div>
+            </div>
+            <table id="locked-pred" class="table table-bordered border-primary">
+  <thead>
+    <tr>
+      <th>Position</th>
+      <th>Team</th>
+      <th>Points</th>
+    </tr>
+  </thead>
+  <tbody id="table-body-locked-pred">`
+  for (let i = 1; i< 21; i++) {
+      html_pred += `<tr>
+                      <td>${i}</td>
+                      <td>${data[0][i.toString()]}</td>
+                      <td>${scores[i.toString()]}</td> 
+                    </tr>`
+  }
+  html_pred += `</tbody>
+              </table>`
+
+  document.querySelector('#locked-pred-table').innerHTML = html_pred
+}
+
+async function add_prem_table() {
+  let supaclient = supabase.createClient('https://srhywkedxssxlsjrholj.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNyaHl3a2VkeHNzeGxzanJob2xqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MjYzOTYxNjUsImV4cCI6MjA0MTk3MjE2NX0.lUZUAm20JIH3aoUxmyCAcr8l-A3_S3FpTaHuljrwm50')
+  let { data , error } = await supaclient.from('Predictions').select('*').eq('username', 'current_standings_prem')
+  delete data[0]['username']
+  html_pred = `<div class="row justify-content-center">
+              <div class="col">
+                <h3>Current Standings</h3>
+              </div>
+            </div>
+            <table id="current-prem" class="table table-bordered border-primary">
+  <thead>
+    <tr>
+      <th>Position</th>
+      <th>Team</th>
+    </tr>
+  </thead>
+  <tbody id="table-current-pred">`
+  for (let i = 1; i< 21; i++) {
+      html_pred += `<tr>
+                      <td>${i}</td>
+                      <td>${data[0][i.toString()]}</td> 
+                    </tr>`
+  }
+  html_pred += `</tbody>
+              </table>`
+
+  document.querySelector('#current-prem-table').innerHTML = html_pred
+}
+
+async function fetch_scores() {
+  let supaclient = supabase.createClient('https://srhywkedxssxlsjrholj.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNyaHl3a2VkeHNzeGxzanJob2xqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MjYzOTYxNjUsImV4cCI6MjA0MTk3MjE2NX0.lUZUAm20JIH3aoUxmyCAcr8l-A3_S3FpTaHuljrwm50')
+  let {data, error}  = await supaclient.from('scores').select('*').eq('username', user)
+  console.log(data[0])
+  // delete data[0]['username']
+  return data[0]
 }
