@@ -32,7 +32,7 @@ class calc_scores:
         team_standings = ['MCI','ARS','LIV','AVL','TOT','CHE','NEW','MUN','WHU','CRY','BRI','BOU','FUL','WOL','EVE','BRE','NOT','LUT','BUR','SHU',]
 
         # create points list, using the premier league scoring function
-        points = calc_scores.premier_league_scoring(preds, team_standings)
+        points = self.premier_league_scoring(preds, team_standings)
 
         # We have three lists: 
         # preds, the user's predictions
