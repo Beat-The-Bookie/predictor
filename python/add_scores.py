@@ -29,6 +29,9 @@ class calc_scores:
 
         points = [0] * 20
 
+        preds = ['MCI','MUN','ARS','LIV','NEW','CHE','AVL','TOT','BRE','BRI','CRY','WHU','EVE','NOT','LUT','WOL','BUR','BOU','FUL','SHU']
+        team_standings = ['MCI','ARS','LIV','AVL','TOT','CHE','NEW','MUN','WHU','CRY','BRI','BOU','FUL','WOL','EVE','BRE','NOT','LUT','BUR','SHU',]
+
         # We have three lists: 
         # preds, the user's predictions
         # team_standings, the current prem standings
