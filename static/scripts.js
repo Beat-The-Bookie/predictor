@@ -33,12 +33,12 @@ async function login() {
       if (document.getElementById('pword').value == req_pword) {
         // A function needs to be added here once the deadline is decided
         document.getElementById('login-page').classList.add('d-none');
-        // document.getElementById('main-page-pre').classList.remove('d-none');
-        document.getElementById('main-page-post').classList.remove('d-none')
-        // retrieve_prem_info()
-        // add_pred_table(document.getElementById('uname').value)
-        add_locked_preds(document.getElementById('uname').value)
-        add_prem_table()
+        document.getElementById('main-page-pre').classList.remove('d-none');
+        // document.getElementById('main-page-post').classList.remove('d-none')
+        retrieve_prem_info()
+        add_pred_table(document.getElementById('uname').value)
+        // add_locked_preds(document.getElementById('uname').value)
+        // add_prem_table()
 
       } else {
         document.getElementById('login-fail').textContent = ("Passcode is incorrect")
@@ -63,12 +63,31 @@ async function register() {
   let found = regs_unames.indexOf(document.getElementById('reg-uname').value)
 
   if (found == -1) {
+    created_pcode = createPasscode()
     const { data, error } = await supaclient
     .from('credentials')
     .insert([
-    { username: (document.getElementById('reg-uname').value), passcode: createPasscode() },
+    { username: (document.getElementById('reg-uname').value), passcode: created_pcode },
     ])
     .select()
+
+    let serviceID = 'service_footpred';
+    let templateID = 'template_cek6i8r';
+  
+    let templateParams = {
+      to_name: document.getElementById('reg-uname').value,
+      email: document.getElementById('reg-email').value,
+      username: document.getElementById('reg-uname').value,
+      passcode: created_pcode,
+    };
+
+    try {
+        // Send email
+        const response = await emailjs.send(serviceID, templateID, templateParams);
+        alert('Email sent successfully!');
+    } catch (error) {
+        console.log('Failed to send email. Error: ' + JSON.stringify(error));
+    }
   } else {
     document.getElementById("reg-pcode").textContent = ("Unsuccessful. Username already in use.")
   }
@@ -112,9 +131,25 @@ async function user_team_list(uname) {
   .from('Predictions')
   .insert([{'username':uname}])
 
-  const { da, err } = await supaclient
+  const { da, er } = await supaclient
   .from('Predictions')
   .update(data)
+  .eq('username', uname)
+  .select()
+
+  let {dat, error3} = await supaclient
+  .from('scores')
+  .insert([{'username': uname}])
+
+  // Prepare the update object with columns from 1 to 20 set to 0
+  const updateData = {};
+  for (let i = 1; i <= 20; i++) {
+      updateData[i] = 0; // Setting each column to 0
+  }
+
+  let {data2, error2} = await supaclient
+  .from('scores')
+  .update(updateData)
   .eq('username', uname)
   .select()
 }
