@@ -1,9 +1,10 @@
 document.addEventListener('DOMContentLoaded', () => {
-  const user = ""
 });
 
+const supaclient = supabase.createClient('https://srhywkedxssxlsjrholj.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNyaHl3a2VkeHNzeGxzanJob2xqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MjYzOTYxNjUsImV4cCI6MjA0MTk3MjE2NX0.lUZUAm20JIH3aoUxmyCAcr8l-A3_S3FpTaHuljrwm50')
+let user = ""
+
 async function login() {
-  let supaclient = supabase.createClient('https://srhywkedxssxlsjrholj.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNyaHl3a2VkeHNzeGxzanJob2xqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MjYzOTYxNjUsImV4cCI6MjA0MTk3MjE2NX0.lUZUAm20JIH3aoUxmyCAcr8l-A3_S3FpTaHuljrwm50')
   try {
 
     user = document.getElementById('uname').value
@@ -19,7 +20,7 @@ async function login() {
     let found = regs_unames.indexOf(document.getElementById('uname').value)
 
     if (found == -1) {
-      document.getElementById('login-fail').textContent = ("Username not recognised")
+      alert("Username not recognised")
       document.getElementById('pword').value = ""
       document.getElementById('uname').value = ""
 
@@ -33,15 +34,17 @@ async function login() {
       if (document.getElementById('pword').value == req_pword) {
         // A function needs to be added here once the deadline is decided
         document.getElementById('login-page').classList.add('d-none');
-        // document.getElementById('main-page-pre').classList.remove('d-none');
-        document.getElementById('main-page-post').classList.remove('d-none')
-        // retrieve_prem_info()
-        // add_pred_table(document.getElementById('uname').value)
-        add_locked_preds(document.getElementById('uname').value)
-        add_prem_table()
+
+        document.getElementById('main-page-pre').classList.remove('d-none');
+        // document.getElementById('main-page-post').classList.remove('d-none')
+
+        retrieve_prem_info()
+        add_pred_table(document.getElementById('uname').value)
+        // add_locked_preds(document.getElementById('uname').value)
+        // add_prem_table()
 
       } else {
-        document.getElementById('login-fail').textContent = ("Passcode is incorrect")
+        alert("Passcode is incorrect")
         document.getElementById('pword').value = ""
       }
     }
@@ -51,28 +54,57 @@ async function login() {
 }
 
 async function register() {
-  let supaclient = supabase.createClient('https://srhywkedxssxlsjrholj.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNyaHl3a2VkeHNzeGxzanJob2xqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MjYzOTYxNjUsImV4cCI6MjA0MTk3MjE2NX0.lUZUAm20JIH3aoUxmyCAcr8l-A3_S3FpTaHuljrwm50')
   let { data , error } = await supaclient.from('credentials').select('username')
+  unames = data
+  let {data2 , error2 } = await supaclient.from('credentials').select('email')
   if (error) throw error
   regs_unames = []
+  regs_emails = []
 
-  for (uname in data) {
-    regs_unames.push(data[uname].username)
+  for (uname in unames) {
+    regs_unames.push(unames[uname].username)
+  }
+
+  for (email in data2) {
+    regs_emails.push(data2[email].email)
   }
 
   let found = regs_unames.indexOf(document.getElementById('reg-uname').value)
+  let efound = regs_emails.indexOf(document.getElementById('reg-email').value)
 
-  if (found == -1) {
+  if ((found == -1) && (efound == -1)) {
+    created_pcode = createPasscode()
     const { data, error } = await supaclient
     .from('credentials')
     .insert([
-    { username: (document.getElementById('reg-uname').value), passcode: createPasscode() },
+    { username: (document.getElementById('reg-uname').value), passcode: created_pcode, email: document.getElementById('reg-email') },
     ])
     .select()
+
+    let serviceID = 'service_footpred';
+    let templateID = 'template_cek6i8r';
+  
+    let templateParams = {
+      to_name: document.getElementById('reg-uname').value,
+      email: document.getElementById('reg-email').value,
+      username: document.getElementById('reg-uname').value,
+      passcode: created_pcode,
+    };
+
+    try {
+        // Send email
+        const response = await emailjs.send(serviceID, templateID, templateParams);
+        alert('Email sent successfully!');
+    } catch (error) {
+        console.log('Failed to send email. Error: ' + JSON.stringify(error));
+    }
+    user_team_list(document.getElementById('reg-uname').value)
+
+  } else if (found != -1){
+    alert("Unsuccessful. Username already in use.")
   } else {
-    document.getElementById("reg-pcode").textContent = ("Unsuccessful. Username already in use.")
+    alert("Unsuccessful. Email already in use.")
   }
-  user_team_list(document.getElementById('reg-uname').value)
 }
 
 function createPasscode() {
@@ -82,7 +114,6 @@ function createPasscode() {
     const randomIndex = Math.floor(Math.random() * characters.length);
     randomString += characters[randomIndex];
   }
-  document.getElementById("reg-pcode").textContent = ("Account registered successfully. Your passcode is " + randomString)
   return randomString;
 }
 
@@ -104,7 +135,6 @@ function change_tab(tab) {
 
 // When the user has registered, team list to be created
 async function user_team_list(uname) {
-  let supaclient = supabase.createClient('https://srhywkedxssxlsjrholj.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNyaHl3a2VkeHNzeGxzanJob2xqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MjYzOTYxNjUsImV4cCI6MjA0MTk3MjE2NX0.lUZUAm20JIH3aoUxmyCAcr8l-A3_S3FpTaHuljrwm50')
   let { data , error } = await supaclient.from('Predictions').select('*').eq('username','all_teams_prem')
   delete data[0].username
 
@@ -112,15 +142,30 @@ async function user_team_list(uname) {
   .from('Predictions')
   .insert([{'username':uname}])
 
-  const { da, err } = await supaclient
+  let { da, er } = await supaclient
   .from('Predictions')
   .update(data)
+  .eq('username', uname)
+  .select()
+
+  let {dat, error3} = await supaclient
+  .from('scores')
+  .insert([{'username': uname}])
+
+  // Prepare the update object with columns from 1 to 20 set to 0
+  const updateData = {};
+  for (let i = 1; i <= 20; i++) {
+      updateData[i] = 0; // Setting each column to 0
+  }
+
+  let {data2, error2} = await supaclient
+  .from('scores')
+  .update(updateData)
   .eq('username', uname)
   .select()
 }
 
 async function retrieve_prem_info() {
-  let supaclient = supabase.createClient('https://srhywkedxssxlsjrholj.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNyaHl3a2VkeHNzeGxzanJob2xqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MjYzOTYxNjUsImV4cCI6MjA0MTk3MjE2NX0.lUZUAm20JIH3aoUxmyCAcr8l-A3_S3FpTaHuljrwm50')
   let { data , error } = await supaclient.from('Predictions').select('*').or('username.eq.all_teams_prem_last_finish,username.eq.all_teams_prem')
   let teams = data[0]
   let pos = data[1]
@@ -160,7 +205,6 @@ async function retrieve_prem_info() {
 }
 
 async function add_pred_table(uname) {
-  let supaclient = supabase.createClient('https://srhywkedxssxlsjrholj.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNyaHl3a2VkeHNzeGxzanJob2xqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MjYzOTYxNjUsImV4cCI6MjA0MTk3MjE2NX0.lUZUAm20JIH3aoUxmyCAcr8l-A3_S3FpTaHuljrwm50')
   let { data , error } = await supaclient.from('Predictions').select('*').eq('username', uname)
   delete data[0]['username']
   html_pred =  `<div class="row justify-content-center">
@@ -216,7 +260,6 @@ async function check_new_order() {
         newOrder.push(row.textContent);
       });
 
-  let supaclient = supabase.createClient('https://srhywkedxssxlsjrholj.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNyaHl3a2VkeHNzeGxzanJob2xqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MjYzOTYxNjUsImV4cCI6MjA0MTk3MjE2NX0.lUZUAm20JIH3aoUxmyCAcr8l-A3_S3FpTaHuljrwm50')
   cols = []
   for (let i=1; i<21; i++) {
     cols.push(i.toString())
@@ -238,7 +281,6 @@ function reset_changes() {
 }
 
 async function add_locked_preds(uname) {
-  let supaclient = supabase.createClient('https://srhywkedxssxlsjrholj.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNyaHl3a2VkeHNzeGxzanJob2xqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MjYzOTYxNjUsImV4cCI6MjA0MTk3MjE2NX0.lUZUAm20JIH3aoUxmyCAcr8l-A3_S3FpTaHuljrwm50')
   let { data , error } = await supaclient.from('Predictions').select('*').eq('username', uname)
   let scores = await fetch_scores()
   delete data[0]['username']
@@ -272,7 +314,6 @@ async function add_locked_preds(uname) {
 }
 
 async function add_prem_table() {
-  let supaclient = supabase.createClient('https://srhywkedxssxlsjrholj.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNyaHl3a2VkeHNzeGxzanJob2xqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MjYzOTYxNjUsImV4cCI6MjA0MTk3MjE2NX0.lUZUAm20JIH3aoUxmyCAcr8l-A3_S3FpTaHuljrwm50')
   let { data , error } = await supaclient.from('Predictions').select('*').eq('username', 'current_standings_prem')
   delete data[0]['username']
 
@@ -302,7 +343,6 @@ async function add_prem_table() {
 }
 
 async function fetch_scores() {
-  let supaclient = supabase.createClient('https://srhywkedxssxlsjrholj.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNyaHl3a2VkeHNzeGxzanJob2xqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MjYzOTYxNjUsImV4cCI6MjA0MTk3MjE2NX0.lUZUAm20JIH3aoUxmyCAcr8l-A3_S3FpTaHuljrwm50')
   let {data, error}  = await supaclient.from('scores').select('*').eq('username', user)
   return data[0]
 }
