@@ -54,19 +54,19 @@ async function login() {
 }
 
 async function register() {
-  let { data , error } = await supaclient.from('credentials').select('username')
-  unames = data
-  let {data2 , error2 } = await supaclient.from('credentials').select('email')
+  let { data , error } = await supaclient.from('credentials').select('username, email')
+  const unames = data.map(item => item.username);
+  const emails = data.map(item => item.email);
   if (error) throw error
   regs_unames = []
   regs_emails = []
 
   for (uname in unames) {
-    regs_unames.push(unames[uname].username)
+    regs_unames.push(unames[uname])
   }
 
-  for (email in data2) {
-    regs_emails.push(data2[email].email)
+  for (email in emails) {
+    regs_emails.push(emails[email])
   }
 
   let found = regs_unames.indexOf(document.getElementById('reg-uname').value)
@@ -74,10 +74,10 @@ async function register() {
 
   if ((found == -1) && (efound == -1)) {
     created_pcode = createPasscode()
-    const { data, error } = await supaclient
+    let { data, error } = await supaclient
     .from('credentials')
     .insert([
-    { username: (document.getElementById('reg-uname').value), passcode: created_pcode, email: document.getElementById('reg-email') },
+    { username: (document.getElementById('reg-uname').value), passcode: created_pcode, email: document.getElementById('reg-email').value },
     ])
     .select()
 
@@ -345,4 +345,8 @@ async function add_prem_table() {
 async function fetch_scores() {
   let {data, error}  = await supaclient.from('scores').select('*').eq('username', user)
   return data[0]
+}
+
+function forgot_passcode() {
+  alert('Email footpredhelp@gmail.com')
 }
