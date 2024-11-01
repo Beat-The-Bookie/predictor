@@ -9,44 +9,58 @@ class team_info_collector:
 
     def update_teams(self):
       
+        # Specify the ID of the row you want to update
+        row_id = 'all_teams'
+
         # Set the URL for the Premier League teams endpoint
-        url = f"https://api.football-data.org/v4/competitions/PL/teams"
+        urls = [f"https://api.football-data.org/v4/competitions/PL/teams",
+                f"https://api.football-data.org/v4/competitions/PD/teams",
+                f"https://api.football-data.org/v4/competitions/ELC/teams",
+                f"https://api.football-data.org/v4/competitions/SA/teams",
+                f"https://api.football-data.org/v4/competitions/BL1/teams",
+                f"https://api.football-data.org/v4/competitions/FL1/teams"]
+
+        tables = ['Predictions','la-liga-preds','champ-preds','serieA-preds','bundes-preds','ligue1-preds']
 
         # Set the headers with the API key
         headers = {
             "X-Auth-Token": self.foot_api
         }
 
-        # Make the request to the API
-        response = requests.get(url, headers=headers)
-
-        # Check if the request was successful
-        if response.status_code == 200:
-            data = response.json()
-            teams = data['teams']  # Get the list of teams
-
-            team_name_list = []
-
-            # Print the names of the teams
-            for team in teams:
-                team_name_list.append(team['name'])
-            team_name_list.sort()
-        else:
-            print(f"Error: {response.status_code} - {response.text}")
+        responses = [None] * 6
+        team_name_list = [None] * 6
+        response_responses = [None] * 6
 
         # Create a list for the column names
         columns = []
         for i in range(1,21):
             columns.append(str(i))
 
-        # Zip the columns to the team names
-        update_data = dict(zip(columns, team_name_list))
+        update_data = [None] * 6
 
-        # Specify the ID of the row you want to update
-        # row_id = 'all_teams_prem'
-        row_id = 'will_dev'
-        # Update the row in the table 'your_table_name'
-        response = self.supabase.table('Predictions').update(update_data).match({'username': row_id}).execute()
+        # Make the request to the API
+        for link in range(len(urls)):
+            responses[link] = requests.get(urls[link], headers=headers)
+
+            # Check if the request was successful
+            if responses[link].status_code == 200:
+                data = responses[link].json()
+                teams = data['teams']  # Get the list of teams
+
+                team_name_list[link] = []
+
+                # Print the names of the teams
+                for team in teams:
+                    team_name_list[link].append(team['name'])
+                team_name_list[link].sort()
+            else:
+                print(f"Error: {responses.status_code} - {responses.text}")
+
+            # Zip the columns to the team names
+            update_data[link] = dict(zip(columns, team_name_list[link]))
+
+            # Update the row in the table 'your_table_name'
+            response_responses[link] = self.supabase.table(tables[link]).update(update_data[link]).match({'username': row_id}).execute()
 
     def last_season_results(self):
 
