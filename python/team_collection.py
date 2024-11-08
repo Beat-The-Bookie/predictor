@@ -6,6 +6,7 @@ class team_info_collector:
         self.supabase = supabase
         self.foot_api = foot_api
         self.odds_api = odds_api
+        self.leagues = ['prem', 'la_liga', 'champ', 'bundes', 'seriea', 'ligue1']
 
     def update_teams(self):
       
@@ -20,7 +21,6 @@ class team_info_collector:
                 f"https://api.football-data.org/v4/competitions/BL1/teams",
                 f"https://api.football-data.org/v4/competitions/FL1/teams"]
 
-        tables = ['Predictions','la-liga-preds','champ-preds','serieA-preds','bundes-preds','ligue1-preds']
 
         # Set the headers with the API key
         headers = {
@@ -60,7 +60,7 @@ class team_info_collector:
             update_data[link] = dict(zip(columns, team_name_list[link]))
 
             # Update the row in the table 'your_table_name'
-            response_responses[link] = self.supabase.table(tables[link]).update(update_data[link]).match({'username': row_id}).execute()
+            response_responses[link] = self.supabase.table(self.leagues[link]+'_preds').update(update_data[link]).match({'username': row_id}).execute()
 
     def last_season_results(self):
 
