@@ -7,6 +7,7 @@ class team_info_collector:
         self.foot_api = foot_api
         self.odds_api = odds_api
         self.leagues = ['prem', 'la_liga', 'champ', 'bundes', 'seriea', 'ligue1']
+        self.second_leagues = ['Championship', 'La Liga 2', 'League 1', 'Bundesliga 2', 'Serie B', 'Ligue 2']
 
     def update_teams(self):
       
@@ -64,19 +65,21 @@ class team_info_collector:
 
     def last_season_results(self):
 
-        url = f"https://api.football-data.org/v4/competitions/PL/standings?season=2023"
+        urls = [f"https://api.football-data.org/v4/competitions/PL/standings?season=2023",
+                f"https://api.football-data.org/v4/competitions/PD/standings?season=2023",
+                f"https://api.football-data.org/v4/competitions/ELC/standings?season=2023",
+                f"https://api.football-data.org/v4/competitions/SA/standings?season=2023",
+                f"https://api.football-data.org/v4/competitions/BL1/standings?season=2023",
+                f"https://api.football-data.org/v4/competitions/FL1/standings?season=2023"]
+
+        # url = prem for 2023
 
         # Set the headers with the API key
         headers = {
             "X-Auth-Token": self.foot_api
         }
-
-        # Make the request to the API
-        response = requests.get(url, headers=headers)
-
-        url = f"https://api.football-data.org/v4/competitions/ELC/standings?season=2023"
-
-        response_2 = requests.get(url, headers=headers)
+        # Rather than specific answers, use 'promoted'
+        responses = []
 
         places = ['1st', '2nd', '3rd']
         for i in range(4,18):
@@ -86,14 +89,19 @@ class team_info_collector:
         for i in range(1,21):
             columns.append(str(i))
 
-        data = self.supabase.table('Predictions').select('*').eq('username', 'all_teams_prem').execute()
+        all_teams = []
+        for link in range(len(urls)):
+            # Make the request to the API
+            responses.append = requests.get(urls[link], headers=headers)
 
-        mid = data.data
+            # url = f"https://api.football-data.org/v4/competitions/ELC/standings?season=2023"
+            # response_2 = requests.get(url, headers=headers)
 
-        all_teams = [value for key, value in mid[0].items() if key != 'username']
+            all_teams.append(self.supabase.table(self.leagues[link]+'-preds').select('*').eq('username', 'all_team').execute())
+            all_teams[link] = all_teams[link].data
 
-        # Check if the request was successful
-        if response.status_code == 200:
+            all_teams[link] = [value for key, value in all_teams[link][0].items() if key != 'username']
+
             data = response.json()
             standings = data['standings']
 
@@ -150,9 +158,6 @@ class team_info_collector:
 
             row_id = 'all_teams_prem_last_finish'
             response = self.supabase.table('Predictions').update(update_data).match({'username': row_id}).execute()
-
-        else:
-            print(f"Error: {response.status_code} - {response.text}")
 
 
     def get_odds(self):
