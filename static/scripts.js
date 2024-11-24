@@ -135,21 +135,21 @@ function change_tab(tab) {
 
 // When the user has registered, team list to be created
 async function user_team_list(uname) {
-  let { data , error } = await supaclient.from('Predictions').select('*').eq('username','all_teams_prem')
+  let { data , error } = await supaclient.from('prem_preds').select('*').eq('username','all_teams_prem')
   delete data[0].username
 
   let {d, e} = await supaclient
-  .from('Predictions')
+  .from('prem_preds')
   .insert([{'username':uname}])
 
   let { da, er } = await supaclient
-  .from('Predictions')
+  .from('prem_preds')
   .update(data)
   .eq('username', uname)
   .select()
 
   let {dat, error3} = await supaclient
-  .from('scores')
+  .from('prem_scores')
   .insert([{'username': uname}])
 
   // Prepare the update object with columns from 1 to 20 set to 0
@@ -166,7 +166,7 @@ async function user_team_list(uname) {
 }
 
 async function retrieve_prem_info() {
-  let { data , error } = await supaclient.from('Predictions').select('*').or('username.eq.all_teams_prem_last_finish,username.eq.all_teams_prem')
+  let { data , error } = await supaclient.from('prem_preds').select('*').or('username.eq.all_teams_prem_last_finish,username.eq.all_teams_prem')
   let teams = data[0]
   let pos = data[1]
   delete teams['username']
@@ -205,7 +205,7 @@ async function retrieve_prem_info() {
 }
 
 async function add_pred_table(uname) {
-  let { data , error } = await supaclient.from('Predictions').select('*').eq('username', uname)
+  let { data , error } = await supaclient.from('prem_preds').select('*').eq('username', uname)
   delete data[0]['username']
   html_pred =  `<div class="row justify-content-center">
                   <div class="col">
@@ -271,7 +271,7 @@ async function check_new_order() {
   }, {});
 
   let { data, error } = await supaclient
-  .from('Predictions') // Replace with your actual table name
+  .from('prem_preds') // Replace with your actual table name
   .update(dataToUpdate)
   .eq('username', document.getElementById('uname').value); // Match the row to update by username
 }
@@ -281,7 +281,7 @@ function reset_changes() {
 }
 
 async function add_locked_preds(uname) {
-  let { data , error } = await supaclient.from('Predictions').select('*').eq('username', uname)
+  let { data , error } = await supaclient.from('prem_preds').select('*').eq('username', uname)
   let scores = await fetch_scores()
   delete data[0]['username']
   delete scores['username']
@@ -314,7 +314,7 @@ async function add_locked_preds(uname) {
 }
 
 async function add_prem_table() {
-  let { data , error } = await supaclient.from('Predictions').select('*').eq('username', 'current_standings_prem')
+  let { data , error } = await supaclient.from('prem_preds').select('*').eq('username', 'current_standings_prem')
   delete data[0]['username']
 
   html_pred =  `<div class="row justify-content-center">
@@ -343,7 +343,7 @@ async function add_prem_table() {
 }
 
 async function fetch_scores() {
-  let {data, error}  = await supaclient.from('scores').select('*').eq('username', user)
+  let {data, error}  = await supaclient.from('prem_scores').select('*').eq('username', user)
   return data[0]
 }
 

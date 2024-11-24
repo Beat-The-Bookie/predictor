@@ -1,13 +1,18 @@
 import requests
 import json
+from leagues import league
 
 class team_info_collector:
     def __init__(self, supabase, foot_api, odds_api):
         self.supabase = supabase
         self.foot_api = foot_api
         self.odds_api = odds_api
-        self.leagues = ['prem', 'la_liga', 'champ', 'bundes', 'seriea', 'ligue1']
-        self.second_leagues = ['Championship', 'La Liga 2', 'League 1', 'Bundesliga 2', 'Serie B', 'Ligue 2']
+        # self.leagues = ['prem', 'la_liga', 'champ', 'seriea', 'bundes', 'ligue1']
+        self.leagues = [
+            league(20, 3, 'PL', 'prem'), league(20, 3, 'PD', 'la_liga'),
+            league(24, 3, 'ELC', 'champ'),league(20, 3, 'SA', 'seriea'),
+            league(18, 2, 'BL1', 'bundes'), league(18, 2, 'FL1', 'ligue1')
+        ]
 
     def update_teams(self):
       
@@ -55,13 +60,13 @@ class team_info_collector:
                     team_name_list[link].append(team['name'])
                 team_name_list[link].sort()
             else:
-                print(f"Error: {responses.status_code} - {responses.text}")
+                print(f"Error: {responses[link].status_code} - {responses[link].text}")
 
             # Zip the columns to the team names
             update_data[link] = dict(zip(columns, team_name_list[link]))
 
             # Update the row in the table 'your_table_name'
-            response_responses[link] = self.supabase.table(self.leagues[link]+'_preds').update(update_data[link]).match({'username': row_id}).execute()
+            response_responses[link] = self.supabase.table(self.leagues[link].shorthand+'_preds').update(update_data[link]).match({'username': row_id}).execute()
 
     def last_season_results(self):
 
@@ -71,6 +76,8 @@ class team_info_collector:
                 f"https://api.football-data.org/v4/competitions/SA/standings?season=2023",
                 f"https://api.football-data.org/v4/competitions/BL1/standings?season=2023",
                 f"https://api.football-data.org/v4/competitions/FL1/standings?season=2023"]
+        
+        url = f""
 
         # url = prem for 2023
 
@@ -89,75 +96,112 @@ class team_info_collector:
         for i in range(1,21):
             columns.append(str(i))
 
+        # url = f"https://api.football-data.org/v4/competitions/ELC/standings?season=2023"
+        # response_2 = requests.get(url, headers=headers)
+
+        team_list = []
+        standings = []
         all_teams = []
-        for link in range(len(urls)):
+        last_finishes = []
+
+        for league in range(len(self.leagues)):
             # Make the request to the API
-            responses.append = requests.get(urls[link], headers=headers)
+            responses.append(requests.get(self.find_url(self.leagues[league].footkey), headers=headers))
 
-            # url = f"https://api.football-data.org/v4/competitions/ELC/standings?season=2023"
-            # response_2 = requests.get(url, headers=headers)
+            temp = (self.leagues[league].shorthand +'_preds')
+            all_teams.append(self.supabase.table(temp).select('*').eq('username', 'all_teams').execute())
+            all_teams[league] = all_teams[league].data
+            all_teams[league] = [value for key, value in all_teams[league][0].items() if key != 'username']
+            # print("ALL_TEAMS", all_teams[league])
 
-            all_teams.append(self.supabase.table(self.leagues[link]+'-preds').select('*').eq('username', 'all_team').execute())
-            all_teams[link] = all_teams[link].data
+            data = responses[league].json()
+            standings.append(data['standings'])
 
-            all_teams[link] = [value for key, value in all_teams[link][0].items() if key != 'username']
+            # all_teams contains teams in alphabetical order
+            # team_list contains teams in previous season standings
 
-            data = response.json()
-            standings = data['standings']
 
             # Extract team names from the data
-            team_list = []            
-            for stage_data in standings:
+            team_list.append([])            
+            for stage_data in standings[league]:
                 for team_entry in stage_data['table']:  # Iterate through the teams
-                    if len(team_list) < 17:
+                    if len(team_list[league]) < (self.leagues[league].team_num - self.leagues[league].relegated):
                         team_name = team_entry['team']['name']  # Extract the team name
-                        team_list.append(team_name)
+                        team_list[league].append(team_name)
             
+            last_finishes.append([None] * (self.leagues[league].team_num))
+            for team in range(self.leagues[league].team_num - self.leagues[league].relegated):
+                # print("TEAM", team)
+                found = all_teams[league].index(team_list[league][team])
+                last_finishes[league][found] = places[(team)]
+            print("LAST_FINISHES", last_finishes[league])
 
-            last_finishes = [None] * 20
-            for team in range(len(team_list)):
-                found = all_teams.index(team_list[team])
-                last_finishes[found] = places[(team)]
+            # Champ has promoted AND relegated
+
+
+
+            # for team in range(len(team_list[link])):
+            #     found = all_teams
+
+            # print("TL", link, "     ", team_list[link])
+            # print("AT", link, "     ", all_teams[link])
+
+
+
+
+
+
+
+
+
+
+            # print("LEN", len(team_list[link]))
+            # last_finishes.append([None] * len(team_list[link]))
+            # for team in range(len(team_list[link])):
+            #     found = all_teams[link].index(team_list[link][team])
+            #     last_finishes[link][found] = places[(team)]
+            # print("LAST_FINISHES", last_finishes[link])
             
-            # Identifies the places where the promoted teams are in the list
-            something = [index for index, element in enumerate(last_finishes) if element == None]
+            # # Identifies the places where the promoted teams are in the list
+            # something = [index for index, element in enumerate(last_finishes) if element == None]
 
-            data_2 = response_2.json()
-            standings_2 = data_2['standings']
+            # data_2 = response_2.json()
+            # standings_2 = data_2['standings']
 
-            champ_team_list = []            
-            for a in standings_2:
-                for team_entry in a['table']:  # Iterate through the teams
-                    if len(champ_team_list) < 6:
-                        team_name = team_entry['team']['name']  # Extract the team name
-                        champ_team_list.append(team_name)
-            champ_places = ['1st (Champ)', '2nd (Champ)']
+            # champ_team_list = []            
+            # for a in standings_2:
+            #     for team_entry in a['table']:  # Iterate through the teams
+            #         if len(champ_team_list) < 6:
+            #             team_name = team_entry['team']['name']  # Extract the team name
+            #             champ_team_list.append(team_name)
+            # champ_places = ['1st (Champ)', '2nd (Champ)']
 
-            for team in range(len(champ_places)):
-                found = all_teams.index(champ_team_list[team])
-                last_finishes[found] = champ_places[team]
+            # for team in range(len(champ_places)):
+            #     found = all_teams.index(champ_team_list[team])
+            #     last_finishes[found] = champ_places[team]
 
-            champ_places = ['3rd (Champ)']
-            for i in range(3):
-                champ_places.append(str(i+4)+'th (Champ)')
-            champ_team_list = champ_team_list[2:]
-            for place in range(len(champ_places)):
-                try:
-                    found = all_teams.index(champ_team_list[place])
-                    last_finishes[found] = champ_places[place]
-                except ValueError:
-                    print(f"Value not found in the list")
+            # champ_places = ['3rd (Champ)']
+            # for i in range(3):
+            #     champ_places.append(str(i+4)+'th (Champ)')
+            # champ_team_list = champ_team_list[2:]
+            # for place in range(len(champ_places)):
+            #     try:
+            #         found = all_teams.index(champ_team_list[place])
+            #         last_finishes[found] = champ_places[place]
+            #     except ValueError:
+            #         print(f"Value not found in the list")
 
-            # Create a list for the column names
-            columns = []
-            for i in range(1,21):
-                columns.append(str(i))
+            # # Create a list for the column names
+            # columns = []
+            # for i in range(1,21):
+            #     columns.append(str(i))
 
-            # Zip the columns to the team names
-            update_data = dict(zip(columns, last_finishes))
+            # # Zip the columns to the team names
+            # update_data = dict(zip(columns, last_finishes))
 
-            row_id = 'all_teams_prem_last_finish'
-            response = self.supabase.table('Predictions').update(update_data).match({'username': row_id}).execute()
+            # row_id = 'all_teams_prem_last_finish'
+            # response = self.supabase.table('Predictions').update(update_data).match({'username': row_id}).execute()
+        # print("ALL_TEAMS", standings)
 
 
     def get_odds(self):
@@ -264,3 +308,8 @@ class team_info_collector:
                     print(f"Team: {runner['description']['runnerName']}, Odds: {runner['ex']['availableToBack']}")
         else:
             print(f"Error: {response.status_code}, {response.text}")
+
+
+
+    def find_url(self, code):
+        return ("https://api.football-data.org/v4/competitions/" + code + "/standings?season=2023")

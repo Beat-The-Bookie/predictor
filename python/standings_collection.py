@@ -5,7 +5,9 @@ class standings_collection:
     def __init__(self, supabase, foot_api):
         self.supabase = supabase
         self.foot_api = foot_api
-    
+        self.leagues = ['prem', 'la_liga', 'champ', 'bundes', 'seriea', 'ligue1']
+        self.attributes = ['standings', 'points', 'games_played', 'goal_difference']
+
     def collect_info(self):
 
         # Set the URL for the Premier League teams endpoint
@@ -22,24 +24,40 @@ class standings_collection:
         }
 
         standings = []
-        response = requests.get(urls[0], headers=headers)
-        print("RESPONSE", response.json())
+        responses = []
+        responses_2 = []
+        update_data = [None] * len(urls)
+        for url in range(len(urls)):
 
-        # Check if the request was successful
-        if response.status_code == 200:
-            data = response.json()
 
-            # Extract team names in the correct order
-            standings = [team['team']['name'] for team in data['standings'][0]['table']]
-            points = [team['points'] for team in data['standings'][0]['table']]
-            games_played = [team['playedGames'] for team in data['standings'][0]['table']]
-            goal_differences = [team['goalDifference'] for team in data['standings'][0]['table']]
+            responses.append(requests.get(urls[url], headers=headers))
 
-            # Display the list of team names
-            print("STANDINGS", standings)
-            print("POINTS", points)
-            print("GP", games_played)
-            print("GD", goal_differences)
-        else:
-            print(f"Error: {response.status_code} - {response.text}")
+            # Check if the request was successful
+            if responses[url].status_code == 200:
+                data = responses[url].json()
+
+                # Extract team names in the correct order
+                standings = [team['team']['name'] for team in data['standings'][0]['table']]
+                points = [team['points'] for team in data['standings'][0]['table']]
+                games_played = [team['playedGames'] for team in data['standings'][0]['table']]
+                goal_differences = [team['goalDifference'] for team in data['standings'][0]['table']]
+
+                # Create a list for the column names
+                columns = []
+                for i in range(1,21):
+                    columns.append(str(i))
+
+                update_data[url] = dict(zip(columns, standings))
+                attributes = [standings, points, games_played, goal_differences]
+                for attribute in range(len(attributes)):
+                    responses_r = self.supabase.table(self.leagues[url]+'_preds').update(dict(zip(columns, attributes[attribute]))).match({'username': self.attributes[attribute]}).execute()
+
+
+                # # Display the list of team names
+                # print("STANDINGS", standings)
+                # print("POINTS", points)
+                # print("GP", games_played)
+                # print("GD", goal_differences)
+            else:
+                print(f"Error: {responses[url].status_code} - {responses[url].text}")
 
