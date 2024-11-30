@@ -1,7 +1,7 @@
 class create_db:
-    def __init__(self, supabase):
+    def __init__(self, supabase, leagues):
         self.supabase = supabase
-        self.leagues = ['prem', 'la_liga', 'champ', 'bundes', 'seriea', 'ligue1']
+        self.leagues = leagues
 
     def create_tables(self):
         create_table_query = """
@@ -31,64 +31,45 @@ class create_db:
         response = self.supabase.table('credentials').insert({'username': 'last_season_finishes', 'passcode':'admin_acc'}).execute()
 
         for i in range(len(self.leagues)):
-            response = self.supabase.table(self.leagues[i]+'_preds').insert({'username': 'all_teams'}).execute()
-            response = self.supabase.table(self.leagues[i]+'_preds').insert({'username': 'standings'}).execute()
-            response = self.supabase.table(self.leagues[i]+'_preds').insert({'username': 'points'}).execute()
-            response = self.supabase.table(self.leagues[i]+'_preds').insert({'username': 'games_played'}).execute()
-            response = self.supabase.table(self.leagues[i]+'_preds').insert({'username': 'goal_difference'}).execute()
-            response = self.supabase.table(self.leagues[i]+'_preds').insert({'username': 'last_season_finishes'}).execute()
-
+            response = self.supabase.table(self.leagues[i].shorthand+'_preds').insert({'username': 'all_teams'}).execute()
+            response = self.supabase.table(self.leagues[i].shorthand+'_preds').insert({'username': 'standings'}).execute()
+            response = self.supabase.table(self.leagues[i].shorthand+'_preds').insert({'username': 'points'}).execute()
+            response = self.supabase.table(self.leagues[i].shorthand+'_preds').insert({'username': 'games_played'}).execute()
+            response = self.supabase.table(self.leagues[i].shorthand+'_preds').insert({'username': 'goal_difference'}).execute()
+            response = self.supabase.table(self.leagues[i].shorthand+'_preds').insert({'username': 'last_season_finishes'}).execute()
 
     def pred_query_creator(self, league):
-        return """
-            CREATE TABLE IF NOT EXISTS public.""" + league + """_preds (
-                username TEXT NOT NULL,
-                "1" TEXT NULL,
-                "2" TEXT NULL,
-                "3" TEXT NULL,
-                "4" TEXT NULL,
-                "5" TEXT NULL,
-                "6" TEXT NULL,
-                "7" TEXT NULL,
-                "8" TEXT NULL,
-                "9" TEXT NULL,
-                "10" TEXT NULL,
-                "11" TEXT NULL,
-                "12" TEXT NULL,
-                "13" TEXT NULL,
-                "14" TEXT NULL,
-                "15" TEXT NULL,
-                "16" TEXT NULL,
-                "17" TEXT NULL,
-                "18" TEXT NULL,
-                "19" TEXT NULL,
-                "20" TEXT NULL
-            );
-        """
 
-    def score_query_creator(self, league):
-        return """
-            CREATE TABLE IF NOT EXISTS public.""" + league + """_scores (
-                username TEXT NOT NULL,
-                "1" TEXT NULL,
-                "2" TEXT NULL,
-                "3" TEXT NULL,
-                "4" TEXT NULL,
-                "5" TEXT NULL,
-                "6" TEXT NULL,
-                "7" TEXT NULL,
-                "8" TEXT NULL,
-                "9" TEXT NULL,
-                "10" TEXT NULL,
-                "11" TEXT NULL,
-                "12" TEXT NULL,
-                "13" TEXT NULL,
-                "14" TEXT NULL,
-                "15" TEXT NULL,
-                "16" TEXT NULL,
-                "17" TEXT NULL,
-                "18" TEXT NULL,
-                "19" TEXT NULL,
-                "20" TEXT NULL
-            );
+        query = f"""
+                CREATE TABLE IF NOT EXISTS public.{league.shorthand}_preds (
+                    username TEXT NOT NULL,
         """
+        for i in range(league.team_num):
+            if i != (league.team_num - 1):
+                query += f"""
+                    "{i+1}" TEXT NULL,
+                """
+            else:
+                query += f"""
+                    "{i+1}" TEXT NULL
+                );
+            """
+        return query
+    
+    def score_query_creator(self, league):
+
+        query = f"""
+                CREATE TABLE IF NOT EXISTS public.{league.shorthand}_scores (
+                    username TEXT NOT NULL,
+        """
+        for i in range(league.team_num):
+            if i != (league.team_num - 1):
+                query += f"""
+                    "{i+1}" TEXT NULL,
+                """
+            else:
+                query += f"""
+                    "{i+1}" TEXT NULL
+                );
+            """
+        return query

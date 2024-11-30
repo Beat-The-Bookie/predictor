@@ -2,10 +2,10 @@ import requests
 import json
 
 class standings_collection:
-    def __init__(self, supabase, foot_api):
+    def __init__(self, supabase, foot_api, leagues):
         self.supabase = supabase
         self.foot_api = foot_api
-        self.leagues = ['prem', 'la_liga', 'champ', 'bundes', 'seriea', 'ligue1']
+        self.leagues = leagues
         self.attributes = ['standings', 'points', 'games_played', 'goal_difference']
 
     def collect_info(self):
@@ -26,7 +26,6 @@ class standings_collection:
         standings = []
         responses = []
         responses_2 = []
-        update_data = [None] * len(urls)
         for url in range(len(urls)):
 
 
@@ -43,21 +42,17 @@ class standings_collection:
                 goal_differences = [team['goalDifference'] for team in data['standings'][0]['table']]
 
                 # Create a list for the column names
-                columns = []
-                for i in range(1,21):
-                    columns.append(str(i))
+                # columns = []
+                # for i in range(1,21):
+                #     columns.append(str(i))
 
-                update_data[url] = dict(zip(columns, standings))
                 attributes = [standings, points, games_played, goal_differences]
                 for attribute in range(len(attributes)):
-                    responses_r = self.supabase.table(self.leagues[url]+'_preds').update(dict(zip(columns, attributes[attribute]))).match({'username': self.attributes[attribute]}).execute()
+                    columns = []
+                    for i in range(1, self.leagues[url].team_num + 1):
+                        columns.append(str(i))
+                    responses_r = self.supabase.table(self.leagues[url].shorthand+'_preds').update(dict(zip(columns, attributes[attribute]))).match({'username': self.attributes[attribute]}).execute()
 
-
-                # # Display the list of team names
-                # print("STANDINGS", standings)
-                # print("POINTS", points)
-                # print("GP", games_played)
-                # print("GD", goal_differences)
             else:
                 print(f"Error: {responses[url].status_code} - {responses[url].text}")
 
