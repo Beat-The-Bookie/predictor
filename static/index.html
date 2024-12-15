@@ -83,6 +83,11 @@
           <div class="nav nav-tabs" id="pre-nav-tab" role="tablist">
             <button class="nav-link active" id="pre-nav-home-tab" type="button" role="tab" onclick="change_tab('pre-nav-home')">Home</button>
             <button class="nav-link" id="pre-nav-prem-tab" type="button" role="tab" onclick="change_tab('pre-nav-prem')">Premier League</button>
+            <button class="nav-link" id="pre-nav-la_liga-tab" type="button" role="tab" onclick="change_tab('pre-nav-la_liga')">La Liga</button>
+            <button class="nav-link" id="pre-nav-champ-tab" type="button" role="tab" onclick="change_tab('pre-nav-champ')">Championship</button>
+            <button class="nav-link" id="pre-nav-seriea-tab" type="button" role="tab" onclick="change_tab('pre-nav-seriea')">Serie A</button>
+            <button class="nav-link" id="pre-nav-bundes-tab" type="button" role="tab" onclick="change_tab('pre-nav-bundes')">Bundesliga</button>
+            <button class="nav-link" id="pre-nav-ligue1-tab" type="button" role="tab" onclick="change_tab('pre-nav-ligue1')">Ligue 1</button>
             <button class="nav-link" id="pre-nav-other-tab"  type="button" role="tab" onclick="change_tab('pre-nav-other')">Contact</button>
           </div>
         </nav>
@@ -95,9 +100,49 @@
           <div class="tab-pane" id="pre-nav-prem" role="tabpanel" tabindex="0">
             <div class="row justify-content-around">
               <div class="col-md-6" id="prem-table"></div>
-              <div class="col-md-5 list-group" id="pred-table"></div>
-              <button onclick="check_new_order()">Save Changes</button>
-              <button onclick="reset_changes()">Cancel Changes</button>
+              <div class="col-md-5 list-group" id="prem-pred-table"></div>
+              <button onclick="save_changes('prem')">Save Changes</button>
+              <button onclick="reset_changes('prem')">Cancel Changes</button>
+            </div>
+          </div>
+          <div class="tab-pane" id="pre-nav-la_liga" role="tabpanel" tabindex="0">
+            <div class="row justify-content-around">
+              <div class="col-md-6" id="la_liga-table"></div>
+              <div class="col-md-5 list-group" id="la_liga-pred-table"></div>
+              <button onclick="save_changes('la_liga')">Save Changes</button>
+              <button onclick="reset_changes('la_liga')">Cancel Changes</button>
+            </div>
+          </div>
+          <div class="tab-pane" id="pre-nav-champ" role="tabpanel" tabindex="0">
+            <div class="row justify-content-around">
+              <div class="col-md-6" id="champ-table"></div>
+              <div class="col-md-5 list-group" id="champ-pred-table"></div>
+              <button onclick="save_changes('champ')">Save Changes</button>
+              <button onclick="reset_changes('champ')">Cancel Changes</button>
+            </div>
+          </div>
+          <div class="tab-pane" id="pre-nav-seriea" role="tabpanel" tabindex="0">
+            <div class="row justify-content-around">
+              <div class="col-md-6" id="seriea-table"></div>
+              <div class="col-md-5 list-group" id="seriea-pred-table"></div>
+              <button onclick="save_changes('seriea')">Save Changes</button>
+              <button onclick="reset_changes('seriea')">Cancel Changes</button>
+            </div>
+          </div>
+          <div class="tab-pane" id="pre-nav-bundes" role="tabpanel" tabindex="0">
+            <div class="row justify-content-around">
+              <div class="col-md-6" id="bundes-table"></div>
+              <div class="col-md-5 list-group" id="bundes-pred-table"></div>
+              <button onclick="save_changes('bundes')">Save Changes</button>
+              <button onclick="reset_changes('bundes')">Cancel Changes</button>
+            </div>
+          </div>
+          <div class="tab-pane" id="pre-nav-ligue1" role="tabpanel" tabindex="0">
+            <div class="row justify-content-around">
+              <div class="col-md-6" id="ligue1-table"></div>
+              <div class="col-md-5 list-group" id="ligue1-pred-table"></div>
+              <button onclick="save_changes('ligue1')">Save Changes</button>
+              <button onclick="reset_changes('ligue1')">Cancel Changes</button>
             </div>
           </div>
           <div class="tab-pane" id="pre-nav-other" role="tabpanel" tabindex="0">
@@ -117,6 +162,11 @@
           <div class="nav nav-tabs" id="post-nav-tab" role="tablist">
             <button class="nav-link active" id="post-nav-home-tab" type="button" role="tab" onclick="change_tab('post-nav-home')">Home</button>
             <button class="nav-link" id="post-nav-prem-tab" type="button" role="tab" onclick="change_tab('post-nav-prem')">Premier League</button>
+            <button class="nav-link" id="post-nav-la_liga-tab" type="button" role="tab" onclick="change_tab('post-nav-la_liga')">La Liga</button>
+            <button class="nav-link" id="post-nav-champ-tab" type="button" role="tab" onclick="change_tab('post-nav-champ')">Championship</button>
+            <button class="nav-link" id="post-nav-seriea-tab" type="button" role="tab" onclick="change_tab('post-nav-seriea')">Serie A</button>
+            <button class="nav-link" id="post-nav-bundes-tab" type="button" role="tab" onclick="change_tab('post-nav-bundes')">Bundesliga</button>
+            <button class="nav-link" id="post-nav-ligue1-tab" type="button" role="tab" onclick="change_tab('post-nav-ligue1')">Ligue 1</button>
             <button class="nav-link" id="post-nav-other-tab"  type="button" role="tab" onclick="change_tab('post-nav-other')">Contact</button>
           </div>
         </nav>
@@ -128,8 +178,38 @@
           </div>
           <div class="tab-pane" id="post-nav-prem" role="tabpanel" tabindex="0">
             <div class="row justify-content-around">
-              <div class="col-md-4" id="locked-pred-table"></div>
-              <div class="col-md-6" id="current-prem-table"></div>
+              <div class="col-md-4" id="prem-pred-locked"></div>
+              <div class="col-md-6" id="prem-standings"></div>
+            </div>
+          </div>
+          <div class="tab-pane" id="post-nav-la_liga" role="tabpanel" tabindex="0">
+            <div class="row justify-content-around">
+              <div class="col-md-4" id="la_liga-pred-locked"></div>
+              <div class="col-md-6" id="la_liga-standings"></div>
+            </div>
+          </div>
+          <div class="tab-pane" id="post-nav-champ" role="tabpanel" tabindex="0">
+            <div class="row justify-content-around">
+              <div class="col-md-4" id="champ-pred-locked"></div>
+              <div class="col-md-6" id="champ-standings"></div>
+            </div>
+          </div>
+          <div class="tab-pane" id="post-nav-seriea" role="tabpanel" tabindex="0">
+            <div class="row justify-content-around">
+              <div class="col-md-4" id="seriea-pred-locked"></div>
+              <div class="col-md-6" id="seriea-standings"></div>
+            </div>
+          </div>
+          <div class="tab-pane" id="post-nav-bundes" role="tabpanel" tabindex="0">
+            <div class="row justify-content-around">
+              <div class="col-md-4" id="bundes-pred-locked"></div>
+              <div class="col-md-6" id="bundes-standings"></div>
+            </div>
+          </div>
+          <div class="tab-pane" id="post-nav-ligue1" role="tabpanel" tabindex="0">
+            <div class="row justify-content-around">
+              <div class="col-md-4" id="ligue1-pred-locked"></div>
+              <div class="col-md-6" id="ligue1-standings"></div>
             </div>
           </div>
           <div class="tab-pane" id="post-nav-other" role="tabpanel" tabindex="0">
