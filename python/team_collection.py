@@ -7,7 +7,6 @@ class team_info_collector:
         self.supabase = supabase
         self.foot_api = foot_api
         self.odds_api = odds_api
-        # self.leagues = ['prem', 'la_liga', 'champ', 'seriea', 'bundes', 'ligue1']
         self.leagues = leagues
 
     def update_teams(self):
@@ -91,7 +90,7 @@ class team_info_collector:
             places.append(str(i)+'th')
 
         columns = []
-        for i in range(1,22):
+        for i in range(1,25):
             columns.append(str(i))
 
         team_list = []
