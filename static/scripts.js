@@ -36,14 +36,14 @@ async function login() {
         document.getElementById('login-page').classList.add('d-none');
 
         // Stuff to do before deadline
-        // document.getElementById('main-page-pre').classList.remove('d-none');
-        // retrieve_info()
-        // add_pred_table(document.getElementById('uname').value)
+        document.getElementById('main-page-pre').classList.remove('d-none');
+        retrieve_info()
+        add_pred_table(document.getElementById('uname').value)
 
         // Stuff to do after deadline
-        document.getElementById('main-page-post').classList.remove('d-none')
-        add_locked_preds(document.getElementById('uname').value)
-        add_prem_table()
+        // document.getElementById('main-page-post').classList.remove('d-none')
+        // add_locked_preds(document.getElementById('uname').value)
+        // add_prem_table()
 
       } else {
         alert("Passcode is incorrect")
@@ -168,9 +168,13 @@ async function user_team_list(uname) {
     .eq('username', uname)
     .select()
   }
+  let {data4, error4} = await supaclient
+  .from('leaderboard')
+  .insert([{'username': uname}])
 }
 
 async function retrieve_info() {
+
   for (let league = 0; league < league_shorthands.length; league++) {
 
     let { data , error } = await supaclient.from(`${league_shorthands[league]}_preds`).select('*').or('username.eq.last_season_finishes,username.eq.all_teams')
@@ -179,20 +183,23 @@ async function retrieve_info() {
     delete teams['username']
     delete pos['username']
 
+
     let html_info = `<div class="row justify-content-center">
-                            <div class="col">
-                              <h3>Teams</h3>
-                            </div>
-                          </div>
-                          <table class="table table-bordered border-primary">
-                            <thead>
-                              <tr>
-                                <th scope="col">#</th>
-                                <th scope="col">Team</th>
-                                <th scope="col">Last Season</th>
-                              </tr>
-                            </thead>
-                            <tbody>`
+                       <div class="col">
+                         <h3>Teams</h3>
+                        </div>
+                      </div>
+                        <table class="table table-bordered border-primary">
+                          <thead>
+                            <tr>
+                              <th scope="col">#</th>
+                              <th scope="col">Team</th>
+                              <th scope="col">Last Season</th>
+                            </tr>
+                          </thead>
+                          <tbody>`
+
+
 
     for (let i = 1; i < (Object.keys(teams).filter(key => !isNaN(key)).length + 1); i++) {
       html_info += `<tr>
@@ -203,11 +210,38 @@ async function retrieve_info() {
     }
 
     html_info +=  `</tbody>
-                      </thead>
                     </table>`
 
     document.querySelector(`#${league_shorthands[league]}-table`).innerHTML = html_info
   }
+  add_users()
+}
+
+async function add_users() {
+  let { data , error } = await supaclient.from('leaderboard').select('*')
+  console.log("USERS", data)
+
+  let html_info = `<table class="table table-bordered border-primary">
+                      <thead>
+                        <tr>
+                          <th scope="col">#</th>
+                          <th scope="col">User</th>
+                        </tr>
+                      </thead>
+                      <tbody>`
+
+  for (let i = 0; i < (Object.keys(data).filter(key => !isNaN(key)).length); i++) {
+    console.log("DI", data[i])
+    html_info += `<tr>
+                          <th scope="row">${i+1}</th>
+                          <td>${data[i].username}</td>
+                        </tr>`
+  }
+
+  html_info +=  `</tbody>
+                  </table>`
+
+  document.querySelector(`#pre-leaderboard`).innerHTML = html_info
 }
 
 async function add_pred_table(uname) {

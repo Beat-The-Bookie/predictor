@@ -19,8 +19,67 @@
         });
     })();
   </script>
+  <style> 
+  body {
+    margin: 0;
+    font-family:
+    Arial, sans-serif;
+  }
+  .banner {
+    background-color: black;
+    color: white;
+    position: fixed;
+    width: 100%;
+    top: 0;
+    left: 0;
+    padding: 5px 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .banner img { 
+    margin-left: 20px;
+  }
+  .nav-tabs {
+    display: flex;
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    }
+  .nav-tabs li {
+    margin: 0 20px;
+  }
+  .nav-tabs a {
+    color: white;
+    text-decoration: none;
+  }
+  .container {
+    margin-top: 80px;
+     /* Add margin to account for the fixed banner */
+  }
+  #main-page-pre, #main-page-post {
+    display: flex; /* Use flexbox */
+    flex-direction: column; /* Keep vertical flow of content */
+    align-items: center; /* Center content horizontally */
+    justify-content: flex-start; /* Maintain vertical alignment at the top */
+  }
+  .tab-content {
+    width: 100%; /* Ensure it spans the full width of its container */
+    max-width: none; /* Remove any inherited width limitations */
+    padding: 0; /* Remove any extra padding if unnecessary */
+  }
+
+  .tab-pane {
+      width: 100%; /* Ensure the content fills the entire width */
+      margin: 0; /* Remove any margin */
+      padding: 20px; /* Optional: Add padding for spacing */
+  }
+  </style>
 </head>
 <body>
+  <header class="banner">
+    <img src="logo.png" alt="Logo" width="120" height="50">
+  </header>
   <div class="container" id="login-page">
     <div class="row">
       <div class="col-md-6">
@@ -41,7 +100,7 @@
           </div>
         </div>
         <div class="row">
-          <div class="col-3">
+          <div class="col-4">
             <button class="btn btn-primary" onclick="login()">Login</button>
           </div>
           <div class="col-6">
@@ -73,7 +132,7 @@
       </div>
     </div>
   </div>
-  <div class="container d-none" id="main-page-pre" style="margin-left: 24px; margin-right: 24px;">
+  <div class="container d-none" id="main-page-pre">
     <div class="card">
       <div class="card-header bg-primary text-white">
         Predictions 2025/2026
@@ -88,7 +147,7 @@
             <button class="nav-link" id="pre-nav-seriea-tab" type="button" role="tab" onclick="change_tab('pre-nav-seriea')">Serie A</button>
             <button class="nav-link" id="pre-nav-bundes-tab" type="button" role="tab" onclick="change_tab('pre-nav-bundes')">Bundesliga</button>
             <button class="nav-link" id="pre-nav-ligue1-tab" type="button" role="tab" onclick="change_tab('pre-nav-ligue1')">Ligue 1</button>
-            <button class="nav-link" id="pre-nav-other-tab"  type="button" role="tab" onclick="change_tab('pre-nav-other')">Contact</button>
+            <button class="nav-link" id="pre-nav-leaderboard-tab"  type="button" role="tab" onclick="change_tab('pre-nav-leaderboard')">Leaderboard</button>
           </div>
         </nav>
         <div class="tab-content" id="nav-tabContent">
@@ -145,19 +204,21 @@
               <button onclick="reset_changes('ligue1')">Cancel Changes</button>
             </div>
           </div>
-          <div class="tab-pane" id="pre-nav-other" role="tabpanel" tabindex="0">
-            <!-- This can be replaced by other leagues. TBD -->
+          <div class="tab-pane" id="pre-nav-leaderboard" role="tabpanel" tabindex="0">
+            <div class="row justify-content-around">
+              <div class="col-12" id="pre-leaderboard"></div>
+            </div>
           </div>
         </div>
       </div>
     </div>
   </div>
-  <div class="container d-none" id="main-page-post" style="margin-left: 24px; margin-right: 24px;">
-    <div class="card">
-      <div class="card-header bg-primary text-white">
+  <div class="container d-none" id="main-page-post">
+    <!-- <div class="card"> -->
+      <!-- <div class="card-header bg-primary text-white">
         Predictions 2025/2026
-      </div>
-      <div class="card-body">
+      </div> -->
+      <!-- <div class="card-body"> -->
         <nav>
           <div class="nav nav-tabs" id="post-nav-tab" role="tablist">
             <button class="nav-link active" id="post-nav-home-tab" type="button" role="tab" onclick="change_tab('post-nav-home')">Home</button>
@@ -216,8 +277,8 @@
             <!-- This can be replaced by other leagues. TBD -->
           </div>
         </div>
-      </div>
-    </div>
+      <!-- </div> -->
+    <!-- </div> -->
   </div>
 </body>
 </html>
