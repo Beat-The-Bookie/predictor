@@ -21,6 +21,21 @@ class create_db:
             responses[i] = self.supabase.rpc("execute_sql", {"query": self.pred_query_creator(self.leagues[i])}).execute()
             responses_2[i] = self.supabase.rpc("execute_sql", {"query": self.score_query_creator(self.leagues[i])}).execute()
 
+        new_query = """
+            CREATE TABLE IF NOT EXISTS public.leaderboard (
+                username TEXT NOT NULL,
+                prem TEXT NULL,
+                la_liga TEXT NULL,
+                champ TEXT NULL,
+                seriea TEXT NULL,
+                bundes TEXT NULL,
+                ligue1 TEXT NULL,
+                total TEXT NULL,
+                CONSTRAINT leaderboard_pkey PRIMARY KEY (username)
+            );
+            """
+        new_response = self.supabase.rpc("execute_sql", {"query": new_query}).execute()
+
     def create_users(self):
 
         response = self.supabase.table('credentials').insert({'username': 'all_teams', 'passcode':'admin_acc'}).execute()

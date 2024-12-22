@@ -8,13 +8,19 @@ h1 {
     color: #007bff;
 }
   
+.card {
+    width: 100%; /* Ensures the card spans the full width of its container */
+    margin: 0 auto; /* Centers the card horizontally */
+    box-sizing: border-box; /* Includes padding and border in the total width */
+}
+  
 .container {
-max-width: 600px;
-margin: 50px auto;
-padding: 20px;
-background: white;
-border-radius: 8px;
-box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    max-width: 600px;
+    margin: 50px auto;
+    padding: 20px;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
 }
 
 table {
@@ -52,4 +58,59 @@ th, td {
     left: 0;
     background: #fff; /* Make background white to hide overlaps */
     z-index: 1; /* Ensure it appears above other columns */
+}
+
+body {
+    margin: 0;
+    font-family:
+    Arial, sans-serif;
+}
+.banner {
+    background-color: black;
+    color: white;
+    position: fixed;
+    width: 100%;
+    top: 0;
+    left: 0;
+    padding: 5px 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    z-index: 1000;
+}
+.banner img { 
+    margin-left: 20px;
+}
+.nav-tabs {
+    display: flex;
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}
+.nav-tabs li {
+    margin: 0 20px;
+}
+.nav-tabs a {
+    color: white;
+    text-decoration: none;
+}
+.container {
+    margin-top: 80px;
+}
+#main-page-pre, #main-page-post {
+    display: flex; /* Use flexbox */
+    flex-direction: column; /* Keep vertical flow of content */
+    align-items: center; /* Center content horizontally */
+    justify-content: flex-start; /* Maintain vertical alignment at the top */
+}
+.tab-content {
+    width: 100%; /* Ensure it spans the full width of its container */
+    max-width: none; /* Remove any inherited width limitations */
+    padding: 0; /* Remove any extra padding if unnecessary */
+}
+
+.tab-pane {
+    width: 100%; /* Ensure the content fills the entire width */
+    margin: 0; /* Remove any margin */
+    padding: 20px; /* Optional: Add padding for spacing */
 }
