@@ -203,7 +203,7 @@ async function retrieve_info() {
 
     for (let i = 1; i < (Object.keys(teams).filter(key => !isNaN(key)).length + 1); i++) {
       html_info += `<tr>
-                            <th scope="row">${i}</th>
+                            <td scope="row">${i}</th>
                             <td>${teams[i.toString()]}</td>
                             <td>${pos[i.toString()]}</td>
                           </tr>`
@@ -233,7 +233,7 @@ async function add_users() {
   for (let i = 0; i < (Object.keys(data).filter(key => !isNaN(key)).length); i++) {
     console.log("DI", data[i])
     html_info += `<tr>
-                          <th scope="row">${i+1}</th>
+                          <td scope="row">${i+1}</th>
                           <td>${data[i].username}</td>
                         </tr>`
   }
@@ -303,7 +303,7 @@ async function save_changes(league) {
       });
 
   cols = []
-  for (let i = 1; i < newOrder.length; i++) {
+  for (let i = 1; i < (newOrder.length + 1); i++) {
     cols.push(i.toString())
   }
 
@@ -316,6 +316,8 @@ async function save_changes(league) {
   .from(`${league}_preds`) // Replace with your actual table name
   .update(dataToUpdate)
   .eq('username', document.getElementById('uname').value); // Match the row to update by username
+
+  alert("Changes saved successfully.")
 }
 
 async function reset_changes(league) {

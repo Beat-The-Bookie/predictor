@@ -1,7 +1,11 @@
 body {
     font-family: Arial, sans-serif;
-    margin: 20px;
+    margin: 0;
     color: #333;
+    background: linear-gradient(to bottom right, #f0f8ff, #e6e6fa);
+    background-size: cover; /* Ensure the gradient covers the entire viewport */
+    min-height: 100vh;
+    padding-top: 50px;
 }
 
 h1 {
@@ -19,8 +23,9 @@ h1 {
     margin: 50px auto;
     padding: 20px;
     background: white;
-    border-radius: 8px;
-    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    padding: 20px;
+    border-radius: 8px; /* Optional: Add rounded corners to your container */
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); /* Optional: Add a subtle shadow for better visibility */
 }
 
 table {
@@ -29,29 +34,28 @@ border-collapse: collapse;
 }
 
 th, td {
-padding: 15px;
-text-align: left;
-border-bottom: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
 }
 
 tr {
-cursor: move;
+    cursor: move;
+}
+ 
+th {
+    background-color: #2d0b0b; /* Light red background */
+    color: #333; /* Text color for contrast */
+    font-weight: bold; /* Make text bold */
+    text-align: left; /* Ensure alignment stays consistent */
 }
 
-tr:hover {
-background-color: #f1f1f1;
-}
-  
 /* Style for the table */
 #sortableTable {
     width: 100%;
     border-collapse: collapse;
 }
-th, td {
-    border: 1px solid #ccc;
-    padding: 8px;
-    text-align: left;
-}
+
 /* Make the first column static */
 #sortableTable td:first-child {
     position: sticky;
@@ -60,11 +64,6 @@ th, td {
     z-index: 1; /* Ensure it appears above other columns */
 }
 
-body {
-    margin: 0;
-    font-family:
-    Arial, sans-serif;
-}
 .banner {
     background-color: black;
     color: white;
@@ -95,8 +94,15 @@ body {
     text-decoration: none;
 }
 .container {
-    margin-top: 80px;
+    max-width: 600px;
+    margin: 20px auto;
+    margin-top: 40px;
+    padding: 20px;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
 }
+
 #main-page-pre, #main-page-post {
     display: flex; /* Use flexbox */
     flex-direction: column; /* Keep vertical flow of content */
