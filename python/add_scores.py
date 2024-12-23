@@ -42,10 +42,20 @@ class calc_scores:
         # preds[5] = ['AJ Auxerre', 'AS Monaco FC', 'AS Saint-Étienne', 'Angers SCO', 'FC Nantes', 'Le Havre AC', 'Lille OSC', 'Montpellier HSC', 'OGC Nice', 'Olympique Lyonnais', 'Olympique de Marseille', 'Paris Saint-Germain FC', 'RC Strasbourg Alsace', 'Racing Club de Lens', 'Stade Brestois 29', 'Stade Rennais FC 1901', 'Stade de Reims', 'Toulouse FC']
         # team_standings[5] = ['Paris Saint-Germain FC', 'Olympique de Marseille', 'AS Monaco FC', 'Lille OSC', 'Olympique Lyonnais', 'OGC Nice', 'Racing Club de Lens', 'AJ Auxerre', 'Stade de Reims', 'Toulouse FC', 'Stade Brestois 29', 'Stade Rennais FC 1901', 'FC Nantes', 'RC Strasbourg Alsace', 'Angers SCO', 'AS Saint-Étienne', 'Le Havre AC', 'Montpellier HSC']
 
+
+        # add the points for each league
+        self.points[0] = self.premier_league_scoring(preds[0], team_standings[0])
+        self.points[1] = self.la_liga_scoring(preds[1], team_standings[1])
+        self.points[2] = self.championship_scoring(preds[2], team_standings[2])
+        self.points[3] = self.serie_a_scoring(preds[3], team_standings[3])
+        self.points[4] = self.bundesliga_scoring(preds[4], team_standings[4])
+        self.points[5] = self.ligue_1_scoring(preds[5], team_standings[5])
+
         # We have three lists: 
         # preds, the user's predictions
         # team_standings, the actual prem standings
-        # points, the relevant points for each team, equal to the column in the spreadsheet
+        # points, which is a list of lists: each indiviudal list is for a different league, which each contain
+        #     the relevant points for each team, equal to the column in the spreadsheet
 
         ##### Stuff below is to be completed - submits scores back to database
         # columns = []
@@ -59,6 +69,462 @@ class calc_scores:
 
 
     def premier_league_scoring(self, preds, team_standings):
+        # 20 teams
+        # top 4 correct points = 8,6,5,5
+        # relegation (18,19,20) correct points = 5,5,5
+        # everywhere else correct points = 3
+
+        # define points as a list of 20 zeroes
+        points = [0] * 20
+
+        # first place
+        if preds[0] == team_standings[0]:
+            points[0] = 8
+        elif preds[0] == team_standings[1]:
+            points[0] = 4
+
+        # second place
+        if preds[1] == team_standings[1]:
+            points[1] = 6
+        elif preds[1] == team_standings[0]:
+            points[1] = 4
+        elif preds[1] == team_standings[2]:
+            points[1] = 3
+
+        # third place
+        if preds[2] == team_standings[2]:
+            points[2] = 5
+        elif preds[2] == team_standings[1]:
+            points[2] = 3
+        elif preds[2] == team_standings[3]:
+            points[2] = 3
+
+        # fourth place
+        if preds[3] == team_standings[3]:
+            points[3] = 5
+        elif preds[3] == team_standings[2]:
+            points[3] = 3
+        elif preds[3] == team_standings[4]:
+            points[3] = 2
+
+        # fifth place
+        if preds[4] == team_standings[4]:
+            points[4] = 3
+        elif preds[4] == team_standings[3]:
+            points[4] = 2
+        elif preds[4] == team_standings[5]:
+            points[4] = 1
+
+        # sixth to sixteenth place
+        for i in range(5, 16):
+            if preds[i] == team_standings[i]:
+                points[i] = 3
+            elif preds[i] == team_standings[i-1]:
+                points[i] = 1
+            elif preds[i] == team_standings[i+1]:
+                points[i] = 1
+
+        # seventeenth place
+        if preds[16] == team_standings[16]:
+            points[16] = 3
+        elif preds[16] == team_standings[15]:
+            points[16] = 1
+        elif preds[16] == team_standings[17]:
+            points[16] = 2
+
+        # eighteenth place
+        if preds[17] == team_standings[17]:
+            points[17] = 5
+        elif preds[17] == team_standings[16]:
+            points[17] = 2
+        elif preds[17] == team_standings[18]:
+            points[17] = 3
+
+        # nineteenth place
+        if preds[18] == team_standings[18]:
+            points[18] = 5
+        elif preds[18] == team_standings[17]:
+            points[18] = 3
+        elif preds[18] == team_standings[19]:
+            points[18] = 3
+
+        # twentieth place
+        if preds[19] == team_standings[19]:
+            points[19] = 5
+        elif preds[19] == team_standings[18]:
+            points[19] = 3
+
+        # return points list
+        return points
+
+    def la_liga_scoring(self, preds, team_standings):
+        # 20 teams
+        # top 4 correct points = 8,6,5,5
+        # relegation (18,19,20) correct points = 5,5,5
+        # everywhere else correct points = 3
+
+        # define points as a list of 20 zeroes
+        points = [0] * 20
+
+        # first place
+        if preds[0] == team_standings[0]:
+            points[0] = 8
+        elif preds[0] == team_standings[1]:
+            points[0] = 4
+
+        # second place
+        if preds[1] == team_standings[1]:
+            points[1] = 6
+        elif preds[1] == team_standings[0]:
+            points[1] = 4
+        elif preds[1] == team_standings[2]:
+            points[1] = 3
+
+        # third place
+        if preds[2] == team_standings[2]:
+            points[2] = 5
+        elif preds[2] == team_standings[1]:
+            points[2] = 3
+        elif preds[2] == team_standings[3]:
+            points[2] = 3
+
+        # fourth place
+        if preds[3] == team_standings[3]:
+            points[3] = 5
+        elif preds[3] == team_standings[2]:
+            points[3] = 3
+        elif preds[3] == team_standings[4]:
+            points[3] = 2
+
+        # fifth place
+        if preds[4] == team_standings[4]:
+            points[4] = 3
+        elif preds[4] == team_standings[3]:
+            points[4] = 2
+        elif preds[4] == team_standings[5]:
+            points[4] = 1
+
+        # sixth to sixteenth place
+        for i in range(5, 16):
+            if preds[i] == team_standings[i]:
+                points[i] = 3
+            elif preds[i] == team_standings[i-1]:
+                points[i] = 1
+            elif preds[i] == team_standings[i+1]:
+                points[i] = 1
+
+        # seventeenth place
+        if preds[16] == team_standings[16]:
+            points[16] = 3
+        elif preds[16] == team_standings[15]:
+            points[16] = 1
+        elif preds[16] == team_standings[17]:
+            points[16] = 2
+
+        # eighteenth place
+        if preds[17] == team_standings[17]:
+            points[17] = 5
+        elif preds[17] == team_standings[16]:
+            points[17] = 2
+        elif preds[17] == team_standings[18]:
+            points[17] = 3
+
+        # nineteenth place
+        if preds[18] == team_standings[18]:
+            points[18] = 5
+        elif preds[18] == team_standings[17]:
+            points[18] = 3
+        elif preds[18] == team_standings[19]:
+            points[18] = 3
+
+        # twentieth place
+        if preds[19] == team_standings[19]:
+            points[19] = 5
+        elif preds[19] == team_standings[18]:
+            points[19] = 3
+
+        # return points list
+        return points
+
+    def championship_scoring(self, preds, team_standings):
+        # 24 teams
+        # automatic promotion correct points = 8,6
+        # playoffs (3,4,5,6) correct points = 5,5,5,5
+        # relegation (22,23,24) correct points = 5,5,5
+        # everywhere else correct points = 3
+
+        # define points as a list of 24 zeroes
+        points = [0] * 24
+
+        # first place
+        if preds[0] == team_standings[0]:
+            points[0] = 8
+        elif preds[0] == team_standings[1]:
+            points[0] = 4
+
+        # second place
+        if preds[1] == team_standings[1]:
+            points[1] = 6
+        elif preds[1] == team_standings[0]:
+            points[1] = 4
+        elif preds[1] == team_standings[2]:
+            points[1] = 3
+
+        # third place (playoffs)
+        if preds[2] == team_standings[2]:
+            points[2] = 5
+        elif preds[2] == team_standings[1]:
+            points[2] = 3
+        elif preds[2] == team_standings[3]:
+            points[2] = 3
+
+        # fourth place (playoffs)
+        if preds[3] == team_standings[3]:
+            points[3] = 5
+        elif preds[3] == team_standings[2]:
+            points[3] = 3
+        elif preds[3] == team_standings[4]:
+            points[3] = 2
+
+        # fifth place (playoffs)
+        if preds[4] == team_standings[4]:
+            points[4] = 5
+        elif preds[4] == team_standings[3]:
+            points[4] = 3
+        elif preds[4] == team_standings[5]:
+            points[4] = 3
+        
+        # sixth place (playoffs)
+        if preds[5] == team_standings[5]:
+            points[5] = 5
+        elif preds[5] == team_standings[4]:
+            points[5] = 3
+        elif preds[5] == team_standings[6]:
+            points[5] = 2
+
+        # seventh to sixteenth place
+        for i in range(6, 16):
+            if preds[i] == team_standings[i]:
+                points[i] = 3
+            elif preds[i] == team_standings[i-1]:
+                points[i] = 1
+            elif preds[i] == team_standings[i+1]:
+                points[i] = 1
+
+        # seventeenth place
+        if preds[16] == team_standings[16]:
+            points[16] = 3
+        elif preds[16] == team_standings[15]:
+            points[16] = 1
+        elif preds[16] == team_standings[17]:
+            points[16] = 2
+
+        # eighteenth place
+        if preds[17] == team_standings[17]:
+            points[17] = 5
+        elif preds[17] == team_standings[16]:
+            points[17] = 2
+        elif preds[17] == team_standings[18]:
+            points[17] = 3
+
+        # nineteenth place
+        if preds[18] == team_standings[18]:
+            points[18] = 5
+        elif preds[18] == team_standings[17]:
+            points[18] = 3
+        elif preds[18] == team_standings[19]:
+            points[18] = 3
+
+        # twentieth place
+        if preds[19] == team_standings[19]:
+            points[19] = 5
+        elif preds[19] == team_standings[18]:
+            points[19] = 3
+
+        # return points list
+        return points
+
+    def serie_a_scoring(self, preds, team_standings):
+        # top 4 correct points = 8,6,5,5
+        # relegation (18,19,20) correct points = 5,5,5
+        # everywhere else correct points= 3
+
+        # define points as a list of 20 zeroes
+        points = [0] * 20
+
+        # first place
+        if preds[0] == team_standings[0]:
+            points[0] = 8
+        elif preds[0] == team_standings[1]:
+            points[0] = 4
+
+        # second place
+        if preds[1] == team_standings[1]:
+            points[1] = 6
+        elif preds[1] == team_standings[0]:
+            points[1] = 4
+        elif preds[1] == team_standings[2]:
+            points[1] = 3
+
+        # third place
+        if preds[2] == team_standings[2]:
+            points[2] = 5
+        elif preds[2] == team_standings[1]:
+            points[2] = 3
+        elif preds[2] == team_standings[3]:
+            points[2] = 3
+
+        # fourth place
+        if preds[3] == team_standings[3]:
+            points[3] = 5
+        elif preds[3] == team_standings[2]:
+            points[3] = 3
+        elif preds[3] == team_standings[4]:
+            points[3] = 2
+
+        # fifth place
+        if preds[4] == team_standings[4]:
+            points[4] = 3
+        elif preds[4] == team_standings[3]:
+            points[4] = 2
+        elif preds[4] == team_standings[5]:
+            points[4] = 1
+
+        # sixth to sixteenth place
+        for i in range(5, 16):
+            if preds[i] == team_standings[i]:
+                points[i] = 3
+            elif preds[i] == team_standings[i-1]:
+                points[i] = 1
+            elif preds[i] == team_standings[i+1]:
+                points[i] = 1
+
+        # seventeenth place
+        if preds[16] == team_standings[16]:
+            points[16] = 3
+        elif preds[16] == team_standings[15]:
+            points[16] = 1
+        elif preds[16] == team_standings[17]:
+            points[16] = 2
+
+        # eighteenth place
+        if preds[17] == team_standings[17]:
+            points[17] = 5
+        elif preds[17] == team_standings[16]:
+            points[17] = 2
+        elif preds[17] == team_standings[18]:
+            points[17] = 3
+
+        # nineteenth place
+        if preds[18] == team_standings[18]:
+            points[18] = 5
+        elif preds[18] == team_standings[17]:
+            points[18] = 3
+        elif preds[18] == team_standings[19]:
+            points[18] = 3
+
+        # twentieth place
+        if preds[19] == team_standings[19]:
+            points[19] = 5
+        elif preds[19] == team_standings[18]:
+            points[19] = 3
+
+        # return points list
+        return points
+
+    def bundesliga_scoring(self, preds, team_standings):
+        # top 4 correct points = 8,6,5,5
+        # relegation (18,19,20) correct points = 5,5,5
+        # everywhere else correct points= 3
+
+        # define points as a list of 20 zeroes
+        points = [0] * 20
+
+        # first place
+        if preds[0] == team_standings[0]:
+            points[0] = 8
+        elif preds[0] == team_standings[1]:
+            points[0] = 4
+
+        # second place
+        if preds[1] == team_standings[1]:
+            points[1] = 6
+        elif preds[1] == team_standings[0]:
+            points[1] = 4
+        elif preds[1] == team_standings[2]:
+            points[1] = 3
+
+        # third place
+        if preds[2] == team_standings[2]:
+            points[2] = 5
+        elif preds[2] == team_standings[1]:
+            points[2] = 3
+        elif preds[2] == team_standings[3]:
+            points[2] = 3
+
+        # fourth place
+        if preds[3] == team_standings[3]:
+            points[3] = 5
+        elif preds[3] == team_standings[2]:
+            points[3] = 3
+        elif preds[3] == team_standings[4]:
+            points[3] = 2
+
+        # fifth place
+        if preds[4] == team_standings[4]:
+            points[4] = 3
+        elif preds[4] == team_standings[3]:
+            points[4] = 2
+        elif preds[4] == team_standings[5]:
+            points[4] = 1
+
+        # sixth to sixteenth place
+        for i in range(5, 16):
+            if preds[i] == team_standings[i]:
+                points[i] = 3
+            elif preds[i] == team_standings[i-1]:
+                points[i] = 1
+            elif preds[i] == team_standings[i+1]:
+                points[i] = 1
+
+        # seventeenth place
+        if preds[16] == team_standings[16]:
+            points[16] = 3
+        elif preds[16] == team_standings[15]:
+            points[16] = 1
+        elif preds[16] == team_standings[17]:
+            points[16] = 2
+
+        # eighteenth place
+        if preds[17] == team_standings[17]:
+            points[17] = 5
+        elif preds[17] == team_standings[16]:
+            points[17] = 2
+        elif preds[17] == team_standings[18]:
+            points[17] = 3
+
+        # nineteenth place
+        if preds[18] == team_standings[18]:
+            points[18] = 5
+        elif preds[18] == team_standings[17]:
+            points[18] = 3
+        elif preds[18] == team_standings[19]:
+            points[18] = 3
+
+        # twentieth place
+        if preds[19] == team_standings[19]:
+            points[19] = 5
+        elif preds[19] == team_standings[18]:
+            points[19] = 3
+
+        # return points list
+        return points
+
+    def ligue_1_scoring(self, preds, team_standings):
+        # top 4 correct points = 8,6,5,5
+        # relegation (18,19,20) correct points = 5,5,5
+        # everywhere else correct points= 3
+
         # define points as a list of 20 zeroes
         points = [0] * 20
 
