@@ -25,7 +25,7 @@ class calc_scores:
 
         ### Series of example teams for testing purposes - comment out for loop above
         # preds[0] = ['MCI','MUN','ARS','LIV','NEW','CHE','AVL','TOT','BRE','BRI','CRY','WHU','EVE','NOT','LUT','WOL','BUR','BOU','FUL','SHU']
-        # team_standings[0] = ['MCI','ARS','LIV','AVL','TOT','CHE','NEW','MUN','WHU','CRY','BRI','BOU','FUL','WOL','EVE','BRE','NOT','LUT','BUR','SHU',]
+        # team_standings[0] = ['MCI','ARS','LIV','AVL','TOT','CHE','NEW','MUN','WHU','CRY','BRI','BOU','FUL','WOL','EVE','BRE','NOT','LUT','BUR','SHU']
 
         # preds[1] = ['Athletic Club', 'CA Osasuna', 'CD Leganés', 'Club Atlético de Madrid', 'Deportivo Alavés', 'FC Barcelona', 'Getafe CF', 'Girona FC', 'RC Celta de Vigo', 'RCD Espanyol de Barcelona', 'RCD Mallorca', 'Rayo Vallecano de Madrid', 'Real Betis Balompié', 'Real Madrid CF', 'Real Sociedad de Fútbol', 'Real Valladolid CF', 'Sevilla FC', 'UD Las Palmas', 'Valencia CF', 'Villarreal CF']
         # team_standings[1] = ['FC Barcelona', 'Real Madrid CF', 'Club Atlético de Madrid', 'Athletic Club', 'Villarreal CF', 'Real Sociedad de Fútbol', 'CA Osasuna', 'RCD Mallorca', 'Girona FC', 'RC Celta de Vigo', 'Real Betis Balompié', 'Rayo Vallecano de Madrid', 'Sevilla FC', 'UD Las Palmas', 'Deportivo Alavés', 'CD Leganés', 'Getafe CF', 'RCD Espanyol de Barcelona', 'Valencia CF', 'Real Valladolid CF']
@@ -353,6 +353,7 @@ class calc_scores:
         return points
 
     def serie_a_scoring(self, preds, team_standings):
+        # 20 teams
         # top 4 correct points = 8,6,5,5
         # relegation (18th,19th,20th) correct points = 5,5,5
         # everywhere else correct points = 3
@@ -441,13 +442,14 @@ class calc_scores:
         return points
 
     def bundesliga_scoring(self, preds, team_standings):
+        # 18 teams
         # top 4 correct points = 8,6,5,5
         # relegation playoff (16th) correct points = 4
         # relegation (17th,18th) correct points = 5,5
         # everywhere else correct points = 3
 
-        # define points as a list of 20 zeroes
-        points = [0] * 20
+        # define points as a list of 18 zeroes
+        points = [0] * 18
 
         # first place
         if preds[0] == team_standings[0]:
@@ -530,14 +532,15 @@ class calc_scores:
         return points
 
     def ligue_1_scoring(self, preds, team_standings):
+        # 18 teams
         # top 3 correct points = 8,6,5
-        # UCL playoff (4th) = 4
+        # UCL playoff (4th) correct points = 4
         # relegation playoff (16th) correct points = 4
         # relegation (17th,18th) correct points = 5,5
         # everywhere else correct points = 3
 
-        # define points as a list of 20 zeroes
-        points = [0] * 20
+        # define points as a list of 18 zeroes
+        points = [0] * 18
 
         # first place
         if preds[0] == team_standings[0]:
