@@ -38,10 +38,6 @@ th, td {
     text-align: left;
     border-bottom: 1px solid #ddd;
 }
-
-tr {
-    cursor: move;
-}
  
 th {
     background-color: #2d0b0b; /* Light red background */
@@ -54,6 +50,7 @@ th {
 #sortableTable {
     width: 100%;
     border-collapse: collapse;
+    cursor: move;
 }
 
 /* Make the first column static */

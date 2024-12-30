@@ -72,7 +72,7 @@
         </div>
         <div class="row">
           <div class="col-4">
-            <button type="submit" class="btn btn-primary" onclick="register()">Register</button>
+            <button type="submit" class="btn btn-primary" onclick="register()" id="reg-btn">Register</button>
           </div>
           <div class="col-6">
             <p>Please note: Your username will be visible to other users, and your randomly
@@ -118,7 +118,6 @@
             </ul>
             <p>Stay tuned! There will be future updates, and more feedback requests!</p>
             <p>All things going well, there should be a release in July 2025</p>
-        
           </div>
           <div class="tab-pane" id="pre-nav-prem" role="tabpanel" tabindex="0">
             <div class="row justify-content-around">
@@ -178,11 +177,11 @@
     </div>
   </div>
   <div class="container d-none" id="main-page-post">
-    <!-- <div class="card"> -->
-      <!-- <div class="card-header bg-primary text-white">
-        Predictions 2025/2026
-      </div> -->
-      <!-- <div class="card-body"> -->
+    <div class="card">
+      <div class="card-header bg-primary text-white">
+        Predictions 2024/2025
+      </div>
+      <div class="card-body">
         <nav>
           <div class="nav nav-tabs" id="post-nav-tab" role="tablist">
             <button class="nav-link active" id="post-nav-home-tab" type="button" role="tab" onclick="change_tab('post-nav-home')">Home</button>
@@ -192,14 +191,28 @@
             <button class="nav-link" id="post-nav-seriea-tab" type="button" role="tab" onclick="change_tab('post-nav-seriea')">Serie A</button>
             <button class="nav-link" id="post-nav-bundes-tab" type="button" role="tab" onclick="change_tab('post-nav-bundes')">Bundesliga</button>
             <button class="nav-link" id="post-nav-ligue1-tab" type="button" role="tab" onclick="change_tab('post-nav-ligue1')">Ligue 1</button>
-            <button class="nav-link" id="post-nav-other-tab"  type="button" role="tab" onclick="change_tab('post-nav-other')">Contact</button>
+            <button class="nav-link" id="post-nav-leaderboard-tab"  type="button" role="tab" onclick="change_tab('post-nav-leaderboard')">Leaderboard</button>
           </div>
         </nav>
         <div class="tab-content" id="nav-tabContent">
           <div class="tab-pane show active" id="post-nav-home" role="tabpanel" tabindex="0">
-            <!-- Here, I need a home page. Needs to have a description of what the game is, what features it has.
-             Passcode and username details? Deadline details,
-             Eventually, a league system. -->
+            <h2>Welcome to Predictions 2024/2025!</h2>
+            <p>Hi, thanks a lot for joining the FootPred beta. This is the first test release to see how the system works, and to get
+              some feedback on how it feels. Thank you for having a look, and creating an account. For now, all you can do is change
+              your predictions, and save or cancel those changes. Please do test these functions, and have a look at the leaderboard
+              to see who else has joined! Now a few people have joined, I have run the scorer and you should be able to log in and view
+              your scores. A massive thank you to Alex (BaldyBaldy), who discovered an issue, which has now been fixed. So, once again,
+              thank you for joining this test, and please send any feedback to footpredinfo@gmail.com.</p>
+            <p>Below is a list of planned features to be added in the future. If you think of anything else you would like to see, please let me know!</p>
+            <ul class="feature-list">
+              <li>A league system, with custom settings such as how many teams to predict in each league.</li>
+              <li>Automatic odds, to offer a little help as you enter your predictions.</li>
+              <li>The ability to view your scores on a week-by-week basis, after the deadline.</li>
+              <li>View others' predictions, after the deadline. (To laugh at, maybe?)</li>
+              <li>A rebalanced scoring system, to make it fair across the leagues.</li>
+            </ul>
+            <p>Stay tuned! There will be future updates, and more feedback requests!</p>
+            <p>All things going well, there should be a release in July 2025</p>
           </div>
           <div class="tab-pane" id="post-nav-prem" role="tabpanel" tabindex="0">
             <div class="row justify-content-around">
@@ -215,34 +228,34 @@
           </div>
           <div class="tab-pane" id="post-nav-champ" role="tabpanel" tabindex="0">
             <div class="row justify-content-around">
-              <div class="col-md-4" id="champ-pred-locked"></div>
-              <div class="col-md-6" id="champ-standings"></div>
-            </div>
-          </div>
-          <div class="tab-pane" id="post-nav-seriea" role="tabpanel" tabindex="0">
-            <div class="row justify-content-around">
-              <div class="col-md-4" id="seriea-pred-locked"></div>
-              <div class="col-md-6" id="seriea-standings"></div>
-            </div>
-          </div>
-          <div class="tab-pane" id="post-nav-bundes" role="tabpanel" tabindex="0">
-            <div class="row justify-content-around">
-              <div class="col-md-4" id="bundes-pred-locked"></div>
-              <div class="col-md-6" id="bundes-standings"></div>
-            </div>
-          </div>
-          <div class="tab-pane" id="post-nav-ligue1" role="tabpanel" tabindex="0">
-            <div class="row justify-content-around">
-              <div class="col-md-4" id="ligue1-pred-locked"></div>
-              <div class="col-md-6" id="ligue1-standings"></div>
-            </div>
-          </div>
-          <div class="tab-pane" id="post-nav-other" role="tabpanel" tabindex="0">
-            <!-- This can be replaced by other leagues. TBD -->
-          </div>
+          <div class="col-md-4" id="champ-pred-locked"></div>
+          <div class="col-md-6" id="champ-standings"></div>
         </div>
-      <!-- </div> -->
-    <!-- </div> -->
+      </div>
+      <div class="tab-pane" id="post-nav-seriea" role="tabpanel" tabindex="0">
+        <div class="row justify-content-around">
+          <div class="col-md-4" id="seriea-pred-locked"></div>
+          <div class="col-md-6" id="seriea-standings"></div>
+        </div>
+      </div>
+      <div class="tab-pane" id="post-nav-bundes" role="tabpanel" tabindex="0">
+        <div class="row justify-content-around">
+          <div class="col-md-4" id="bundes-pred-locked"></div>
+          <div class="col-md-6" id="bundes-standings"></div>
+        </div>
+      </div>
+      <div class="tab-pane" id="post-nav-ligue1" role="tabpanel" tabindex="0">
+        <div class="row justify-content-around">
+          <div class="col-md-4" id="ligue1-pred-locked"></div>
+          <div class="col-md-6" id="ligue1-standings"></div>
+        </div>
+      </div>
+      <div class="tab-pane" id="post-nav-leaderboard" role="tabpanel" tabindex="0">
+        <div class="row justify-content-around">
+          <div class="col-12" id="post-leaderboard"></div>
+        </div>
+      </div>
+    </div>
   </div>
 </body>
 </html>
