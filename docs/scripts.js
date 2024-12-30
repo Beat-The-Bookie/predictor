@@ -1,4 +1,8 @@
 document.addEventListener('DOMContentLoaded', () => {
+  // After deadline
+  document.getElementById('reg-uname').disabled = true
+  document.getElementById('reg-email').disabled = true
+  document.getElementById('reg-btn').disabled = true
 });
 
 const supaclient = supabase.createClient('https://srhywkedxssxlsjrholj.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNyaHl3a2VkeHNzeGxzanJob2xqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MjYzOTYxNjUsImV4cCI6MjA0MTk3MjE2NX0.lUZUAm20JIH3aoUxmyCAcr8l-A3_S3FpTaHuljrwm50')
@@ -36,15 +40,14 @@ async function login() {
         document.getElementById('login-page').classList.add('d-none');
 
         // Stuff to do before deadline
-        document.getElementById('main-page-pre').classList.remove('d-none');
-        retrieve_info()
-        add_pred_table(document.getElementById('uname').value)
+        // document.getElementById('main-page-pre').classList.remove('d-none');
+        // retrieve_info()
+        // add_pred_table(document.getElementById('uname').value)
 
         // Stuff to do after deadline
-        // document.getElementById('main-page-post').classList.remove('d-none')
-        // add_locked_preds(document.getElementById('uname').value)
-        // add_prem_table()
-
+        document.getElementById('main-page-post').classList.remove('d-none')
+        add_locked_preds(document.getElementById('uname').value)
+        add_prem_table()
       } else {
         alert("Passcode is incorrect")
         document.getElementById('pword').value = ""
@@ -218,9 +221,7 @@ async function retrieve_info() {
 }
 
 async function add_users() {
-  let { data , error } = await supaclient.from('leaderboard').select('*')
-  console.log("USERS", data)
-
+  let { data , error } = await supaclient.from('leaderboard').select('username')
   let html_info = `<table class="table table-bordered border-primary">
                       <thead>
                         <tr>
@@ -231,7 +232,6 @@ async function add_users() {
                       <tbody>`
 
   for (let i = 0; i < (Object.keys(data).filter(key => !isNaN(key)).length); i++) {
-    console.log("DI", data[i])
     html_info += `<tr>
                           <td scope="row">${i+1}</th>
                           <td>${data[i].username}</td>
@@ -395,7 +395,47 @@ async function add_locked_preds(uname) {
                 </table>`
 
     document.querySelector(`#${league_shorthands[league]}-pred-locked`).innerHTML = html_pred
+    add_leaderboard()
   }
+}
+
+async function add_leaderboard() {
+  let { data , error } = await supaclient.from('leaderboard').select('*').order('total', { ascending: false });
+  console.log("DATA", data)
+  let html_info = `<table class="table table-bordered border-primary">
+                      <thead>
+                        <tr>
+                          <th scope="col">#</th>
+                          <th scope="col">User</th>
+                          <th scope="col">Premier League</th>
+                          <th scope="col">La Liga</th>
+                          <th scope="col">Championship</th>
+                          <th scope="col">Serie A</th>
+                          <th scope="col">Bundesliga</th>
+                          <th scope="col">Ligue 1</th>
+                          <th scope="col">Total</th>
+                        </tr>
+                      </thead>
+                      <tbody>`
+
+  for (let i = 0; i < (Object.keys(data).filter(key => !isNaN(key)).length); i++) {
+    html_info += `<tr>
+                          <td scope="row">${i+1}</th>
+                          <td>${data[i].username}</td>
+                          <td>${data[i].prem}</td>
+                          <td>${data[i].la_liga}</td>
+                          <td>${data[i].champ}</td>
+                          <td>${data[i].seriea}</td>
+                          <td>${data[i].bundes}</td>
+                          <td>${data[i].ligue1}</td>
+                          <td>${data[i].total}</td>
+                        </tr>`
+  }
+
+  html_info +=  `</tbody>
+                  </table>`
+
+  document.querySelector(`#post-leaderboard`).innerHTML = html_info
 }
 
 async function add_prem_table() {
@@ -421,14 +461,26 @@ async function add_prem_table() {
                     </thead>
                     <tbody id="table-current-pred">`
 
-    for (let i = 1; i < (Object.keys(data[0]).filter(key => !isNaN(key)).length + 1); i++) {
-      html_pred += `<tr>
-                      <td>${i}</td>
-                      <td>${data[0][i.toString()]}</td>
-                      <td>${data[2][i.toString()]}</td>
-                      <td>${data[3][i.toString()]}</td>
-                      <td>${data[1][i.toString()]}</td>
-                    </tr>`
+    if (league != 5) {
+      for (let i = 1; i < (Object.keys(data[0]).filter(key => !isNaN(key)).length + 1); i++) {
+        html_pred += `<tr>
+                        <td>${i}</td>
+                        <td>${data[0][i.toString()]}</td>
+                        <td>${data[2][i.toString()]}</td>
+                        <td>${data[3][i.toString()]}</td>
+                        <td>${data[1][i.toString()]}</td>
+                      </tr>`
+      }
+    } else {
+      for (let i = 1; i < (Object.keys(data[0]).filter(key => !isNaN(key)).length + 1); i++) {
+        html_pred += `<tr>
+                        <td>${i}</td>
+                        <td>${data[1][i.toString()]}</td>
+                        <td>${data[3][i.toString()]}</td>
+                        <td>${data[0][i.toString()]}</td>
+                        <td>${data[2][i.toString()]}</td>
+                      </tr>`
+    }
   }
   html_pred += `</tbody>
               </table>`

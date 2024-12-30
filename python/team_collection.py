@@ -22,7 +22,6 @@ class team_info_collector:
                 f"https://api.football-data.org/v4/competitions/BL1/teams",
                 f"https://api.football-data.org/v4/competitions/FL1/teams"]
 
-
         # Set the headers with the API key
         headers = {
             "X-Auth-Token": self.foot_api
@@ -190,7 +189,6 @@ class team_info_collector:
             # print(f"Session Token: {session_token}")
         else:
             print(f"Login failed: {response.status_code}, {response.text}")
-
 
         # Betfair endpoint to list competitions
         competitions_url = "https://api.betfair.com/exchange/betting/rest/v1.0/listCompetitions/"
