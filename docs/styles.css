@@ -1,0 +1,122 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    color: #333;
+    background: linear-gradient(to bottom right, #f0f8ff, #e6e6fa);
+    background-size: cover; /* Ensure the gradient covers the entire viewport */
+    min-height: 100vh;
+    padding-top: 50px;
+}
+
+h1 {
+    color: #007bff;
+}
+  
+.card {
+    width: 100%; /* Ensures the card spans the full width of its container */
+    margin: 0 auto; /* Centers the card horizontally */
+    box-sizing: border-box; /* Includes padding and border in the total width */
+}
+  
+.container {
+    max-width: 600px;
+    margin: 50px auto;
+    padding: 20px;
+    background: white;
+    padding: 20px;
+    border-radius: 8px; /* Optional: Add rounded corners to your container */
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); /* Optional: Add a subtle shadow for better visibility */
+}
+
+table {
+width: 100%;
+border-collapse: collapse;
+}
+
+th, td {
+    padding: 8px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+tr {
+    cursor: move;
+}
+ 
+th {
+    background-color: #2d0b0b; /* Light red background */
+    color: #333; /* Text color for contrast */
+    font-weight: bold; /* Make text bold */
+    text-align: left; /* Ensure alignment stays consistent */
+}
+
+/* Style for the table */
+#sortableTable {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+/* Make the first column static */
+#sortableTable td:first-child {
+    position: sticky;
+    left: 0;
+    background: #fff; /* Make background white to hide overlaps */
+    z-index: 1; /* Ensure it appears above other columns */
+}
+
+.banner {
+    background-color: black;
+    color: white;
+    position: fixed;
+    width: 100%;
+    top: 0;
+    left: 0;
+    padding: 5px 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    z-index: 1000;
+}
+.banner img { 
+    margin-left: 20px;
+}
+.nav-tabs {
+    display: flex;
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}
+.nav-tabs li {
+    margin: 0 20px;
+}
+.nav-tabs a {
+    color: white;
+    text-decoration: none;
+}
+.container {
+    max-width: 600px;
+    margin: 20px auto;
+    margin-top: 40px;
+    padding: 20px;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+#main-page-pre, #main-page-post {
+    display: flex; /* Use flexbox */
+    flex-direction: column; /* Keep vertical flow of content */
+    align-items: center; /* Center content horizontally */
+    justify-content: flex-start; /* Maintain vertical alignment at the top */
+}
+.tab-content {
+    width: 100%; /* Ensure it spans the full width of its container */
+    max-width: none; /* Remove any inherited width limitations */
+    padding: 0; /* Remove any extra padding if unnecessary */
+}
+
+.tab-pane {
+    width: 100%; /* Ensure the content fills the entire width */
+    margin: 0; /* Remove any margin */
+    padding: 20px; /* Optional: Add padding for spacing */
+}
