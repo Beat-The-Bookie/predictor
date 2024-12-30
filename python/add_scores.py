@@ -57,16 +57,16 @@ class calc_scores:
         # points, which is a list of lists: each indiviudal list is for a different league, which each contain
         #     the relevant points for each team, equal to the column in the spreadsheet
 
-        ##### Stuff below is to be completed - submits scores back to database
-        # columns = []
-        # for i in range(1,21):
-        #     columns.append(str(i))
+        for league in range(len(self.points)):
+            print(self.points[league])
+            ##### Stuff below is to be completed - submits scores back to database
+            columns = []
+            for i in range(1,self.leagues[league].team_num + 1):
+                columns.append(str(i))
+            update_data = dict(zip(columns, self.points[league]))
 
-        # update_data = dict(zip(columns, points))
-
-        # # Submit the scores into a new 
-        # submit = self.supabase.table('scores').update(update_data).match({'username': uname})
-
+            # Submit the scores into a new 
+            submit = self.supabase.table(self.leagues[league].shorthand + '_scores').update(update_data).match({'username': uname}).execute()
 
     def premier_league_scoring(self, preds, team_standings):
         # 20 teams
