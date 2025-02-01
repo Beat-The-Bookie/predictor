@@ -1,8 +1,8 @@
 document.addEventListener('DOMContentLoaded', () => {
   // After deadline
-  document.getElementById('reg-uname').disabled = true
-  document.getElementById('reg-email').disabled = true
-  document.getElementById('reg-btn').disabled = true
+  // document.getElementById('reg-uname').disabled = true
+  // document.getElementById('reg-email').disabled = true
+  // document.getElementById('reg-btn').disabled = true
 });
 
 const supaclient = supabase.createClient('https://srhywkedxssxlsjrholj.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNyaHl3a2VkeHNzeGxzanJob2xqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MjYzOTYxNjUsImV4cCI6MjA0MTk3MjE2NX0.lUZUAm20JIH3aoUxmyCAcr8l-A3_S3FpTaHuljrwm50')
@@ -40,14 +40,14 @@ async function login() {
         document.getElementById('login-page').classList.add('d-none');
 
         // Stuff to do before deadline
-        // document.getElementById('main-page-pre').classList.remove('d-none');
-        // retrieve_info()
-        // add_pred_table(document.getElementById('uname').value)
+        document.getElementById('main-page-pre').classList.remove('d-none');
+        retrieve_info()
+        add_pred_table(document.getElementById('uname').value)
 
         // Stuff to do after deadline
-        document.getElementById('main-page-post').classList.remove('d-none')
-        add_locked_preds(document.getElementById('uname').value)
-        add_prem_table()
+        // document.getElementById('main-page-post').classList.remove('d-none')
+        // add_locked_preds(document.getElementById('uname').value)
+        // add_prem_table()
       } else {
         alert("Passcode is incorrect")
         document.getElementById('pword').value = ""
