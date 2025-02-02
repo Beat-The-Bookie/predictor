@@ -222,7 +222,12 @@ async function retrieve_info() {
 
 async function add_users() {
   let { data , error } = await supaclient.from('leaderboard').select('username')
-  let html_info = `<table class="table table-bordered border-primary">
+  let html_info = `<div class="row justify-content-center">
+                    <div class="col">
+                      <h3>The Players</h3>
+                    </div>
+                  </div>
+                  <table class="table table-bordered border-primary">
                       <thead>
                         <tr>
                           <th scope="col">#</th>
@@ -242,6 +247,99 @@ async function add_users() {
                   </table>`
 
   document.querySelector(`#pre-leaderboard`).innerHTML = html_info
+}
+
+async function mini_leagues_pre(uname)  {
+  let {data, error} = await supaclient.from('mini_league_members').select('mini_league_id').eq('username', uname)
+  new_html = ` <div class="row justify-content-between" style="margin-bottom:8px">
+                  <div class="col-auto">
+                    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createLeagueModal">Create League</button>
+                  </div>
+                    <div class="modal fade" id="createLeagueModal" tabindex="-1" aria-labelledby="createLeagueModalLabel" aria-hidden="true">
+                      <div class="modal-dialog">
+                        <div class="modal-content">
+                          <div class="modal-header">
+                            <h5 class="modal-title" id="createLeagueModalLabel">Create a League</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                          </div>
+                          <div class="modal-body">
+                            <div class="mb-3">
+                              <label for="leagueName" class="form-label">League Name</label>
+                              <input type="text" class="form-control" id="leagueName" required>
+                            </div>
+                            <div class="mb-3">
+                              <label for="premLimit" class="form-label">Premier League Max Teams</label>
+                              <input type="number" class="form-control" id="premLimit" min="0" value="20" required>
+                            </div>
+                            <div class="mb-3">
+                              <label for="laligalimit" class="form-label">La Liga Max Teams</label>
+                              <input type="number" class="form-control" id="laligaLimit" min="0" value="20" required>
+                            </div>
+                            <div class="mb-3">
+                              <label for="champLimit" class="form-label">Championship Max Teams</label>
+                              <input type="number" class="form-control" id="champLimit" min="0" value="24" required>
+                            </div>
+                            <div class="mb-3">
+                              <label for="serieaLimit" class="form-label">Serie A Max Teams</label>
+                              <input type="number" class="form-control" id="serieaLimit" min="0" value="20" required>
+                            </div>
+                            <div class="mb-3">
+                              <label for="bundesligaLimit" class="form-label">Bundesliga Max Teams</label>
+                              <input type="number" class="form-control" id="bundesligaLimit" min="0" value="18" required>
+                            </div>
+                            <div class="mb-3">
+                              <label for="ligue1Limit" class="form-label">Ligue 1 Max Teams</label>
+                              <input type="number" class="form-control" id="ligue1Limit" min="0" value="18" required>
+                            </div>
+                          </div>
+                          <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="button" class="btn btn-primary" onclick="createLeague()">Create League</button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  <div class="col-auto">
+                    <button class="btn btn-primary">Join League</button>
+                  </div>
+                </div>`
+
+  // Get list of mini-league IDs
+  let leagueIDs = data.map(item => item.mini_league_id);
+
+  if (leagueIDs.length == 0) {
+    // If no mini-leagues
+    document.getElementById("leagueTableBody").innerHTML = "<tr><td colspan='2'>Not in any leagues</td></tr>";
+      return;
+  }
+  
+  // Fetch mini-league details
+  let { data: leagues, error: leagueError } = await supaclient
+  .from("mini_leagues")
+  .select("name, admin_username")
+  .in("id", leagueIDs);
+
+  new_html += `<table class="table table-bordered border-primary">
+                  <thead>
+                      <tr>
+                          <th>League Name</th>
+                          <th>Admin</th>
+                      </tr>
+                  </thead>
+                  <tbody id="leagueTableBody">`
+
+  leagues.forEach(league => {
+      let row = `<tr>
+          <td>${league.name}</td>
+          <td>${league.admin_username}</td>
+      </tr>`;
+      new_html += row;
+  });
+
+  new_html += `</tbody>
+  </table>`
+
+  document.querySelector(`#pre-leagues`).innerHTML = new_html
 }
 
 async function add_pred_table(uname) {
@@ -285,6 +383,7 @@ async function add_pred_table(uname) {
       }
     })
   }
+  mini_leagues_pre(uname)
 }
 
 // Function to update the position numbers in the first column
@@ -402,7 +501,12 @@ async function add_locked_preds(uname) {
 async function add_leaderboard() {
   let { data , error } = await supaclient.from('leaderboard').select('*').order('total', { ascending: false });
   console.log("DATA", data)
-  let html_info = `<table class="table table-bordered border-primary">
+  let html_info = `<div class="row justify-content-center">
+                    <div class="col">
+                      <h3>The Leaderboard</h3>
+                    </div>
+                  </div>
+                  <table class="table table-bordered border-primary">
                       <thead>
                         <tr>
                           <th scope="col">#</th>
