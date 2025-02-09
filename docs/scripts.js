@@ -386,6 +386,68 @@ async function add_pred_table(uname) {
   mini_leagues_pre(uname)
 }
 
+async function createLeague() {
+  // Get values from input fields
+  let leagueName = document.getElementById("leagueName").value;
+  let premLimit = document.getElementById("premLimit").value;
+  let laligaLimit = document.getElementById("laligaLimit").value;
+  let champLimit = document.getElementById("champLimit").value;
+  let serieaLimit = document.getElementById("serieaLimit").value;
+  let bundesligaLimit = document.getElementById("bundesligaLimit").value;
+  let ligue1Limit = document.getElementById("ligue1Limit").value;
+  let adminUsername = user; // Assuming "admin" field holds username
+
+  // Validate input
+  if (!leagueName.trim()) {
+      alert("Please enter a league name.");
+      return;
+  }
+
+  // Prepare data object for Supabase
+  let newLeague = {
+      name: leagueName,
+      admin_username: adminUsername,
+      prem_limit: parseInt(premLimit),
+      la_liga_limit: parseInt(laligaLimit),
+      champ_limit: parseInt(champLimit),
+      seriea_limit: parseInt(serieaLimit),
+      bundes_limit: parseInt(bundesligaLimit),
+      ligue1_limit: parseInt(ligue1Limit),
+      join_code: createPasscode(),
+  };
+
+  // Insert into Supabase
+  let { data, error} = await supaclient.from("mini_leagues").insert([newLeague]).select("id").single();;
+
+  console.log("LD", data)
+  let leagueId = data.id; // Get the newly created league's ID
+
+  // Insert admin as a member of the league
+  let { error: memberError } = await supaclient.from("mini_league_members").insert([
+      { mini_league_id: leagueId, username: adminUsername }
+  ]);
+
+  if (memberError) {
+      console.error("Error adding admin to members:", memberError);
+      alert("League created, but failed to add admin as a member.");
+      return;
+  }
+
+  if (error) {
+      console.error("Error creating league:", error);
+      alert("Failed to create league. Please try again.");
+  } else {
+      alert("League created successfully!");
+      
+      // Close the modal
+      let modal = bootstrap.Modal.getInstance(document.getElementById("createLeagueModal"));
+      modal.hide();
+
+      // Optionally, refresh the league list
+      mini_leagues_pre(adminUsername);
+  }
+}
+
 // Function to update the position numbers in the first column
 function updatePositions(tableBody) {
   const rows = tableBody.querySelectorAll('tr');
