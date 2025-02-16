@@ -255,63 +255,83 @@ async function mini_leagues_pre(uname)  {
                   <div class="col-auto">
                     <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createLeagueModal">Create League</button>
                   </div>
-                    <div class="modal fade" id="createLeagueModal" tabindex="-1" aria-labelledby="createLeagueModalLabel" aria-hidden="true">
-                      <div class="modal-dialog">
-                        <div class="modal-content">
-                          <div class="modal-header">
-                            <h5 class="modal-title" id="createLeagueModalLabel">Create a League</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                  <div class="modal fade" id="createLeagueModal" tabindex="-1" aria-labelledby="createLeagueModalLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                      <div class="modal-content">
+                        <div class="modal-header">
+                          <h5 class="modal-title" id="createLeagueModalLabel">Create a League</h5>
+                          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                          <div class="mb-3">
+                            <label for="leagueName" class="form-label">League Name</label>
+                            <input type="text" class="form-control" id="leagueName" required>
                           </div>
-                          <div class="modal-body">
-                            <div class="mb-3">
-                              <label for="leagueName" class="form-label">League Name</label>
-                              <input type="text" class="form-control" id="leagueName" required>
-                            </div>
-                            <div class="mb-3">
-                              <label for="premLimit" class="form-label">Premier League Max Teams</label>
-                              <input type="number" class="form-control" id="premLimit" min="0" value="20" required>
-                            </div>
-                            <div class="mb-3">
-                              <label for="laligalimit" class="form-label">La Liga Max Teams</label>
-                              <input type="number" class="form-control" id="laligaLimit" min="0" value="20" required>
-                            </div>
-                            <div class="mb-3">
-                              <label for="champLimit" class="form-label">Championship Max Teams</label>
-                              <input type="number" class="form-control" id="champLimit" min="0" value="24" required>
-                            </div>
-                            <div class="mb-3">
-                              <label for="serieaLimit" class="form-label">Serie A Max Teams</label>
-                              <input type="number" class="form-control" id="serieaLimit" min="0" value="20" required>
-                            </div>
-                            <div class="mb-3">
-                              <label for="bundesligaLimit" class="form-label">Bundesliga Max Teams</label>
-                              <input type="number" class="form-control" id="bundesligaLimit" min="0" value="18" required>
-                            </div>
-                            <div class="mb-3">
-                              <label for="ligue1Limit" class="form-label">Ligue 1 Max Teams</label>
-                              <input type="number" class="form-control" id="ligue1Limit" min="0" value="18" required>
-                            </div>
+                          <div class="mb-3">
+                            <label for="premLimit" class="form-label">Premier League Max Teams</label>
+                            <input type="number" class="form-control" id="premLimit" min="0" value="20" required>
                           </div>
-                          <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                            <button type="button" class="btn btn-primary" onclick="createLeague()">Create League</button>
+                          <div class="mb-3">
+                            <label for="laligalimit" class="form-label">La Liga Max Teams</label>
+                            <input type="number" class="form-control" id="laligaLimit" min="0" value="20" required>
                           </div>
+                          <div class="mb-3">
+                            <label for="champLimit" class="form-label">Championship Max Teams</label>
+                            <input type="number" class="form-control" id="champLimit" min="0" value="24" required>
+                          </div>
+                          <div class="mb-3">
+                            <label for="serieaLimit" class="form-label">Serie A Max Teams</label>
+                            <input type="number" class="form-control" id="serieaLimit" min="0" value="20" required>
+                          </div>
+                          <div class="mb-3">
+                            <label for="bundesligaLimit" class="form-label">Bundesliga Max Teams</label>
+                            <input type="number" class="form-control" id="bundesligaLimit" min="0" value="18" required>
+                          </div>
+                          <div class="mb-3">
+                            <label for="ligue1Limit" class="form-label">Ligue 1 Max Teams</label>
+                            <input type="number" class="form-control" id="ligue1Limit" min="0" value="18" required>
+                          </div>
+                        </div>
+                        <div class="modal-footer">
+                          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                          <button type="button" class="btn btn-primary" onclick="createLeague()">Create League</button>
                         </div>
                       </div>
                     </div>
+                  </div>
                   <div class="col-auto">
-                    <button class="btn btn-primary">Join League</button>
+                    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#joinLeagueModal">Join League</button>
+                  </div>
+                  <div class="modal fade" id="joinLeagueModal" tabindex="-1" aria-labelledby="joinLeagueModalLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                      <div class="modal-content">
+                        <div class="modal-header">
+                          <h5 class="modal-title" id="joinLeagueModalLabel">Join a League</h5>
+                          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                          <div class="mb-3">
+                            <label for="leagueName" class="form-label">League Join Code</label>
+                            <input type="text" class="form-control" id="leagueJoinCode" required>
+                          </div>
+                        </div>
+                        <div class="modal-footer">
+                          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                          <button type="button" class="btn btn-primary" onclick="joinLeague()">Join League</button>
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 </div>`
 
   // Get list of mini-league IDs
   let leagueIDs = data.map(item => item.mini_league_id);
 
-  if (leagueIDs.length == 0) {
-    // If no mini-leagues
-    document.getElementById("leagueTableBody").innerHTML = "<tr><td colspan='2'>Not in any leagues</td></tr>";
-      return;
-  }
+  // if (leagueIDs.length == 0) {
+  //   // If no mini-leagues
+  //   document.getElementById("leagueTableBody").innerHTML = "<tr><td colspan='2'>Not in any leagues</td></tr>";
+  //     return;
+  // }
   
   // Fetch mini-league details
   let { data: leagues, error: leagueError } = await supaclient
@@ -340,6 +360,55 @@ async function mini_leagues_pre(uname)  {
   </table>`
 
   document.querySelector(`#pre-leagues`).innerHTML = new_html
+}
+
+async function joinLeague() {
+  // Get the input values
+  let joinCode = document.getElementById("leagueJoinCode").value.trim();
+  let username = user; // Current user's username (from hidden input)
+
+  // Validate input
+  if (!joinCode) {
+      alert("Please enter a join code.");
+      return;
+  }
+
+  let { data: leagueData, count: c1, error: leagueError } = await supaclient
+      .from("mini_leagues")
+      .select("id", { count: "exact" })
+      .eq("join_code", joinCode);
+
+  if (c1 == 0) {
+      alert("Invalid join code. Please try again.");
+      return;
+  }
+
+  // Step 2: Check if the user is already a member
+  let { data: existingMember, count: c2, error: memberError } = await supaclient
+      .from("mini_league_members")
+      .select("id", { count: "exact" })
+      .eq("mini_league_id", leagueData[0].id)
+      .eq("username", username);
+
+  // Step 3: Insert user into mini_league_members
+  let { error: insertError } = await supaclient
+      .from("mini_league_members")
+      .insert([{ mini_league_id: leagueData[0].id, username: username }]);
+
+  if (insertError) {
+      alert("Failed to join league. You may already be a member.");
+      console.log(insertError)
+      return;
+  }
+
+  alert("Successfully joined the league!");
+
+  // Close the modal
+  let modal = bootstrap.Modal.getInstance(document.getElementById("joinLeagueModal"));
+  modal.hide();
+
+  // Refresh the league list
+  mini_leagues_pre(username);
 }
 
 async function add_pred_table(uname) {

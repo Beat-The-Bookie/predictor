@@ -57,6 +57,7 @@ class create_db:
                 PRIMARY KEY (mini_league_id, username)
             );
         """
+        
         self.supabase.rpc("execute_sql", {"query": mini_league_members_query}).execute()
 
     def create_users(self):
