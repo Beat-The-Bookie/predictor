@@ -54,6 +54,7 @@ class create_db:
             CREATE TABLE IF NOT EXISTS public.mini_league_members (
                 mini_league_id UUID NOT NULL REFERENCES mini_leagues(id) ON DELETE CASCADE,
                 username TEXT NOT NULL REFERENCES credentials(username) ON DELETE CASCADE,
+                score_per_league JSONB DEFAULT '{}'::JSONB,
                 PRIMARY KEY (mini_league_id, username)
             );
         """

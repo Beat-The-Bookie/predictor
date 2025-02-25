@@ -8,12 +8,27 @@ class calc_scores:
         self.leagues = leagues
         self.funcs = [self.premier_league_scoring, self.la_liga_scoring, self.championship_scoring,
                  self.serie_a_scoring, self.bundesliga_scoring, self.ligue_1_scoring]
+        self.points = [None] * 6
+
         
     def run_scorer(self):
 
         users = self.supabase.table('leaderboard').select('username').execute()
         for user in range(len(users.data)):
             self.calculate_scores(users.data[user]['username'])
+            mini_leagues = self.supabase.table('mini_league_members').select('mini_league_id').eq('username', users.data[user]['username']).execute()
+
+            for mini_league in mini_leagues.data:
+                response = self.supabase.table('mini_leagues').select('prem_limit, champ_limit, la_liga_limit, seriea_limit, bundes_limit, ligue1_limit').eq('id', mini_league['mini_league_id']).execute()
+
+                scores = {}
+                for league in range(len(self.leagues)):
+                    scores[self.names[league]] = sum(self.points[league][:(response.data[0][self.names[league]+'_limit'] - 1)])
+                scores['total'] = sum(scores.values())
+
+                response = self.supabase.table("mini_league_members").update({
+                "score_per_league": scores
+                }).eq("username", users.data[user]['username']).eq("mini_league_id", mini_league['mini_league_id']).execute()
 
     def calculate_scores(self, uname):
 
