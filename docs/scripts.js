@@ -1,21 +1,20 @@
 document.addEventListener("DOMContentLoaded", async () => {
+  deadline_passed = true
+  if (deadline_passed == true) {
+    disable_boxes()
+  }
   await restoreSession()
 })
-
-deadline_passed = false
-if (deadline_passed == true) {
-  disable_boxes()
-}
 
 const supaclient = supabase.createClient('https://srhywkedxssxlsjrholj.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNyaHl3a2VkeHNzeGxzanJob2xqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MjYzOTYxNjUsImV4cCI6MjA0MTk3MjE2NX0.lUZUAm20JIH3aoUxmyCAcr8l-A3_S3FpTaHuljrwm50')
 let user = ""
 const league_shorthands = ['prem', 'la_liga', 'champ', 'seriea', 'bundes', 'ligue1']
 
 async function restoreSession() {
-  user = localStorage.getItem("loggedInUser")
-  if (user) {
+  old_user = localStorage.getItem("loggedInUser")
+  if (old_user) {
     document.getElementById('login-page').classList.add('d-none');
-
+    user = old_user
     if (!deadline_passed) {
       document.getElementById('main-page-pre').classList.remove('d-none');
       retrieve_info();
@@ -389,6 +388,12 @@ async function mini_leagues(post)  {
                       </button>
                     </td>
                     <td>${league.admin_username}</td>
+                    <td>${league.prem_limit}</td>
+                    <td>${league.champ_limit}</td>
+                    <td>${league.la_liga_limit}</td>
+                    <td>${league.seriea_limit}</td>
+                    <td>${league.bundes_limit}</td>
+                    <td>${league.ligue1_limit}</td>
                   </tr>`
         new_html += row
     })
