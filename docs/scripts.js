@@ -5,6 +5,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // document.getElementById('reg-btn').disabled = true
 });
 
+show_league = ''
 const supaclient = supabase.createClient('https://srhywkedxssxlsjrholj.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNyaHl3a2VkeHNzeGxzanJob2xqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MjYzOTYxNjUsImV4cCI6MjA0MTk3MjE2NX0.lUZUAm20JIH3aoUxmyCAcr8l-A3_S3FpTaHuljrwm50')
 let user = ""
 const league_shorthands = ['prem', 'la_liga', 'champ', 'seriea', 'bundes', 'ligue1']
@@ -28,7 +29,7 @@ async function login() {
       document.getElementById('pword').value = ""
       document.getElementById('uname').value = ""
 
-      // Deactivate textboxes while things are happening, loading sign?
+    // Deactivate textboxes while things are happening, loading sign?
     } else {
       let {data, error} = await supaclient.from('credentials').select('passcode')
 
@@ -48,6 +49,7 @@ async function login() {
         // document.getElementById('main-page-post').classList.remove('d-none')
         // add_locked_preds(document.getElementById('uname').value)
         // add_prem_table()
+        // mini_leagues(true)
       } else {
         alert("Passcode is incorrect")
         document.getElementById('pword').value = ""
@@ -222,7 +224,12 @@ async function retrieve_info() {
 
 async function add_users() {
   let { data , error } = await supaclient.from('leaderboard').select('username')
-  let html_info = `<table class="table table-bordered border-primary">
+  let html_info = `<div class="row justify-content-center">
+                    <div class="col">
+                      <h3>Players</h3>
+                    </div>
+                  </div>
+                  <table class="table table-bordered border-primary">
                       <thead>
                         <tr>
                           <th scope="col">#</th>
@@ -242,6 +249,306 @@ async function add_users() {
                   </table>`
 
   document.querySelector(`#pre-leaderboard`).innerHTML = html_info
+}
+
+async function mini_leagues(post)  {
+  let {data, error} = await supaclient.from('mini_league_members').select('mini_league_id').eq('username', user)
+  new_html = ` <div class="row justify-content-between" style="margin-bottom:8px">
+                  <div class="col-auto">
+                    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createLeagueModal">Create League</button>
+                  </div>
+                  <div class="modal fade" id="createLeagueModal" tabindex="-1" aria-labelledby="createLeagueModalLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                      <div class="modal-content">
+                        <div class="modal-header">
+                          <h5 class="modal-title" id="createLeagueModalLabel">Create a League</h5>
+                          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                          <div class="mb-3">
+                            <label for="leagueName" class="form-label">League Name</label>
+                            <input type="text" class="form-control" id="leagueName" required>
+                          </div>
+                          <div class="mb-3">
+                            <label for="premLimit" class="form-label">Premier League Max Teams</label>
+                            <input type="number" class="form-control" id="premLimit" min="0" value="20" required>
+                          </div>
+                          <div class="mb-3">
+                            <label for="laligalimit" class="form-label">La Liga Max Teams</label>
+                            <input type="number" class="form-control" id="laligaLimit" min="0" value="20" required>
+                          </div>
+                          <div class="mb-3">
+                            <label for="champLimit" class="form-label">Championship Max Teams</label>
+                            <input type="number" class="form-control" id="champLimit" min="0" value="24" required>
+                          </div>
+                          <div class="mb-3">
+                            <label for="serieaLimit" class="form-label">Serie A Max Teams</label>
+                            <input type="number" class="form-control" id="serieaLimit" min="0" value="20" required>
+                          </div>
+                          <div class="mb-3">
+                            <label for="bundesligaLimit" class="form-label">Bundesliga Max Teams</label>
+                            <input type="number" class="form-control" id="bundesligaLimit" min="0" value="18" required>
+                          </div>
+                          <div class="mb-3">
+                            <label for="ligue1Limit" class="form-label">Ligue 1 Max Teams</label>
+                            <input type="number" class="form-control" id="ligue1Limit" min="0" value="18" required>
+                          </div>
+                        </div>
+                        <div class="modal-footer">
+                          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                          <button type="button" class="btn btn-primary" onclick="createLeague()">Create League</button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-auto">
+                    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#joinLeagueModal">Join League</button>
+                  </div>
+                  <div class="modal fade" id="joinLeagueModal" tabindex="-1" aria-labelledby="joinLeagueModalLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                      <div class="modal-content">
+                        <div class="modal-header">
+                          <h5 class="modal-title" id="joinLeagueModalLabel">Join a League</h5>
+                          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                          <div class="mb-3">
+                            <label for="leagueName" class="form-label">League Join Code</label>
+                            <input type="text" class="form-control" id="leagueJoinCode" required>
+                          </div>
+                        </div>
+                        <div class="modal-footer">
+                          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                          <button type="button" class="btn btn-primary" onclick="joinLeague()">Join League</button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>`
+
+  // Get list of mini-league IDs
+  let leagueIDs = data.map(item => item.mini_league_id);
+
+  // if (leagueIDs.length == 0) {
+  //   // If no mini-leagues
+  //   document.getElementById("leagueTableBody").innerHTML = "<tr><td colspan='2'>Not in any leagues</td></tr>";
+  //     return;
+  // }
+  
+  // Fetch mini-league details
+  let { data: leagues, error: leagueError } = await supaclient
+  .from("mini_leagues")
+  .select("name, admin_username, prem_limit, champ_limit, la_liga_limit, seriea_limit, bundes_limit, ligue1_limit")
+  .in("id", leagueIDs);
+
+  new_html += `<table class="table table-bordered border-primary">
+                  <thead>
+                      <tr>
+                          <th>League Name</th>
+                          <th>Admin</th>
+                          <th>Prem Limit</th>
+                          <th>Champ Limit</th>
+                          <th>La Liga Limit</th>
+                          <th>Serie A Limit</th>
+                          <th>Bundesliga Limit</th>
+                          <th>Ligue 1 Limit</th>
+                      </tr>
+                  </thead>
+                  <tbody id="leagueTableBody">`
+
+  if (post == false) {
+    leagues.forEach(league => {
+        let row = ` <tr>
+                      <td>
+                          <button class="btn btn-link" onclick="league_entrants('${league.name}')">
+                              ${league.name}
+                          </button>
+                      </td>
+                      <td>${league.admin_username}</td>
+                      <td>${league.prem_limit}</td>
+                      <td>${league.champ_limit}</td>
+                      <td>${league.la_liga_limit}</td>
+                      <td>${league.seriea_limit}</td>
+                      <td>${league.bundes_limit}</td>
+                      <td>${league.ligue1_limit}</td>
+                    </tr>`;
+        new_html += row;
+    });
+  } else {
+    leagues.forEach(league => {
+      let row = ` <tr>
+                    <td>
+                      <button class="btn btn-link" onclick="league_standings('${league.name}')">
+                        ${league.name}
+                      </button>
+                    </td>
+                    <td>${league.admin_username}</td>
+                  </tr>`
+        new_html += row
+    })
+  }
+  
+  new_html += `</tbody>
+  </table>`
+
+  if (post == false) {
+    document.querySelector(`#pre-leagues`).innerHTML = new_html
+  } else {
+    document.querySelector('#post-leagues').innerHTML = new_html
+  }
+
+  }
+
+async function league_entrants(league) {
+  let {data, error} = await supaclient.from("mini_leagues").select("id").eq("name", league)
+
+  let {data: users, error: userError} = await supaclient.from("mini_league_members").select("username").eq("mini_league_id", data[0]['id'])
+  new_html = `<div class="row justify-content-between" style="margin-bottom:8px">
+                <div class="col-auto">
+                  <button class="btn btn-primary" onclick="mini_leagues(false)">Back</button>
+                </div>
+                <div class="col-auto">
+                  <h3>${league}</h3>
+                </div> 
+                <div class="col-auto">
+                  <button class="btn btn-primary">Leave League</button>
+                </div>
+              </div>`
+  // Add limits for each league for each mini-league?
+  new_html += `<table class="table table-bordered border-primary">
+                  <thead>
+                      <tr>
+                          <th>User</th>
+                      </tr>
+                  </thead>
+                  <tbody id="miniLeagueUsers">`
+
+  users.forEach(user => {
+      let row = ` <tr>
+                    <td>${user['username']}</td>
+                  </tr>`;
+      new_html += row;
+  });
+
+  new_html += `</tbody>
+  </table>`
+
+  let preLeagues = document.querySelector("#pre-leagues");
+
+  // Clear all content inside the #pre-leagues div (buttons, table, etc.)
+  preLeagues.innerHTML = "";
+  
+  // Insert the new table
+  preLeagues.innerHTML = new_html;
+}
+
+async function league_standings(league) {
+  let {data, error} = await supaclient.from("mini_leagues").select("id").eq("name", league)
+  let {data: users, error: userError} = await supaclient.from("mini_league_members").select("username, score_per_league, total_score").eq("mini_league_id", data[0]['id']).order("score_per_league", { ascending: false });
+  console.log("DATA", users[0]['score_per_league'])
+  new_html = `<div class="row justify-content-between" style="margin-bottom:8px">
+                <div class="col-auto">
+                  <button class="btn btn-primary" onclick="mini_leagues(true)">Back</button>
+                </div>
+                <div class="col-auto">
+                  <h3>${league}</h3>
+                </div> 
+                <div class="col-auto">
+                  <button class="btn btn-primary">Leave League</button>
+                </div>
+              </div>`
+  new_html += `<table class="table table-bordered border-primary">
+                  <thead>
+                      <tr>
+                          <th>Place</th>
+                          <th>User</th>
+                          <th>Prem</th>
+                          <th>Championship</th>
+                          <th>La Liga</th>
+                          <th>Serie A</th>
+                          <th>Bundesliga</th>
+                          <th>Ligue 1</th>
+                          <th>Total</th>
+                      </tr>
+                  </thead>
+                  <tbody id="miniLeagueStandings">`
+
+  place = 1
+  users.forEach(user => {
+      let row = ` <tr>
+                    <td>${place}</td>
+                    <td>${user['username']}</td>
+                    <td>${user['score_per_league']['prem']}</td>
+                    <td>${user['score_per_league']['champ']}</td>
+                    <td>${user['score_per_league']['la_liga']}</td>
+                    <td>${user['score_per_league']['seriea']}</td>
+                    <td>${user['score_per_league']['bundes']}</td>
+                    <td>${user['score_per_league']['ligue1']}</td>
+                    <td>${user['total_score']}</td>
+                  </tr>`;
+      new_html += row;
+      place += 1
+  });
+
+  new_html += `</tbody>
+  </table>`
+
+  let postLeagues = document.querySelector("#post-leagues");
+
+  // Clear all content inside the #pre-leagues div (buttons, table, etc.)
+  postLeagues.innerHTML = "";
+  
+  // Insert the new table
+  postLeagues.innerHTML = new_html;
+}
+
+async function joinLeague() {
+  // Get the input values
+  let joinCode = document.getElementById("leagueJoinCode").value.trim();
+  let username = user; // Current user's username (from hidden input)
+
+  // Validate input
+  if (!joinCode) {
+      alert("Please enter a join code.");
+      return;
+  }
+
+  let { data: leagueData, count: c1, error: leagueError } = await supaclient
+      .from("mini_leagues")
+      .select("id", { count: "exact" })
+      .eq("join_code", joinCode);
+
+  if (c1 == 0) {
+      alert("Invalid join code. Please try again.");
+      return;
+  }
+
+  // Step 2: Check if the user is already a member
+  let { data: existingMember, count: c2, error: memberError } = await supaclient
+      .from("mini_league_members")
+      .select("id", { count: "exact" })
+      .eq("mini_league_id", leagueData[0].id)
+      .eq("username", username);
+
+  // Step 3: Insert user into mini_league_members
+  let { error: insertError } = await supaclient
+      .from("mini_league_members")
+      .insert([{ mini_league_id: leagueData[0].id, username: username }]);
+
+  if (insertError) {
+      alert("Failed to join league. You may already be a member.");
+      console.log(insertError)
+      return;
+  }
+
+  alert("Successfully joined the league!");
+
+  // Close the modal
+  let modal = bootstrap.Modal.getInstance(document.getElementById("joinLeagueModal"));
+  modal.hide();
+
+  // Refresh the league list
+  mini_leagues(false);
 }
 
 async function add_pred_table(uname) {
@@ -284,6 +591,68 @@ async function add_pred_table(uname) {
         updatePositions(tableBody); // Update positions after dragging
       }
     })
+  }
+  mini_leagues(false)
+}
+
+async function createLeague() {
+  // Get values from input fields
+  let leagueName = document.getElementById("leagueName").value;
+  let premLimit = document.getElementById("premLimit").value;
+  let laligaLimit = document.getElementById("laligaLimit").value;
+  let champLimit = document.getElementById("champLimit").value;
+  let serieaLimit = document.getElementById("serieaLimit").value;
+  let bundesligaLimit = document.getElementById("bundesligaLimit").value;
+  let ligue1Limit = document.getElementById("ligue1Limit").value;
+  let adminUsername = user; // Assuming "admin" field holds username
+
+  // Validate input
+  if (!leagueName.trim()) {
+      alert("Please enter a league name.");
+      return;
+  }
+
+  // Prepare data object for Supabase
+  let newLeague = {
+      name: leagueName,
+      admin_username: adminUsername,
+      prem_limit: parseInt(premLimit),
+      la_liga_limit: parseInt(laligaLimit),
+      champ_limit: parseInt(champLimit),
+      seriea_limit: parseInt(serieaLimit),
+      bundes_limit: parseInt(bundesligaLimit),
+      ligue1_limit: parseInt(ligue1Limit),
+      join_code: createPasscode(),
+  };
+
+  // Insert into Supabase
+  let { data, error} = await supaclient.from("mini_leagues").insert([newLeague]).select("id").single();;
+
+  let leagueId = data.id; // Get the newly created league's ID
+
+  // Insert admin as a member of the league
+  let { error: memberError } = await supaclient.from("mini_league_members").insert([
+      { mini_league_id: leagueId, username: adminUsername }
+  ]);
+
+  if (memberError) {
+      console.error("Error adding admin to members:", memberError);
+      alert("League created, but failed to add admin as a member.");
+      return;
+  }
+
+  if (error) {
+      console.error("Error creating league:", error);
+      alert("Failed to create league. Please try again.");
+  } else {
+      alert("League created successfully!");
+      
+      // Close the modal
+      let modal = bootstrap.Modal.getInstance(document.getElementById("createLeagueModal"));
+      modal.hide();
+
+      // Optionally, refresh the league list
+      mini_leagues(false);
   }
 }
 
@@ -401,8 +770,12 @@ async function add_locked_preds(uname) {
 
 async function add_leaderboard() {
   let { data , error } = await supaclient.from('leaderboard').select('*').order('total', { ascending: false });
-  console.log("DATA", data)
-  let html_info = `<table class="table table-bordered border-primary">
+  let html_info = `<div class="row justify-content-center">
+                    <div class="col">
+                      <h3>The Leaderboard</h3>
+                    </div>
+                  </div>
+                  <table class="table table-bordered border-primary">
                       <thead>
                         <tr>
                           <th scope="col">#</th>
