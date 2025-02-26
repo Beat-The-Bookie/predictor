@@ -41,14 +41,15 @@ async function login() {
         document.getElementById('login-page').classList.add('d-none');
 
         // Stuff to do before deadline
-        document.getElementById('main-page-pre').classList.remove('d-none');
-        retrieve_info()
-        add_pred_table(document.getElementById('uname').value)
+        // document.getElementById('main-page-pre').classList.remove('d-none');
+        // retrieve_info()
+        // add_pred_table(document.getElementById('uname').value)
 
         // Stuff to do after deadline
-        // document.getElementById('main-page-post').classList.remove('d-none')
-        // add_locked_preds(document.getElementById('uname').value)
-        // add_prem_table()
+        document.getElementById('main-page-post').classList.remove('d-none')
+        add_locked_preds(document.getElementById('uname').value)
+        add_prem_table()
+        mini_leagues(true)
       } else {
         alert("Passcode is incorrect")
         document.getElementById('pword').value = ""
@@ -250,7 +251,7 @@ async function add_users() {
   document.querySelector(`#pre-leaderboard`).innerHTML = html_info
 }
 
-async function mini_leagues_pre()  {
+async function mini_leagues(post)  {
   let {data, error} = await supaclient.from('mini_league_members').select('mini_league_id').eq('username', user)
   new_html = ` <div class="row justify-content-between" style="margin-bottom:8px">
                   <div class="col-auto">
@@ -364,8 +365,13 @@ async function mini_leagues_pre()  {
   new_html += `</tbody>
   </table>`
 
-  document.querySelector(`#pre-leagues`).innerHTML = new_html
-}
+  if (post == false) {
+    document.querySelector(`#pre-leagues`).innerHTML = new_html
+  } else {
+    document.querySelector('#post-leagues').innerHTML = new_html
+  }
+
+  }
 
 async function league_entrants(league) {
   let {data, error} = await supaclient.from("mini_leagues").select("id").eq("name", league)
@@ -374,7 +380,7 @@ async function league_entrants(league) {
   let {data: users, error: userError} = await supaclient.from("mini_league_members").select("username").eq("mini_league_id", data[0]['id'])
   new_html = `<div class="row justify-content-between" style="margin-bottom:8px">
                 <div class="col-auto">
-                  <button class="btn btn-primary" onclick="mini_leagues_pre()">Back</button>
+                  <button class="btn btn-primary" onclick="mini_leagues(false)">Back</button>
                 </div>
                 <div class="col-auto">
                   <h3>${league}</h3>
@@ -470,7 +476,7 @@ async function joinLeague() {
   modal.hide();
 
   // Refresh the league list
-  mini_leagues_pre();
+  mini_leagues(false);
 }
 
 async function add_pred_table(uname) {
@@ -514,7 +520,7 @@ async function add_pred_table(uname) {
       }
     })
   }
-  mini_leagues_pre()
+  mini_leagues(false)
 }
 
 async function createLeague() {
@@ -575,7 +581,7 @@ async function createLeague() {
       modal.hide();
 
       // Optionally, refresh the league list
-      mini_leagues_pre();
+      mini_leagues(false);
   }
 }
 
