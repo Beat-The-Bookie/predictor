@@ -138,6 +138,12 @@ function change_tab(tab) {
   document.querySelectorAll('.tab-pane').forEach(pane => pane.classList.remove('show', 'active'));
   const selectedTab = document.getElementById(tab);
   selectedTab.classList.add('show', 'active');
+
+  if (!deadline_passed) {
+    retrieve_info();
+  } else {
+    add_locked_preds();
+  }
 }
 
 // When the user has registered, team list to be created
@@ -179,7 +185,6 @@ async function user_team_list() {
 }
 
 async function retrieve_info() {
-
   for (let league = 0; league < league_shorthands.length; league++) {
 
     let { data , error } = await supaclient.from(`${league_shorthands[league]}_preds`).select('*').or('username.eq.last_season_finishes,username.eq.all_teams')
