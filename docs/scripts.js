@@ -1,11 +1,8 @@
-document.addEventListener('DOMContentLoaded', () => {
-  // After deadline
-  // document.getElementById('reg-uname').disabled = true
-  // document.getElementById('reg-email').disabled = true
-  // document.getElementById('reg-btn').disabled = true
-});
+deadline_passed = false
+if (deadline_passed == true) {
+  disable_boxes()
+}
 
-show_league = ''
 const supaclient = supabase.createClient('https://srhywkedxssxlsjrholj.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNyaHl3a2VkeHNzeGxzanJob2xqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MjYzOTYxNjUsImV4cCI6MjA0MTk3MjE2NX0.lUZUAm20JIH3aoUxmyCAcr8l-A3_S3FpTaHuljrwm50')
 let user = ""
 const league_shorthands = ['prem', 'la_liga', 'champ', 'seriea', 'bundes', 'ligue1']
@@ -13,43 +10,33 @@ const league_shorthands = ['prem', 'la_liga', 'champ', 'seriea', 'bundes', 'ligu
 async function login() {
   try {
     user = document.getElementById('uname').value
-
-    let { data , error } = await supaclient.from('credentials').select('username')
-
+    let { data , error } = await supaclient
+      .from('credentials')
+      .select('username, passcode')
+      .eq('username', user)
+    
     if (error) throw error
-    regs_unames = []
+    let found = data.length > 0
 
-    for ((uname) in (data)) {
-      regs_unames.push(data[uname].username)
-    }
-    let found = regs_unames.indexOf(document.getElementById('uname').value)
-
-    if (found == -1) {
+    if (!found) {
       alert("Username not recognised")
       document.getElementById('pword').value = ""
       document.getElementById('uname').value = ""
 
-    // Deactivate textboxes while things are happening, loading sign?
     } else {
-      let {data, error} = await supaclient.from('credentials').select('passcode')
-
       if (error) throw error
-      req_pword = data[found].passcode
 
-      if (document.getElementById('pword').value == req_pword) {
-        // A function needs to be added here once the deadline is decided
+      if (document.getElementById('pword').value == data[0]['passcode']) {
         document.getElementById('login-page').classList.add('d-none');
 
-        // Stuff to do before deadline
-        document.getElementById('main-page-pre').classList.remove('d-none');
-        retrieve_info()
-        add_pred_table(document.getElementById('uname').value)
+        if (deadline_passed == false) {
+          document.getElementById('main-page-pre').classList.remove('d-none');
+          retrieve_info()
+        } else {
+          document.getElementById('main-page-post').classList.remove('d-none')
+          add_locked_preds()     
+        }
 
-        // Stuff to do after deadline
-        // document.getElementById('main-page-post').classList.remove('d-none')
-        // add_locked_preds(document.getElementById('uname').value)
-        // add_prem_table()
-        // mini_leagues(true)
       } else {
         alert("Passcode is incorrect")
         document.getElementById('pword').value = ""
@@ -61,87 +48,74 @@ async function login() {
 }
 
 async function register() {
-  let { data , error } = await supaclient.from('credentials').select('username, email')
-  const unames = data.map(item => item.username);
-  const emails = data.map(item => item.email);
-  if (error) throw error
-  regs_unames = []
-  regs_emails = []
+  let new_uname = document.getElementById('reg-uname').value
+  let new_email = document.getElementById('reg-email').value
 
-  for (uname in unames) {
-    regs_unames.push(unames[uname])
-  }
-
-  for (email in emails) {
-    regs_emails.push(emails[email])
-  }
-
-  let found = regs_unames.indexOf(document.getElementById('reg-uname').value)
-  let efound = regs_emails.indexOf(document.getElementById('reg-email').value)
-
-  if ((found == -1) && (efound == -1)) {
-    created_pcode = createPasscode()
-    let { data, error } = await supaclient
+  let { data: reg_data , error: reg_error } = await supaclient
     .from('credentials')
-    .insert([
-    { username: (document.getElementById('reg-uname').value), passcode: created_pcode, email: document.getElementById('reg-email').value },
-    ])
-    .select()
+    .select('username')
+    .eq('username', new_uname)
 
-    let serviceID = 'service_footpred';
-    let templateID = 'template_cek6i8r';
-  
-    let templateParams = {
-      to_name: document.getElementById('reg-uname').value,
-      email: document.getElementById('reg-email').value,
-      username: document.getElementById('reg-uname').value,
-      passcode: created_pcode,
-    };
+  let { data: email_data , error: email_error } = await supaclient
+    .from('credentials')
+    .select('email')
+    .eq('email', new_email)
+
+  let uname_found = reg_data.length > 0
+  let email_found = email_data.length > 0
+  if (reg_error || email_error) throw error
+
+  if (uname_found) {
+    alert("Unsuccessful. Username already in use.")
+
+  } else if (email_found) {
+    alert("Unsuccessful. Email already in use.")
+
+  } else {
+    created_pcode = createPasscode()
 
     try {
-        // Send email
-        const response = await emailjs.send(serviceID, templateID, templateParams);
-        alert('Email sent successfully!');
-    } catch (error) {
-        console.log('Failed to send email. Error: ' + JSON.stringify(error));
-    }
-    user_team_list(document.getElementById('reg-uname').value)
+      let { data, error } = await supaclient
+      .from('credentials')
+      .insert([{ username: new_uname, passcode: created_pcode, email: new_email }])
+      .select()
 
-  } else if (found != -1){
-    alert("Unsuccessful. Username already in use.")
-  } else {
-    alert("Unsuccessful. Email already in use.")
+      let serviceID = 'service_footpred';
+      let templateID = 'template_cek6i8r';
+    
+      let templateParams = {
+        to_name: new_uname,
+        email: new_email,
+        username: new_uname,
+        passcode: created_pcode,
+      };
+
+      await emailjs.send(serviceID, templateID, templateParams);
+      alert('Email sent successfully!');
+    
+    } catch (error) {
+      console.log('Error:', error.message || JSON.stringify(error));
+      alert('An error occurred while creating the account. Please try again.');
+    }
+    user_team_list()
   }
 }
 
 function createPasscode() {
-  const characters = 'ABCDEFGHJKLMNPQRSTWXYZabcdefghjklmnpqrstwxyz123456789';
-  let randomString = '';
-  for (let i = 0; i < 6; i++) {
-    const randomIndex = Math.floor(Math.random() * characters.length);
-    randomString += characters[randomIndex];
-  }
-  return randomString;
+  const characters = 'ABCDEFGHJKLMNPQRSTWXYZabcdefghjklmnpqrstwxyz23456789';
+  return Array.from({length: 6}, () => characters[Math.floor(Math.random() * characters.length)]).join('');
 }
 
 function change_tab(tab) {
-  navs = document.getElementsByClassName('nav-link')
-  for (let nav = 0; nav < navs.length; nav++) {
-    navs[nav].classList = ('nav-link')
-  }
-  document.getElementById(tab+'-tab').classList.add('active')
-
-  tabs = document.getElementsByClassName('tab-pane')
-  for (let tab = 0; tab < tabs.length; tab++) {
-    tabs[tab].classList = ('tab-pane')
-  }
-
-  document.getElementById(tab).classList.add('show')
-  document.getElementById(tab).classList.add('active')
+  document.querySelectorAll('.nav-link').forEach(nav => nav.classList.remove('active'));
+  document.getElementById(`${tab}-tab`).classList.add('active');
+  document.querySelectorAll('.tab-pane').forEach(pane => pane.classList.remove('show', 'active'));
+  const selectedTab = document.getElementById(tab);
+  selectedTab.classList.add('show', 'active');
 }
 
 // When the user has registered, team list to be created
-async function user_team_list(uname) {
+async function user_team_list() {
   for (let league = 0; league < league_shorthands.length; league++) {
 
     let { data , error } = await supaclient.from(`${league_shorthands[league]}_preds`).select('*').eq('username','all_teams')
@@ -149,17 +123,17 @@ async function user_team_list(uname) {
 
     let {d, e} = await supaclient
     .from(`${league_shorthands[league]}_preds`)
-    .insert([{'username':uname}])
+    .insert([{'username':user}])
 
     let { da, er } = await supaclient
     .from(`${league_shorthands[league]}_preds`)
     .update(data)
-    .eq('username', uname)
+    .eq('username', user)
     .select()
 
     let {dat, error3} = await supaclient
     .from(`${league_shorthands[league]}_scores`)
-    .insert([{'username': uname}])
+    .insert([{'username': user}])
 
     // Prepare the update object with columns from 1 to 20 set to 0
     const updateData = {};
@@ -170,12 +144,12 @@ async function user_team_list(uname) {
     let {data2, error2} = await supaclient
     .from(`${league_shorthands[league]}_scores`)
     .update(updateData)
-    .eq('username', uname)
+    .eq('username', user)
     .select()
   }
   let {data4, error4} = await supaclient
   .from('leaderboard')
-  .insert([{'username': uname}])
+  .insert([{'username': user}])
 }
 
 async function retrieve_info() {
@@ -220,6 +194,7 @@ async function retrieve_info() {
     document.querySelector(`#${league_shorthands[league]}-table`).innerHTML = html_info
   }
   add_users()
+  add_pred_table()
 }
 
 async function add_users() {
@@ -551,9 +526,9 @@ async function joinLeague() {
   mini_leagues(false);
 }
 
-async function add_pred_table(uname) {
+async function add_pred_table() {
   for (let league = 0; league < league_shorthands.length; league++) {
-    let { data , error } = await supaclient.from(`${league_shorthands[league]}_preds`).select('*').eq('username', uname)
+    let { data , error } = await supaclient.from(`${league_shorthands[league]}_preds`).select('*').eq('username', user)
     delete data[0]['username']
     html_pred =  `<div class="row justify-content-center">
                     <div class="col">
@@ -730,10 +705,10 @@ async function reset_changes(league) {
   })
 }
 
-async function add_locked_preds(uname) {
+async function add_locked_preds() {
   for (let league = 0; league < league_shorthands.length; league++) {
 
-    let { data , error } = await supaclient.from(`${league_shorthands[league]}_preds`).select('*').eq('username', uname)
+    let { data , error } = await supaclient.from(`${league_shorthands[league]}_preds`).select('*').eq('username', user)
     let scores = await fetch_scores(league_shorthands[league])
     delete data[0]['username']
     delete scores['username']
@@ -766,6 +741,8 @@ async function add_locked_preds(uname) {
     document.querySelector(`#${league_shorthands[league]}-pred-locked`).innerHTML = html_pred
     add_leaderboard()
   }
+  add_prem_table()
+  mini_leagues(true)
 }
 
 async function add_leaderboard() {
@@ -868,4 +845,10 @@ async function fetch_scores(shorthand) {
 
 function forgot_passcode() {
   alert('Email footpredhelp@gmail.com')
+}
+
+function disable_boxes() {
+  document.getElementById('reg-uname').disabled = true
+  document.getElementById('reg-email').disabled = true
+  document.getElementById('reg-btn').disabled = true
 }
