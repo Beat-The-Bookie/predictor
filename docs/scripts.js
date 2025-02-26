@@ -41,15 +41,15 @@ async function login() {
         document.getElementById('login-page').classList.add('d-none');
 
         // Stuff to do before deadline
-        // document.getElementById('main-page-pre').classList.remove('d-none');
-        // retrieve_info()
-        // add_pred_table(document.getElementById('uname').value)
+        document.getElementById('main-page-pre').classList.remove('d-none');
+        retrieve_info()
+        add_pred_table(document.getElementById('uname').value)
 
         // Stuff to do after deadline
-        document.getElementById('main-page-post').classList.remove('d-none')
-        add_locked_preds(document.getElementById('uname').value)
-        add_prem_table()
-        mini_leagues(true)
+        // document.getElementById('main-page-post').classList.remove('d-none')
+        // add_locked_preds(document.getElementById('uname').value)
+        // add_prem_table()
+        // mini_leagues(true)
       } else {
         alert("Passcode is incorrect")
         document.getElementById('pword').value = ""
@@ -338,7 +338,7 @@ async function mini_leagues(post)  {
   // Fetch mini-league details
   let { data: leagues, error: leagueError } = await supaclient
   .from("mini_leagues")
-  .select("name, admin_username")
+  .select("name, admin_username, prem_limit, champ_limit, la_liga_limit, seriea_limit, bundes_limit, ligue1_limit")
   .in("id", leagueIDs);
 
   new_html += `<table class="table table-bordered border-primary">
@@ -346,6 +346,12 @@ async function mini_leagues(post)  {
                       <tr>
                           <th>League Name</th>
                           <th>Admin</th>
+                          <th>Prem Limit</th>
+                          <th>Champ Limit</th>
+                          <th>La Liga Limit</th>
+                          <th>Serie A Limit</th>
+                          <th>Bundesliga Limit</th>
+                          <th>Ligue 1 Limit</th>
                       </tr>
                   </thead>
                   <tbody id="leagueTableBody">`
@@ -359,6 +365,12 @@ async function mini_leagues(post)  {
                           </button>
                       </td>
                       <td>${league.admin_username}</td>
+                      <td>${league.prem_limit}</td>
+                      <td>${league.champ_limit}</td>
+                      <td>${league.la_liga_limit}</td>
+                      <td>${league.seriea_limit}</td>
+                      <td>${league.bundes_limit}</td>
+                      <td>${league.ligue1_limit}</td>
                     </tr>`;
         new_html += row;
     });
