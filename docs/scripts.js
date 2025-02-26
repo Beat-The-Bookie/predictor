@@ -5,6 +5,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // document.getElementById('reg-btn').disabled = true
 });
 
+show_league = ''
 const supaclient = supabase.createClient('https://srhywkedxssxlsjrholj.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNyaHl3a2VkeHNzeGxzanJob2xqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MjYzOTYxNjUsImV4cCI6MjA0MTk3MjE2NX0.lUZUAm20JIH3aoUxmyCAcr8l-A3_S3FpTaHuljrwm50')
 let user = ""
 const league_shorthands = ['prem', 'la_liga', 'champ', 'seriea', 'bundes', 'ligue1']
@@ -28,7 +29,7 @@ async function login() {
       document.getElementById('pword').value = ""
       document.getElementById('uname').value = ""
 
-      // Deactivate textboxes while things are happening, loading sign?
+    // Deactivate textboxes while things are happening, loading sign?
     } else {
       let {data, error} = await supaclient.from('credentials').select('passcode')
 
@@ -224,7 +225,7 @@ async function add_users() {
   let { data , error } = await supaclient.from('leaderboard').select('username')
   let html_info = `<div class="row justify-content-center">
                     <div class="col">
-                      <h3>The Players</h3>
+                      <h3>Players</h3>
                     </div>
                   </div>
                   <table class="table table-bordered border-primary">
@@ -249,8 +250,8 @@ async function add_users() {
   document.querySelector(`#pre-leaderboard`).innerHTML = html_info
 }
 
-async function mini_leagues_pre(uname)  {
-  let {data, error} = await supaclient.from('mini_league_members').select('mini_league_id').eq('username', uname)
+async function mini_leagues_pre()  {
+  let {data, error} = await supaclient.from('mini_league_members').select('mini_league_id').eq('username', user)
   new_html = ` <div class="row justify-content-between" style="margin-bottom:8px">
                   <div class="col-auto">
                     <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createLeagueModal">Create League</button>
@@ -349,10 +350,14 @@ async function mini_leagues_pre(uname)  {
                   <tbody id="leagueTableBody">`
 
   leagues.forEach(league => {
-      let row = `<tr>
-          <td>${league.name}</td>
-          <td>${league.admin_username}</td>
-      </tr>`;
+      let row = ` <tr>
+                    <td>
+                        <button class="btn btn-link" onclick="league_entrants('${league.name}')">
+                            ${league.name}
+                        </button>
+                    </td>
+                    <td>${league.admin_username}</td>
+                  </tr>`;
       new_html += row;
   });
 
@@ -360,6 +365,63 @@ async function mini_leagues_pre(uname)  {
   </table>`
 
   document.querySelector(`#pre-leagues`).innerHTML = new_html
+}
+
+async function league_entrants(league) {
+  let {data, error} = await supaclient.from("mini_leagues").select("id").eq("name", league)
+  console.log("DATA", data[0]['id'])
+
+  let {data: users, error: userError} = await supaclient.from("mini_league_members").select("username").eq("mini_league_id", data[0]['id'])
+  new_html = `<div class="row justify-content-between" style="margin-bottom:8px">
+                <div class="col-auto">
+                  <button class="btn btn-primary" onclick="mini_leagues_pre()">Back</button>
+                </div>
+                <div class="col-auto">
+                  <h3>${league}</h3>
+                </div> 
+                <div class="col-auto">
+                  <button class="btn btn-primary">Leave League</button>
+                </div>
+              </div>`
+  new_html += `<table class="table table-bordered border-primary">
+                  <thead>
+                      <tr>
+                          <th>User</th>
+                      </tr>
+                  </thead>
+                  <tbody id="miniLeagueUsers">`
+
+  users.forEach(user => {
+      let row = ` <tr>
+                    <td>${user['username']}</td>
+                  </tr>`;
+      new_html += row;
+  });
+
+  new_html += `</tbody>
+  </table>`
+
+  // console.log("Before update:", document.querySelector("#pre-leagues").innerHTML);
+  // document.querySelector("#pre-leagues").innerHTML = ""; // Clear previous content
+  // document.querySelector("#pre-leagues").innerHTML = new_html;
+  // console.log("After update:", document.querySelector("#pre-leagues").innerHTML);
+ 
+  let preLeagues = document.querySelector("#pre-leagues");
+
+  // Clear all content inside the #pre-leagues div (buttons, table, etc.)
+  preLeagues.innerHTML = "";
+  
+  // Insert the new table
+  preLeagues.innerHTML = new_html;
+
+  // let preLeagues = document.querySelector("#pre-leagues");
+  // let newElement = document.createElement("div");
+  // newElement.id = "pre-leagues";
+  // newElement.innerHTML = new_html;
+  // preLeagues.replaceWith(newElement);
+  
+  // Make table to show
+  // Assign to #pre-leagues
 }
 
 async function joinLeague() {
@@ -408,7 +470,7 @@ async function joinLeague() {
   modal.hide();
 
   // Refresh the league list
-  mini_leagues_pre(username);
+  mini_leagues_pre();
 }
 
 async function add_pred_table(uname) {
@@ -452,7 +514,7 @@ async function add_pred_table(uname) {
       }
     })
   }
-  mini_leagues_pre(uname)
+  mini_leagues_pre()
 }
 
 async function createLeague() {
@@ -513,7 +575,7 @@ async function createLeague() {
       modal.hide();
 
       // Optionally, refresh the league list
-      mini_leagues_pre(adminUsername);
+      mini_leagues_pre();
   }
 }
 
