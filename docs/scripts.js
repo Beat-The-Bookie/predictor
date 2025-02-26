@@ -1,3 +1,7 @@
+document.addEventListener("DOMContentLoaded", async () => {
+  await restoreSession()
+})
+
 deadline_passed = false
 if (deadline_passed == true) {
   disable_boxes()
@@ -6,6 +10,28 @@ if (deadline_passed == true) {
 const supaclient = supabase.createClient('https://srhywkedxssxlsjrholj.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNyaHl3a2VkeHNzeGxzanJob2xqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MjYzOTYxNjUsImV4cCI6MjA0MTk3MjE2NX0.lUZUAm20JIH3aoUxmyCAcr8l-A3_S3FpTaHuljrwm50')
 let user = ""
 const league_shorthands = ['prem', 'la_liga', 'champ', 'seriea', 'bundes', 'ligue1']
+
+async function restoreSession() {
+  user = localStorage.getItem("loggedInUser")
+  if (user) {
+    document.getElementById('login-page').classList.add('d-none');
+
+    if (!deadline_passed) {
+      document.getElementById('main-page-pre').classList.remove('d-none');
+      retrieve_info();
+    } else {
+      document.getElementById('main-page-post').classList.remove('d-none');
+      add_locked_preds();
+    }
+  }
+}
+
+async function logout() {
+  localStorage.removeItem("loggedInUser"); // Clear stored user
+  document.getElementById('login-page').classList.remove('d-none');
+  document.getElementById('main-page-pre').classList.add('d-none');
+  document.getElementById('main-page-post').classList.add('d-none');
+}
 
 async function login() {
   try {
@@ -16,9 +42,8 @@ async function login() {
       .eq('username', user)
     
     if (error) throw error
-    let found = data.length > 0
 
-    if (!found) {
+    if (data.length === 0) {
       alert("Username not recognised")
       document.getElementById('pword').value = ""
       document.getElementById('uname').value = ""
@@ -29,6 +54,7 @@ async function login() {
       if (document.getElementById('pword').value == data[0]['passcode']) {
         document.getElementById('login-page').classList.add('d-none');
 
+        localStorage.setItem("loggedInUser", user)
         if (deadline_passed == false) {
           document.getElementById('main-page-pre').classList.remove('d-none');
           retrieve_info()
