@@ -24,10 +24,14 @@ class calc_scores:
                 scores = {}
                 for league in range(len(self.leagues)):
                     scores[self.names[league]] = sum(self.points[league][:(response.data[0][self.names[league]+'_limit'] - 1)])
-                scores['total'] = sum(scores.values())
+                total = sum(scores.values())
 
                 response = self.supabase.table("mini_league_members").update({
                 "score_per_league": scores
+                }).eq("username", users.data[user]['username']).eq("mini_league_id", mini_league['mini_league_id']).execute()
+
+                response = self.supabase.table("mini_league_members").update({
+                    "total_score": total
                 }).eq("username", users.data[user]['username']).eq("mini_league_id", mini_league['mini_league_id']).execute()
 
     def calculate_scores(self, uname):

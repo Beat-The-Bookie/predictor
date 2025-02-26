@@ -350,18 +350,32 @@ async function mini_leagues(post)  {
                   </thead>
                   <tbody id="leagueTableBody">`
 
-  leagues.forEach(league => {
+  if (post == false) {
+    leagues.forEach(league => {
+        let row = ` <tr>
+                      <td>
+                          <button class="btn btn-link" onclick="league_entrants('${league.name}')">
+                              ${league.name}
+                          </button>
+                      </td>
+                      <td>${league.admin_username}</td>
+                    </tr>`;
+        new_html += row;
+    });
+  } else {
+    leagues.forEach(league => {
       let row = ` <tr>
                     <td>
-                        <button class="btn btn-link" onclick="league_entrants('${league.name}')">
-                            ${league.name}
-                        </button>
+                      <button class="btn btn-link" onclick="league_standings('${league.name}')">
+                        ${league.name}
+                      </button>
                     </td>
                     <td>${league.admin_username}</td>
-                  </tr>`;
-      new_html += row;
-  });
-
+                  </tr>`
+        new_html += row
+    })
+  }
+  
   new_html += `</tbody>
   </table>`
 
@@ -375,7 +389,6 @@ async function mini_leagues(post)  {
 
 async function league_entrants(league) {
   let {data, error} = await supaclient.from("mini_leagues").select("id").eq("name", league)
-  console.log("DATA", data[0]['id'])
 
   let {data: users, error: userError} = await supaclient.from("mini_league_members").select("username").eq("mini_league_id", data[0]['id'])
   new_html = `<div class="row justify-content-between" style="margin-bottom:8px">
@@ -389,6 +402,7 @@ async function league_entrants(league) {
                   <button class="btn btn-primary">Leave League</button>
                 </div>
               </div>`
+  // Add limits for each league for each mini-league?
   new_html += `<table class="table table-bordered border-primary">
                   <thead>
                       <tr>
@@ -407,11 +421,6 @@ async function league_entrants(league) {
   new_html += `</tbody>
   </table>`
 
-  // console.log("Before update:", document.querySelector("#pre-leagues").innerHTML);
-  // document.querySelector("#pre-leagues").innerHTML = ""; // Clear previous content
-  // document.querySelector("#pre-leagues").innerHTML = new_html;
-  // console.log("After update:", document.querySelector("#pre-leagues").innerHTML);
- 
   let preLeagues = document.querySelector("#pre-leagues");
 
   // Clear all content inside the #pre-leagues div (buttons, table, etc.)
@@ -419,15 +428,66 @@ async function league_entrants(league) {
   
   // Insert the new table
   preLeagues.innerHTML = new_html;
+}
 
-  // let preLeagues = document.querySelector("#pre-leagues");
-  // let newElement = document.createElement("div");
-  // newElement.id = "pre-leagues";
-  // newElement.innerHTML = new_html;
-  // preLeagues.replaceWith(newElement);
+async function league_standings(league) {
+  let {data, error} = await supaclient.from("mini_leagues").select("id").eq("name", league)
+  let {data: users, error: userError} = await supaclient.from("mini_league_members").select("username, score_per_league, total_score").eq("mini_league_id", data[0]['id']).order("score_per_league", { ascending: false });
+  console.log("DATA", users[0]['score_per_league'])
+  new_html = `<div class="row justify-content-between" style="margin-bottom:8px">
+                <div class="col-auto">
+                  <button class="btn btn-primary" onclick="mini_leagues(true)">Back</button>
+                </div>
+                <div class="col-auto">
+                  <h3>${league}</h3>
+                </div> 
+                <div class="col-auto">
+                  <button class="btn btn-primary">Leave League</button>
+                </div>
+              </div>`
+  new_html += `<table class="table table-bordered border-primary">
+                  <thead>
+                      <tr>
+                          <th>Place</th>
+                          <th>User</th>
+                          <th>Prem</th>
+                          <th>Championship</th>
+                          <th>La Liga</th>
+                          <th>Serie A</th>
+                          <th>Bundesliga</th>
+                          <th>Ligue 1</th>
+                          <th>Total</th>
+                      </tr>
+                  </thead>
+                  <tbody id="miniLeagueStandings">`
+
+  place = 1
+  users.forEach(user => {
+      let row = ` <tr>
+                    <td>${place}</td>
+                    <td>${user['username']}</td>
+                    <td>${user['score_per_league']['prem']}</td>
+                    <td>${user['score_per_league']['champ']}</td>
+                    <td>${user['score_per_league']['la_liga']}</td>
+                    <td>${user['score_per_league']['seriea']}</td>
+                    <td>${user['score_per_league']['bundes']}</td>
+                    <td>${user['score_per_league']['ligue1']}</td>
+                    <td>${user['total_score']}</td>
+                  </tr>`;
+      new_html += row;
+      place += 1
+  });
+
+  new_html += `</tbody>
+  </table>`
+
+  let postLeagues = document.querySelector("#post-leagues");
+
+  // Clear all content inside the #pre-leagues div (buttons, table, etc.)
+  postLeagues.innerHTML = "";
   
-  // Make table to show
-  // Assign to #pre-leagues
+  // Insert the new table
+  postLeagues.innerHTML = new_html;
 }
 
 async function joinLeague() {
@@ -556,7 +616,6 @@ async function createLeague() {
   // Insert into Supabase
   let { data, error} = await supaclient.from("mini_leagues").insert([newLeague]).select("id").single();;
 
-  console.log("LD", data)
   let leagueId = data.id; // Get the newly created league's ID
 
   // Insert admin as a member of the league
@@ -699,7 +758,6 @@ async function add_locked_preds(uname) {
 
 async function add_leaderboard() {
   let { data , error } = await supaclient.from('leaderboard').select('*').order('total', { ascending: false });
-  console.log("DATA", data)
   let html_info = `<div class="row justify-content-center">
                     <div class="col">
                       <h3>The Leaderboard</h3>
