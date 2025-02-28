@@ -125,7 +125,7 @@ async function register() {
       console.log('Error:', error.message || JSON.stringify(error));
       alert('An error occurred while creating the account. Please try again.');
     }
-    user_team_list()
+    user_team_list(new_uname)
   }
 }
 
@@ -149,25 +149,25 @@ function change_tab(tab) {
 }
 
 // When the user has registered, team list to be created
-async function user_team_list() {
+async function user_team_list(uname) {
   for (let league = 0; league < league_shorthands.length; league++) {
 
     let { data , error } = await supaclient.from(`${league_shorthands[league]}_preds`).select('*').eq('username','all_teams')
     delete data[0].username
 
-    let {d, e} = await supaclient
+    let {data:d, error: e} = await supaclient
     .from(`${league_shorthands[league]}_preds`)
-    .insert([{'username':user}])
+    .insert([{'username':uname}])
 
     let { da, er } = await supaclient
     .from(`${league_shorthands[league]}_preds`)
     .update(data)
-    .eq('username', user)
+    .eq('username', uname)
     .select()
 
     let {dat, error3} = await supaclient
     .from(`${league_shorthands[league]}_scores`)
-    .insert([{'username': user}])
+    .insert([{'username': uname}])
 
     // Prepare the update object with columns from 1 to 20 set to 0
     const updateData = {};
@@ -178,12 +178,12 @@ async function user_team_list() {
     let {data2, error2} = await supaclient
     .from(`${league_shorthands[league]}_scores`)
     .update(updateData)
-    .eq('username', user)
+    .eq('username', uname)
     .select()
   }
   let {data4, error4} = await supaclient
   .from('leaderboard')
-  .insert([{'username': user}])
+  .insert([{'username': uname}])
 }
 
 async function retrieve_info() {
