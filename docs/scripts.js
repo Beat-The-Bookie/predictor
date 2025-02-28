@@ -349,7 +349,7 @@ async function mini_leagues(post)  {
   // Fetch mini-league details
   let { data: leagues, error: leagueError } = await supaclient
   .from("mini_leagues")
-  .select("name, admin_username, prem_limit, champ_limit, la_liga_limit, seriea_limit, bundes_limit, ligue1_limit, id")
+  .select("name, admin_username, prem_limit, champ_limit, la_liga_limit, seriea_limit, bundes_limit, ligue1_limit, id, join_code")
   .in("id", leagueIDs);
 
   new_html += `<table class="table table-bordered border-primary">
@@ -363,6 +363,7 @@ async function mini_leagues(post)  {
                           <th>Serie A Limit</th>
                           <th>Bundesliga Limit</th>
                           <th>Ligue 1 Limit</th>
+                          <th>Join Code</th>
                       </tr>
                   </thead>
                   <tbody id="leagueTableBody">`
@@ -382,6 +383,7 @@ async function mini_leagues(post)  {
                       <td>${league.seriea_limit}</td>
                       <td>${league.bundes_limit}</td>
                       <td>${league.ligue1_limit}</td>
+                      <td>${league.join_code}</td>
                     </tr>`;
         new_html += row;
     });
@@ -649,6 +651,8 @@ async function createLeague() {
       return;
   }
 
+  code = createPasscode()
+
   // Prepare data object for Supabase
   let newLeague = {
       name: leagueName,
@@ -659,7 +663,7 @@ async function createLeague() {
       seriea_limit: parseInt(serieaLimit),
       bundes_limit: parseInt(bundesligaLimit),
       ligue1_limit: parseInt(ligue1Limit),
-      join_code: createPasscode(),
+      join_code: code,
   };
 
   // Insert into Supabase
@@ -682,7 +686,7 @@ async function createLeague() {
       console.error("Error creating league:", error);
       alert("Failed to create league. Please try again.");
   } else {
-      alert("League created successfully!");
+      alert("League created successfully! The join code is: " + code);
       
       // Close the modal
       let modal = bootstrap.Modal.getInstance(document.getElementById("createLeagueModal"));
