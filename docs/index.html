@@ -26,7 +26,6 @@
 <body>
   <header class="banner">
     <img src="logo.png" alt="Logo" width="120" height="50">
-    <button class="btn btn-primary" onclick="logout()">Logout</button>
   </header>
   <div class="container" id="login-page">
     <div class="row">
@@ -91,7 +90,7 @@
         Predictions 2024/2025
       </div>
       <div class="card-body">
-        <nav>
+        <nav class="d-flex align-items-center">
           <div class="nav nav-tabs" id="pre-nav-tab" role="tablist">
             <button class="nav-link active" id="pre-nav-home-tab" type="button" role="tab" onclick="change_tab('pre-nav-home')">Welcome</button>
             <button class="nav-link" id="pre-nav-prem-tab" type="button" role="tab" onclick="change_tab('pre-nav-prem')">Premier League</button>
@@ -103,6 +102,7 @@
             <button class="nav-link" id="pre-nav-leaderboard-tab"  type="button" role="tab" onclick="change_tab('pre-nav-leaderboard')">Leaderboard</button>
             <button class="nav-link" id="pre-nav-leagues-tab" type="button" role="tab" onclick="change_tab('pre-nav-leagues')">Leagues</button>
           </div>
+          <button class="btn btn-danger ms-auto" onclick="logout()">Logout</button>
         </nav>
         <div class="tab-content" id="nav-tabContent">
           <div class="tab-pane show active" id="pre-nav-home" role="tabpanel" tabindex="0">
@@ -191,7 +191,7 @@
         Predictions 2024/2025
       </div>
       <div class="card-body">
-        <nav>
+        <nav class="d-flex align-items-center">
           <div class="nav nav-tabs" id="post-nav-tab" role="tablist">
             <button class="nav-link active" id="post-nav-home-tab" type="button" role="tab" onclick="change_tab('post-nav-home')">Home</button>
             <button class="nav-link" id="post-nav-prem-tab" type="button" role="tab" onclick="change_tab('post-nav-prem')">Premier League</button>
@@ -203,6 +203,7 @@
             <button class="nav-link" id="post-nav-leaderboard-tab"  type="button" role="tab" onclick="change_tab('post-nav-leaderboard')">Leaderboard</button>
             <button class="nav-link" id="post-nav-leagues-tab" type="button" role="tab" onclick="change_tab('post-nav-leagues')">Leagues</button>
           </div>
+          <button class="btn btn-danger ms-auto" onclick="logout()">Logout</button>
         </nav>
         <div class="tab-content" id="nav-tabContent">
           <div class="tab-pane show active" id="post-nav-home" role="tabpanel" tabindex="0">

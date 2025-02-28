@@ -138,11 +138,11 @@ function change_tab(tab) {
   const selectedTab = document.getElementById(tab);
   selectedTab.classList.add('show', 'active');
 
-  if (!deadline_passed) {
-    retrieve_info();
-  } else {
-    add_locked_preds();
-  }
+  // if (!deadline_passed) {
+  //   retrieve_info();
+  // } else {
+  //   add_locked_preds();
+  // }
 }
 
 // When the user has registered, team list to be created
