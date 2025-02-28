@@ -413,7 +413,6 @@ async function mini_leagues(post)  {
   }
 
 async function league_entrants(league, id) {
-  console.log("ID1", id)
   let {data, error} = await supaclient.from("mini_leagues").select("id, admin_username").eq("name", league)
   if (user == data[0]['admin_username']) {
     button = `<button class="btn btn-primary" onclick="delete_league('${id}')">Delete League</button>`
@@ -460,11 +459,21 @@ async function league_entrants(league, id) {
 
 async function leave_league(id) {
   if (confirm("Are you sure you would like to leave this league?")) {
-    let {error} = await supaclient
+    let { error } = await supaclient
       .from("mini_league_members")
       .delete()
       .eq("mini_league_id", id)
       .eq("username", user)
+    mini_leagues(false)
+  }
+}
+
+async function delete_league(id) {
+  if (confirm("Are you sure you would like to delete this league?")) {
+    let { error } = await supaclient
+      .from("mini_leagues")
+      .delete()
+      .eq("id", id)
     mini_leagues(false)
   }
 }
