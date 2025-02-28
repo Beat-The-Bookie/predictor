@@ -1,5 +1,6 @@
 document.addEventListener("DOMContentLoaded", async () => {
-  deadline_passed = true
+  const deadline = new Date('2025-03-30T20:00:00')
+  deadline_passed = new Date() > deadline
   if (deadline_passed == true) {
     disable_boxes()
   }
