@@ -26,10 +26,12 @@ async function restoreSession() {
 }
 
 async function logout() {
-  localStorage.removeItem("loggedInUser"); // Clear stored user
-  document.getElementById('login-page').classList.remove('d-none');
-  document.getElementById('main-page-pre').classList.add('d-none');
-  document.getElementById('main-page-post').classList.add('d-none');
+  if (confirm("Are you sure you would like to log out?")) {
+    localStorage.removeItem("loggedInUser"); // Clear stored user
+    document.getElementById('login-page').classList.remove('d-none');
+    document.getElementById('main-page-pre').classList.add('d-none');
+    document.getElementById('main-page-post').classList.add('d-none');
+  }
 }
 
 async function login() {
@@ -343,7 +345,7 @@ async function mini_leagues(post)  {
   // Fetch mini-league details
   let { data: leagues, error: leagueError } = await supaclient
   .from("mini_leagues")
-  .select("name, admin_username, prem_limit, champ_limit, la_liga_limit, seriea_limit, bundes_limit, ligue1_limit")
+  .select("name, admin_username, prem_limit, champ_limit, la_liga_limit, seriea_limit, bundes_limit, ligue1_limit, id")
   .in("id", leagueIDs);
 
   new_html += `<table class="table table-bordered border-primary">
@@ -365,7 +367,7 @@ async function mini_leagues(post)  {
     leagues.forEach(league => {
         let row = ` <tr>
                       <td>
-                          <button class="btn btn-link" onclick="league_entrants('${league.name}')">
+                          <button class="btn btn-link" onclick="league_entrants('${league.name}', '${league['id']}')">
                               ${league.name}
                           </button>
                       </td>
@@ -410,9 +412,13 @@ async function mini_leagues(post)  {
 
   }
 
-async function league_entrants(league) {
-  let {data, error} = await supaclient.from("mini_leagues").select("id").eq("name", league)
-
+async function league_entrants(league, id) {
+  let {data, error} = await supaclient.from("mini_leagues").select("id, admin_username").eq("name", league)
+  if (user == data[0]['admin_username']) {
+    button = `<button class="btn btn-primary" onclick="delete_league('${id}')">Delete League</button>`
+  } else {
+    button = `<button class="btn btn-primary" onclick="leave_league('${id}')">Leave League</button>`
+}
   let {data: users, error: userError} = await supaclient.from("mini_league_members").select("username").eq("mini_league_id", data[0]['id'])
   new_html = `<div class="row justify-content-between" style="margin-bottom:8px">
                 <div class="col-auto">
@@ -421,9 +427,7 @@ async function league_entrants(league) {
                 <div class="col-auto">
                   <h3>${league}</h3>
                 </div> 
-                <div class="col-auto">
-                  <button class="btn btn-primary">Leave League</button>
-                </div>
+                <div class="col-auto">${button}</div>
               </div>`
   // Add limits for each league for each mini-league?
   new_html += `<table class="table table-bordered border-primary">
@@ -453,6 +457,27 @@ async function league_entrants(league) {
   preLeagues.innerHTML = new_html;
 }
 
+async function leave_league(id) {
+  if (confirm("Are you sure you would like to leave this league?")) {
+    let { error } = await supaclient
+      .from("mini_league_members")
+      .delete()
+      .eq("mini_league_id", id)
+      .eq("username", user)
+    mini_leagues(false)
+  }
+}
+
+async function delete_league(id) {
+  if (confirm("Are you sure you would like to delete this league?")) {
+    let { error } = await supaclient
+      .from("mini_leagues")
+      .delete()
+      .eq("id", id)
+    mini_leagues(false)
+  }
+}
+
 async function league_standings(league) {
   let {data, error} = await supaclient.from("mini_leagues").select("id").eq("name", league)
   let {data: users, error: userError} = await supaclient.from("mini_league_members").select("username, score_per_league, total_score").eq("mini_league_id", data[0]['id']).order("score_per_league", { ascending: false });
@@ -464,9 +489,7 @@ async function league_standings(league) {
                 <div class="col-auto">
                   <h3>${league}</h3>
                 </div> 
-                <div class="col-auto">
-                  <button class="btn btn-primary">Leave League</button>
-                </div>
+                <div class="col-auto"></div>
               </div>`
   new_html += `<table class="table table-bordered border-primary">
                   <thead>
