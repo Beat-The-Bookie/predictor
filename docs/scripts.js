@@ -1,5 +1,6 @@
 document.addEventListener("DOMContentLoaded", async () => {
-  deadline_passed = false
+  const deadline = new Date('2025-03-30T20:00:00')
+  deadline_passed = new Date() > deadline
   if (deadline_passed == true) {
     disable_boxes()
   }
@@ -309,6 +310,9 @@ async function mini_leagues(post)  {
                     </div>
                   </div>
                   <div class="col-auto">
+                    <h3>Your Leagues</h3>
+                  </div>
+                  <div class="col-auto">
                     <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#joinLeagueModal">Join League</button>
                   </div>
                   <div class="modal fade" id="joinLeagueModal" tabindex="-1" aria-labelledby="joinLeagueModalLabel" aria-hidden="true">
@@ -481,7 +485,6 @@ async function delete_league(id) {
 async function league_standings(league) {
   let {data, error} = await supaclient.from("mini_leagues").select("id").eq("name", league)
   let {data: users, error: userError} = await supaclient.from("mini_league_members").select("username, score_per_league, total_score").eq("mini_league_id", data[0]['id']).order("score_per_league", { ascending: false });
-  console.log("DATA", users[0]['score_per_league'])
   new_html = `<div class="row justify-content-between" style="margin-bottom:8px">
                 <div class="col-auto">
                   <button class="btn btn-primary" onclick="mini_leagues(true)">Back</button>
@@ -829,22 +832,44 @@ async function add_leaderboard() {
 
   for (let i = 0; i < (Object.keys(data).filter(key => !isNaN(key)).length); i++) {
     html_info += `<tr>
-                          <td scope="row">${i+1}</th>
-                          <td>${data[i].username}</td>
-                          <td>${data[i].prem}</td>
-                          <td>${data[i].la_liga}</td>
-                          <td>${data[i].champ}</td>
-                          <td>${data[i].seriea}</td>
-                          <td>${data[i].bundes}</td>
-                          <td>${data[i].ligue1}</td>
-                          <td>${data[i].total}</td>
-                        </tr>`
+                    <td scope="row">${i+1}</td>
+                    <td>${data[i].username}</td>
+                    <td><button class="btn btn-link" onclick="view_preds('${data[i].username}', 'prem')">
+                      ${data[i].prem}
+                    </button></td>
+                    <td><button class="btn btn-link" onclick="view_preds('${data[i].username}', 'champ')">
+                      ${data[i].champ}
+                    </button></td>
+                    <td><button class="btn btn-link" onclick="view_preds('${data[i].username}', 'la_liga')">
+                      ${data[i].la_liga}
+                    </button></td>                          
+                    <td><button class="btn btn-link" onclick="view_preds('${data[i].username}', 'seriea')">
+                      ${data[i].seriea}
+                    </button></td>                          
+                    <td><button class="btn btn-link" onclick="view_preds('${data[i].username}', 'bundes')">
+                      ${data[i].bundes}
+                    </button></td>
+                    <td><button class="btn btn-link" onclick="view_preds('${data[i].username}', 'ligue1')">
+                      ${data[i].ligue1}
+                    </button></td>
+                    <td>${data[i].total}</td>                 
+                  </tr>`
   }
 
   html_info +=  `</tbody>
                   </table>`
 
   document.querySelector(`#post-leaderboard`).innerHTML = html_info
+}
+
+async function view_preds(uname, league) {
+  let { data , error } = await supaclient
+  .from(`${league}_preds`)
+  .select('*')
+  .eq('username', user)
+  scores = other_scores(uname, league)
+  delete data[0]['username']
+  delete scores[0]['username']
 }
 
 async function add_prem_table() {
@@ -870,35 +895,30 @@ async function add_prem_table() {
                     </thead>
                     <tbody id="table-current-pred">`
 
-    if (league != 5) {
-      for (let i = 1; i < (Object.keys(data[0]).filter(key => !isNaN(key)).length + 1); i++) {
-        html_pred += `<tr>
-                        <td>${i}</td>
-                        <td>${data[0][i.toString()]}</td>
-                        <td>${data[2][i.toString()]}</td>
-                        <td>${data[3][i.toString()]}</td>
-                        <td>${data[1][i.toString()]}</td>
-                      </tr>`
-      }
-    } else {
-      for (let i = 1; i < (Object.keys(data[0]).filter(key => !isNaN(key)).length + 1); i++) {
-        html_pred += `<tr>
-                        <td>${i}</td>
-                        <td>${data[1][i.toString()]}</td>
-                        <td>${data[3][i.toString()]}</td>
-                        <td>${data[0][i.toString()]}</td>
-                        <td>${data[2][i.toString()]}</td>
-                      </tr>`
+    for (let i = 1; i < (Object.keys(data[0]).filter(key => !isNaN(key)).length + 1); i++) {
+      html_pred += `<tr>
+                      <td>${i}</td>
+                      <td>${data[0][i.toString()]}</td>
+                      <td>${data[2][i.toString()]}</td>
+                      <td>${data[3][i.toString()]}</td>
+                      <td>${data[1][i.toString()]}</td>
+                    </tr>`
     }
-  }
-  html_pred += `</tbody>
-              </table>`
 
-  document.querySelector(`#${league_shorthands[league]}-standings`).innerHTML = html_pred
+    html_pred += `</tbody>
+                </table>`
+
+    document.querySelector(`#${league_shorthands[league]}-standings`).innerHTML = html_pred
+  }
 }
-}
+
 async function fetch_scores(shorthand) {
   let {data, error}  = await supaclient.from(`${shorthand}_scores`).select('*').eq('username', user)
+  return data[0]
+}
+
+async function other_scores(uname, shorthand) {
+  let {data, error}  = await supaclient.from(`${shorthand}_scores`).select('*').eq('username', uname)
   return data[0]
 }
 
