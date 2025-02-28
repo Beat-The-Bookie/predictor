@@ -117,3 +117,7 @@ th {
     margin: 0; /* Remove any margin */
     padding: 20px; /* Optional: Add padding for spacing */
 }
+
+.btn-link {
+    text-decoration: none !important;
+  }
