@@ -9,6 +9,7 @@ class calc_scores:
         self.funcs = [self.premier_league_scoring, self.la_liga_scoring, self.championship_scoring,
                  self.serie_a_scoring, self.bundesliga_scoring, self.ligue_1_scoring]
         self.points = [None] * 6
+        self.names = ['prem', 'champ', 'la_liga', 'seriea', 'bundes', 'ligue1']
 
         
     def run_scorer(self):
@@ -20,10 +21,13 @@ class calc_scores:
 
             for mini_league in mini_leagues.data:
                 response = self.supabase.table('mini_leagues').select('prem_limit, champ_limit, la_liga_limit, seriea_limit, bundes_limit, ligue1_limit').eq('id', mini_league['mini_league_id']).execute()
-
                 scores = {}
                 for league in range(len(self.leagues)):
-                    scores[self.names[league]] = sum(self.points[league][:(response.data[0][self.names[league]+'_limit'] - 1)])
+                    try:
+                        scores[self.names[league]] = sum(self.points[league][:(response.data[0][self.names[league]+'_limit'] - 1)])
+                    except:
+                        print("NO LIMIT")
+                        scores[self.names[league]] = 0
                 total = sum(scores.values())
 
                 response = self.supabase.table("mini_league_members").update({
