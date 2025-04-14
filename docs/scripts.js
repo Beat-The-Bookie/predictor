@@ -811,11 +811,25 @@ async function add_locked_preds() {
   mini_leagues(true)
 }
 
-async function add_leaderboard() {
-  let { data , error } = await supaclient.from('leaderboard').select('*').order('total', { ascending: false });
-  let html_info = `<div class="row justify-content-center">
-                    <div class="col">
-                      <h3>The Leaderboard</h3>
+async function add_leaderboard(sortBy = 'total') {
+  console.log("VALUE", sortBy)
+  let { data , error } = await supaclient.from('leaderboard').select('*').order(sortBy, { ascending: false });
+  let html_info = `  <div class="row justify-content-between align-items-center mb-3">
+                      <div class="col-auto">
+                        <h3>The Leaderboard</h3>
+                      </div>
+                      <div class="col-auto d-flex align-items-center ms-auto">
+                        <label for="sort-select" class="form-label me-2 mb-0">Sort By:</label>
+                        <select class="form-select" id="sort-select" style="width: auto;" onchange="add_leaderboard(this.value)">
+                          <option value="total" ${sortBy === 'total' ? 'selected' : ''}>Total</option>
+                          <option value="prem" ${sortBy === 'prem' ? 'selected' : ''}>Premier League</option>
+                          <option value="la_liga" ${sortBy === 'la_liga' ? 'selected' : ''}>La Liga</option>
+                          <option value="champ" ${sortBy === 'champ' ? 'selected' : ''}>Championship</option>
+                          <option value="seriea" ${sortBy === 'seriea' ? 'selected' : ''}>Serie A</option>
+                          <option value="bundes" ${sortBy === 'bundes' ? 'selected' : ''}>Bundesliga</option>
+                          <option value="ligue1" ${sortBy === 'ligue1' ? 'selected' : ''}>Ligue 1</option>
+                        </select>
+                      </div>
                     </div>
                   </div>
                   <table class="table table-bordered border-primary">
@@ -823,13 +837,13 @@ async function add_leaderboard() {
                         <tr>
                           <th scope="col">#</th>
                           <th scope="col">User</th>
-                          <th scope="col">Premier League</th>
-                          <th scope="col">La Liga</th>
-                          <th scope="col">Championship</th>
-                          <th scope="col">Serie A</th>
-                          <th scope="col">Bundesliga</th>
-                          <th scope="col">Ligue 1</th>
-                          <th scope="col">Total</th>
+                          <th scope="col"><button class="btn btn-link" onclick="add_leaderboard('prem')">Premier League</th>
+                          <th scope="col"><button class="btn btn-link" onclick="add_leaderboard('la_liga')">La Liga</th>
+                          <th scope="col"><button class="btn btn-link" onclick="add_leaderboard('champ')">Championship</button></th>
+                          <th scope="col"><button class="btn btn-link" onclick="add_leaderboard('seriea')">Serie A</th>
+                          <th scope="col"><button class="btn btn-link" onclick="add_leaderboard('bundes')">Bundesliga</th>
+                          <th scope="col"><button class="btn btn-link" onclick="add_leaderboard('ligue1')">Ligue 1</th>
+                          <th scope="col"><button class="btn btn-link" onclick="add_leaderboard('total')">Total</th>
                         </tr>
                       </thead>
                       <tbody>`
@@ -838,24 +852,12 @@ async function add_leaderboard() {
     html_info += `<tr>
                     <td scope="row">${i+1}</td>
                     <td>${data[i].username}</td>
-                    <td><button class="btn btn-link" onclick="view_preds('${data[i].username}', 'prem')">
-                      ${data[i].prem}
-                    </button></td>
-                    <td><button class="btn btn-link" onclick="view_preds('${data[i].username}', 'champ')">
-                      ${data[i].champ}
-                    </button></td>
-                    <td><button class="btn btn-link" onclick="view_preds('${data[i].username}', 'la_liga')">
-                      ${data[i].la_liga}
-                    </button></td>                          
-                    <td><button class="btn btn-link" onclick="view_preds('${data[i].username}', 'seriea')">
-                      ${data[i].seriea}
-                    </button></td>                          
-                    <td><button class="btn btn-link" onclick="view_preds('${data[i].username}', 'bundes')">
-                      ${data[i].bundes}
-                    </button></td>
-                    <td><button class="btn btn-link" onclick="view_preds('${data[i].username}', 'ligue1')">
-                      ${data[i].ligue1}
-                    </button></td>
+                    <td>${data[i].prem}</td>
+                    <td>${data[i].la_liga}</td>                          
+                    <td>${data[i].champ}</td>
+                    <td>${data[i].seriea}</td>                          
+                    <td>${data[i].bundes}</td>
+                    <td>${data[i].ligue1}</td>
                     <td>${data[i].total}</td>                 
                   </tr>`
   }

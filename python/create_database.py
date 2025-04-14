@@ -22,12 +22,12 @@ class create_db:
         leaderboard_query = """
             CREATE TABLE IF NOT EXISTS public.leaderboard (
                 username TEXT NOT NULL,
-                prem TEXT NULL,
-                la_liga TEXT NULL,
-                champ TEXT NULL,
-                seriea TEXT NULL,
-                bundes TEXT NULL,
-                ligue1 TEXT NULL,
+                prem INTEGER NULL,
+                la_liga INTEGER NULL,
+                champ INTEGER NULL,
+                seriea INTEGER NULL,
+                bundes INTEGER NULL,
+                ligue1 INTEGER NULL,
                 total INTEGER NULL,
                 CONSTRAINT leaderboard_pkey PRIMARY KEY (username)
             );
