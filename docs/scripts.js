@@ -484,9 +484,10 @@ async function delete_league(id) {
   }
 }
 
+//HERE
 async function league_standings(league) {
   let {data, error} = await supaclient.from("mini_leagues").select("id").eq("name", league)
-  let {data: users, error: userError} = await supaclient.from("mini_league_members").select("username, score_per_league, total_score").eq("mini_league_id", data[0]['id']).order("score_per_league", { ascending: false });
+  let {data: users, error: userError} = await supaclient.from("mini_league_members").select("username, score_per_league, total_score").eq("mini_league_id", data[0]['id']).order("total_score", { ascending: false });
   new_html = `<div class="row justify-content-between" style="margin-bottom:8px">
                 <div class="col-auto">
                   <button class="btn btn-primary" onclick="mini_leagues(true)">Back</button>
@@ -866,16 +867,6 @@ async function add_leaderboard(sortBy = 'total') {
                   </table>`
 
   document.querySelector(`#post-leaderboard`).innerHTML = html_info
-}
-
-async function view_preds(uname, league) {
-  let { data , error } = await supaclient
-  .from(`${league}_preds`)
-  .select('*')
-  .eq('username', user)
-  scores = other_scores(uname, league)
-  delete data[0]['username']
-  delete scores[0]['username']
 }
 
 async function add_prem_table() {
