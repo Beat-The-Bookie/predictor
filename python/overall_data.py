@@ -29,16 +29,16 @@ leagues = [
 # db_creation.create_users()
 
 # Functions to be done once long before season start
-collect = team_info_collector(supabase=supabase, foot_api=API_KEY, odds_api=ODDS_API, leagues=leagues)
+# collect = team_info_collector(supabase=supabase, foot_api=API_KEY, odds_api=ODDS_API, leagues=leagues)
 # collect.update_teams()
-collect.last_season_results()
+# collect.last_season_results()
 
 # The get_odds function cannot currently be completed, suspicious at that is happening as the season has already started
 # collect.get_odds()
 
 # Collecting the current standings
-# standings = standings_collection(supabase=supabase, foot_api=API_KEY, leagues=leagues)
-# standings.collect_info()
+standings = standings_collection(supabase=supabase, foot_api=API_KEY, leagues=leagues)
+standings.collect_info()
 
-# score_calc = calc_scores(supabase, leagues)
-# score_calc.run_scorer()
+score_calc = calc_scores(supabase, leagues)
+score_calc.run_scorer()

@@ -26,7 +26,6 @@ class calc_scores:
                     try:
                         scores[self.names[league]] = sum(self.points[league][:(response.data[0][self.names[league]+'_limit'] - 1)])
                     except:
-                        print("NO LIMIT")
                         scores[self.names[league]] = 0
                 total = sum(scores.values())
 

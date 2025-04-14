@@ -28,7 +28,7 @@ class create_db:
                 seriea TEXT NULL,
                 bundes TEXT NULL,
                 ligue1 TEXT NULL,
-                total TEXT NULL,
+                total INTEGER NULL,
                 CONSTRAINT leaderboard_pkey PRIMARY KEY (username)
             );
             """
