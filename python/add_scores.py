@@ -66,9 +66,12 @@ class calc_scores:
 
             # Submit the scores into database 
             submit = self.supabase.table(self.leagues[league].shorthand + '_scores').update(update_data).match({'username': uname}).execute()
-
-            self.totals[league] = sum(self.points[league])
             self.names[league] = self.leagues[league].shorthand
+
+            if self.names[league] == 'prem':
+                self.totals[league] = sum(self.points[league])
+            else:
+                self.totals[league] = sum(self.points[league][:6])
     
         self.totals[6] = sum(self.totals[:6])
         self.names[6] = 'total'
