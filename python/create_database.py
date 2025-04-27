@@ -83,7 +83,7 @@ class create_db:
 
         query = f"""
                 CREATE TABLE IF NOT EXISTS public.{league.shorthand}_preds (
-                    username TEXT NOT NULL,
+                    username TEXT PRIMARY KEY,
         """
         for i in range(league.team_num):
             if i != (league.team_num - 1):
@@ -101,7 +101,7 @@ class create_db:
 
         query = f"""
                 CREATE TABLE IF NOT EXISTS public.{league.shorthand}_scores (
-                    username TEXT NOT NULL,
+                    username TEXT PRIMARY KEY,
         """
         for i in range(league.team_num):
             if i != (league.team_num - 1):

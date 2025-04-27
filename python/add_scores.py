@@ -1,9 +1,7 @@
-import requests
-import supabase
-
 class calc_scores:
 
     def __init__(self, supabase, leagues):
+        # Constructor class
         self.supabase = supabase
         self.leagues = leagues
         self.funcs = [self.premier_league_scoring, self.la_liga_scoring, self.championship_scoring,
@@ -14,11 +12,15 @@ class calc_scores:
         
     def run_scorer(self):
 
+        # Checks all users, and runs scorer for each
         users = self.supabase.table('leaderboard').select('username').execute()
         for user in range(len(users.data)):
+
+            # Calculate total scores for the user and checks all mini leagues the user is in
             self.calculate_scores(users.data[user]['username'])
             mini_leagues = self.supabase.table('mini_league_members').select('mini_league_id').eq('username', users.data[user]['username']).execute()
 
+            # For every mini-league the user is in, calculate scores according to league limits 
             for mini_league in mini_leagues.data:
                 response = self.supabase.table('mini_leagues').select('prem_limit, champ_limit, la_liga_limit, seriea_limit, bundes_limit, ligue1_limit').eq('id', mini_league['mini_league_id']).execute()
                 scores = {}
@@ -29,8 +31,9 @@ class calc_scores:
                         scores[self.names[league]] = 0
                 total = sum(scores.values())
 
+                # Upload the scores to supabase
                 response = self.supabase.table("mini_league_members").update({
-                "score_per_league": scores
+                    "score_per_league": scores
                 }).eq("username", users.data[user]['username']).eq("mini_league_id", mini_league['mini_league_id']).execute()
 
                 response = self.supabase.table("mini_league_members").update({
@@ -47,6 +50,7 @@ class calc_scores:
         self.totals = [None] * 7
         self.names = [None] * 7
 
+        # Loop through each league to collect the user's predictions and current standings to compare
         for league in range(len(self.leagues)):
             data[league] = self.supabase.table(self.leagues[league].shorthand + "_preds").select('*').eq('username', uname).execute()
             preds[league] = [value for key, value in data[league].data[0].items() if key!= 'username']
@@ -54,11 +58,11 @@ class calc_scores:
             standings[league] = self.supabase.table(self.leagues[league].shorthand + '_preds').select('*').eq('username', 'standings').execute()
             team_standings[league] = [value for key, value in standings[league].data[0].items() if key!= 'username']
 
-
-
+        # Go through the point totals and upload all to Supabase
         for league in range(len(self.points)):
             self.points[league] = self.funcs[league](preds[league], team_standings[league])
 
+        # Create column names for the Supabase update
             columns = []
             for i in range(1,self.leagues[league].team_num + 1):
                 columns.append(str(i))
@@ -68,6 +72,7 @@ class calc_scores:
             submit = self.supabase.table(self.leagues[league].shorthand + '_scores').update(update_data).match({'username': uname}).execute()
             self.names[league] = self.leagues[league].shorthand
 
+            # Use all scores for the prem, only the first 6 for the other leagues
             if self.names[league] == 'prem':
                 self.totals[league] = sum(self.points[league])
             else:
@@ -75,7 +80,7 @@ class calc_scores:
     
         self.totals[6] = sum(self.totals[:6])
         self.names[6] = 'total'
-        leaderboard = self.supabase.table('leaderboard').update(dict(zip(self.names, self.totals))).match({'username':uname}).execute()
+        self.supabase.table('leaderboard').update(dict(zip(self.names, self.totals))).match({'username':uname}).execute()
 
     def premier_league_scoring(self, preds, team_standings):
         # 20 teams
