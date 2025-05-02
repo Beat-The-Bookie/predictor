@@ -1,5 +1,4 @@
 import requests
-import json
 
 class standings_collection:
     def __init__(self, supabase, foot_api, leagues):

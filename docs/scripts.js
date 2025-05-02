@@ -972,6 +972,7 @@ function forgot_passcode() {
 }
 
 function disable_boxes() {
+  // Disable the register boxes after the deadline
   document.getElementById('reg-uname').disabled = true
   document.getElementById('reg-email').disabled = true
   document.getElementById('reg-btn').disabled = true
