@@ -30,10 +30,9 @@ class team_info_collector:
         responses = [None] * 6
         team_name_list = [None] * 6
         response_responses = [None] * 6
-
         update_data = [None] * 6
 
-        # Make the request to the API
+        # Cycle through the links
         for link in range(len(urls)):
 
             # Create a list for the column names
@@ -41,6 +40,7 @@ class team_info_collector:
             for i in range(1,self.leagues[link].team_num + 1):
                 columns.append(str(i))
 
+            # Make the request to the API
             responses[link] = requests.get(urls[link], headers=headers)
 
             # Check if the request was successful
@@ -84,10 +84,12 @@ class team_info_collector:
         responses_2 = [None] * 6
         update_data = [None] * 6
 
+        # Create the place labels
         places = ['1st', '2nd', '3rd']
         for i in range(4,22):
             places.append(str(i)+'th')
 
+        # Imitate the column names in the database
         columns = []
         for i in range(1,25):
             columns.append(str(i))
@@ -101,19 +103,21 @@ class team_info_collector:
             # Make the request to the API
             responses.append(requests.get(self.find_url(self.leagues[league].footkey), headers=headers))
 
-            temp = (self.leagues[league].shorthand +'_preds')
-            all_teams.append(self.supabase.table(temp).select('*').eq('username', 'all_teams').execute())
+            # Collect the teams from the league
+            all_teams.append(self.supabase.table(self.leagues[league].shorthand +'_preds').select('*').eq('username', 'all_teams').execute())
             all_teams[league] = all_teams[league].data
             all_teams[league] = [value for key, value in all_teams[league][0].items() if key != 'username']
 
+            # Process the league standings
             data = responses[league].json()
             standings.append(data['standings'])
-
             teams = []
-                        # Extract team names from the data
+            
+            # Extract team names from the data
             team_list.append([])            
             for stage_data in standings[league]:
-                for team_entry in stage_data['table']:  # Iterate through the teams
+                # Iterate through the teams
+                for team_entry in stage_data['table']:
                     if self.leagues[league].shorthand != 'prem':
                         if len(team_list[league]) < (self.leagues[league].team_num - self.leagues[league].relegated):
                             team_name = team_entry['team']['name']  # Extract the team name
@@ -125,6 +129,7 @@ class team_info_collector:
                             team_list[league] = teams[:17]
                             relegated_teams = teams[-3:]
 
+            # Championship is different as there are both promoted and relegated team
             if self.leagues[league].shorthand == "champ":
                 current_season_response = requests.get(current_season, headers=headers)
                 current_season_data = current_season_response.json()
@@ -264,8 +269,6 @@ class team_info_collector:
                     print(f"Team: {runner['description']['runnerName']}, Odds: {runner['ex']['availableToBack']}")
         else:
             print(f"Error: {response.status_code}, {response.text}")
-
-
 
     def find_url(self, code):
         return ("https://api.football-data.org/v4/competitions/" + code + "/standings?season=2023")
