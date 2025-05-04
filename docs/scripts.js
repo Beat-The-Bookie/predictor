@@ -26,6 +26,7 @@ async function restoreSession() {
     } else {
       document.getElementById("viewing").textContent = user
       document.getElementById('main-page-post').classList.remove('d-none');
+      renderScoresTable()
       add_locked_preds();
     }
   }
@@ -70,6 +71,7 @@ async function login() {
           retrieve_info()
         } else {
           document.getElementById('main-page-post').classList.remove('d-none')
+          renderScoresTable()
           add_locked_preds()     
         }
 
@@ -1032,4 +1034,34 @@ function disable_boxes() {
   document.getElementById('reg-uname').disabled = true
   document.getElementById('reg-email').disabled = true
   document.getElementById('reg-btn').disabled = true
+}
+
+async function renderScoresTable() {
+
+  let { data } = await supaclient.from('leaderboard').select('*').eq('username', user)
+  scores = data[0]
+
+  html_text = `<table class="table table-bordered border-primary">
+                  <thead>
+                    <tr>
+                      <th>Premier League</th>
+                      <th>La Liga</th>
+                      <th>Championship</th>
+                      <th>Serie A</th>
+                      <th>Bundesliga</th>
+                      <th>Ligue 1</th>
+                      <th>Total</th>
+                    </tr>
+                    <tr>
+                      <td>${scores.prem}</td>
+                      <td>${scores.la_liga}</td>
+                      <td>${scores.champ}</td>
+                      <td>${scores.seriea}</td>
+                      <td>${scores.bundes}</td>
+                      <td>${scores.ligue1}</td>
+                      <td>${scores.total}</td>
+                    </tr>
+                  <thead>
+                </table>`
+  document.getElementById("current-scores").innerHTML = html_text
 }
