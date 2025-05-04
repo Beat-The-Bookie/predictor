@@ -24,9 +24,8 @@ class standings_collection:
 
         standings = []
         responses = []
-        responses_2 = []
-        for url in range(len(urls)):
 
+        for url in range(len(urls)):
 
             responses.append(requests.get(urls[url], headers=headers))
 
@@ -40,17 +39,13 @@ class standings_collection:
                 games_played = [team['playedGames'] for team in data['standings'][0]['table']]
                 goal_differences = [team['goalDifference'] for team in data['standings'][0]['table']]
 
-                # Create a list for the column names
-                # columns = []
-                # for i in range(1,21):
-                #     columns.append(str(i))
-
+                # Create column names and upload all stats for the league to Supabase
                 attributes = [standings, points, games_played, goal_differences]
                 for attribute in range(len(attributes)):
                     columns = []
                     for i in range(1, self.leagues[url].team_num + 1):
                         columns.append(str(i))
-                    responses_r = self.supabase.table(self.leagues[url].shorthand+'_preds').update(dict(zip(columns, attributes[attribute]))).match({'username': self.attributes[attribute]}).execute()
+                    self.supabase.table(self.leagues[url].shorthand+'_preds').update(dict(zip(columns, attributes[attribute]))).match({'username': self.attributes[attribute]}).execute()
 
             else:
                 print(f"Error: {responses[url].status_code} - {responses[url].text}")
