@@ -234,7 +234,7 @@ async function retrieve_info() {
 
 async function add_users() {
   // Collect all users from the leaderboard table
-  let { data , error } = await supaclient.from('leaderboard').select('username')
+  let { data } = await supaclient.from('leaderboard').select('username')
 
   // Create outline for leaderboard table
   let html_info = `<div class="row justify-content-center">
@@ -534,7 +534,7 @@ async function league_standings(league) {
   users.forEach(user => {
       let row = ` <tr>
                     <td>${place}</td>
-                    <td>${user['username']}</td>
+                    <td><button class="btn btn-link" onclick="add_locked_preds('${user['username']}')">${user['username']}</td>
                     <td>${user['score_per_league']['prem']}</td>
                     <td>${user['score_per_league']['champ']}</td>
                     <td>${user['score_per_league']['la_liga']}</td>
@@ -811,13 +811,14 @@ async function add_locked_preds(player = user) {
 
   // Update the status
   document.getElementById("viewing").textContent = player
+  change_tab('post-nav-home')
 
   // Cycle through the leagues
   for (let league = 0; league < league_shorthands.length; league++) {
 
     // Collect the user's predictions and scores
     let { data } = await supaclient.from(`${league_shorthands[league]}_preds`).select('*').eq('username', player)
-    let scores = await fetch_scores(league_shorthands[league])
+    let scores = await fetch_scores(league_shorthands[league], player)
     delete data[0]['username']
     delete scores['username']
 
@@ -960,9 +961,9 @@ async function add_prem_table() {
   }
 }
 
-async function fetch_scores(league) {
+async function fetch_scores(league, player) {
   // Collect the user's scores from one league
-  let {data}  = await supaclient.from(`${league}_scores`).select('*').eq('username', user)
+  let {data}  = await supaclient.from(`${league}_scores`).select('*').eq('username', player)
   return data[0]
 }
 
