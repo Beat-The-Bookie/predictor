@@ -817,8 +817,8 @@ async function add_locked_preds(player = user) {
   for (let league = 0; league < league_shorthands.length; league++) {
 
     // Collect the user's predictions and scores
-    let { data } = await supaclient.from(`${league_shorthands[league]}_preds`).select('*').eq('username', player)
-    let scores = await fetch_scores(league_shorthands[league], player)
+    let { data } = await supaclient.from(`${league_shorthands[league]}_preds`).select('*').eq('username', user)
+    let scores = await fetch_scores(league_shorthands[league], user)
     delete data[0]['username']
     delete scores['username']
 
@@ -851,10 +851,56 @@ async function add_locked_preds(player = user) {
                 </table>`
 
     document.querySelector(`#${league_shorthands[league]}-pred-locked`).innerHTML = html_pred
-    add_leaderboard()
   }
-  add_prem_table()
+
+  if (player == user) { add_prem_table() } else { other_preds(player) }
+
+  add_leaderboard()
   mini_leagues(true)
+}
+
+async function other_preds(player) {
+
+  // Cycle through the leagues
+  for (let league = 0; league < league_shorthands.length; league++) {
+
+    // Collect the user's predictions and scores
+    let { data } = await supaclient.from(`${league_shorthands[league]}_preds`).select('*').eq('username', player)
+    let scores = await fetch_scores(league_shorthands[league], player)
+    delete data[0]['username']
+    delete scores['username']
+
+    let possessive = player.endsWith("s") ? `${player}'` : `${player}'s`;
+
+    html_pred =  `<div class="row justify-content-center">
+                    <div class="col">
+                      <h3>${possessive} Predictions</h3>
+                    </div>
+                  </div>
+                  <table id="locked-pred" class="table table-bordered border-primary">
+                    <thead>
+                      <tr>
+                        <th>Position</th>
+                        <th>Team</th>
+                        <th>Points</th>
+                      </tr>
+                    </thead>
+                    <tbody id="table-body-locked-pred">`
+
+    // Cycle through the teams and create a row in the table for each
+    for (let i = 1; i < (Object.keys(data[0]).filter(key => !isNaN(key)).length + 1); i++) {
+      html_pred += `<tr>
+                      <td>${i}</td>
+                      <td>${data[0][i.toString()]}</td>
+                      <td>${scores[i.toString()]}</td> 
+                    </tr>`
+    }
+
+    // Complete table and display html in correct position
+    html_pred += `</tbody>
+                </table>`
+    document.querySelector(`#${league_shorthands[league]}-standings`).innerHTML = html_pred
+  }
 }
 
 async function add_leaderboard(sortBy = 'total') {
