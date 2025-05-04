@@ -24,6 +24,7 @@ async function restoreSession() {
       document.getElementById('main-page-pre').classList.remove('d-none');
       retrieve_info();
     } else {
+      document.getElementById("viewing").textContent = user
       document.getElementById('main-page-post').classList.remove('d-none');
       add_locked_preds();
     }
@@ -63,6 +64,7 @@ async function login() {
 
         // Send username to local storage, check if deadline has passed
         localStorage.setItem("loggedInUser", user)
+        document.getElementById("viewing").textContent = (user)
         if (deadline_passed == false) {
           document.getElementById('main-page-pre').classList.remove('d-none');
           retrieve_info()
@@ -232,7 +234,7 @@ async function retrieve_info() {
 
 async function add_users() {
   // Collect all users from the leaderboard table
-  let { data , error } = await supaclient.from('leaderboard').select('username')
+  let { data } = await supaclient.from('leaderboard').select('username')
 
   // Create outline for leaderboard table
   let html_info = `<div class="row justify-content-center">
@@ -266,7 +268,7 @@ async function add_users() {
 
 async function mini_leagues(post)  {
   // Collect all mini-leagues that a user has joined
-  let {data, error} = await supaclient.from('mini_league_members').select('mini_league_id').eq('username', user)
+  let {data} = await supaclient.from('mini_league_members').select('mini_league_id').eq('username', user)
 
   // Create modals to create a new mini-league, and join an existing one
   new_html = ` <div class="row justify-content-between" style="margin-bottom:8px">
@@ -349,7 +351,7 @@ async function mini_leagues(post)  {
   let leagueIDs = data.map(item => item.mini_league_id);
   
   // Fetch mini-league details
-  let { data: leagues, error: leagueError } = await supaclient
+  let { data: leagues } = await supaclient
   .from("mini_leagues")
   .select("name, admin_username, prem_limit, champ_limit, la_liga_limit, seriea_limit, bundes_limit, ligue1_limit, id, join_code")
   .in("id", leagueIDs);
@@ -423,12 +425,11 @@ async function mini_leagues(post)  {
   } else {
     document.querySelector('#post-leagues').innerHTML = new_html
   }
-
-  }
+}
 
 async function league_entrants(league, id) {
   // Check if the user is the admin of the mini-league, change button depending on such
-  let {data, error} = await supaclient.from("mini_leagues").select("id, admin_username").eq("name", league)
+  let { data } = await supaclient.from("mini_leagues").select("id, admin_username").eq("name", league)
   if (user == data[0]['admin_username']) {
     button = `<button class="btn btn-primary" onclick="delete_league('${id}')">Delete League</button>`
   } else {
@@ -436,7 +437,7 @@ async function league_entrants(league, id) {
 }
 
   // Collect all members of a mini-league
-  let {data: users, error: userError} = await supaclient.from("mini_league_members").select("username").eq("mini_league_id", data[0]['id'])
+  let { data: users } = await supaclient.from("mini_league_members").select("username").eq("mini_league_id", data[0]['id'])
 
   // Create outline for mini-league member table
   new_html = `<div class="row justify-content-between" style="margin-bottom:8px">
@@ -533,7 +534,7 @@ async function league_standings(league) {
   users.forEach(user => {
       let row = ` <tr>
                     <td>${place}</td>
-                    <td>${user['username']}</td>
+                    <td><button class="btn btn-link" onclick="add_locked_preds('${user['username']}')">${user['username']}</td>
                     <td>${user['score_per_league']['prem']}</td>
                     <td>${user['score_per_league']['champ']}</td>
                     <td>${user['score_per_league']['la_liga']}</td>
@@ -806,13 +807,18 @@ async function reset_changes(league) {
   })
 }
 
-async function add_locked_preds() {
-  // Cycle through the league
+async function add_locked_preds(player = user) {
+
+  // Update the status
+  document.getElementById("viewing").textContent = player
+  change_tab('post-nav-home')
+
+  // Cycle through the leagues
   for (let league = 0; league < league_shorthands.length; league++) {
 
     // Collect the user's predictions and scores
     let { data } = await supaclient.from(`${league_shorthands[league]}_preds`).select('*').eq('username', user)
-    let scores = await fetch_scores(league_shorthands[league])
+    let scores = await fetch_scores(league_shorthands[league], user)
     delete data[0]['username']
     delete scores['username']
 
@@ -845,10 +851,56 @@ async function add_locked_preds() {
                 </table>`
 
     document.querySelector(`#${league_shorthands[league]}-pred-locked`).innerHTML = html_pred
-    add_leaderboard()
   }
-  add_prem_table()
+
+  if (player == user) { add_prem_table() } else { other_preds(player) }
+
+  add_leaderboard()
   mini_leagues(true)
+}
+
+async function other_preds(player) {
+
+  // Cycle through the leagues
+  for (let league = 0; league < league_shorthands.length; league++) {
+
+    // Collect the user's predictions and scores
+    let { data } = await supaclient.from(`${league_shorthands[league]}_preds`).select('*').eq('username', player)
+    let scores = await fetch_scores(league_shorthands[league], player)
+    delete data[0]['username']
+    delete scores['username']
+
+    let possessive = player.endsWith("s") ? `${player}'` : `${player}'s`;
+
+    html_pred =  `<div class="row justify-content-center">
+                    <div class="col">
+                      <h3>${possessive} Predictions</h3>
+                    </div>
+                  </div>
+                  <table id="locked-pred" class="table table-bordered border-primary">
+                    <thead>
+                      <tr>
+                        <th>Position</th>
+                        <th>Team</th>
+                        <th>Points</th>
+                      </tr>
+                    </thead>
+                    <tbody id="table-body-locked-pred">`
+
+    // Cycle through the teams and create a row in the table for each
+    for (let i = 1; i < (Object.keys(data[0]).filter(key => !isNaN(key)).length + 1); i++) {
+      html_pred += `<tr>
+                      <td>${i}</td>
+                      <td>${data[0][i.toString()]}</td>
+                      <td>${scores[i.toString()]}</td> 
+                    </tr>`
+    }
+
+    // Complete table and display html in correct position
+    html_pred += `</tbody>
+                </table>`
+    document.querySelector(`#${league_shorthands[league]}-standings`).innerHTML = html_pred
+  }
 }
 
 async function add_leaderboard(sortBy = 'total') {
@@ -892,7 +944,7 @@ async function add_leaderboard(sortBy = 'total') {
   for (let i = 0; i < (Object.keys(data).filter(key => !isNaN(key)).length); i++) {
     html_info += `<tr>
                     <td scope="row">${i+1}</td>
-                    <td>${data[i].username}</td>
+                    <td><button class="btn btn-link" onclick="add_locked_preds('${data[i].username}')">${data[i].username}</td>
                     <td>${data[i].prem}</td>
                     <td>${data[i].la_liga}</td>                          
                     <td>${data[i].champ}</td>
@@ -955,9 +1007,9 @@ async function add_prem_table() {
   }
 }
 
-async function fetch_scores(league) {
+async function fetch_scores(league, player) {
   // Collect the user's scores from one league
-  let {data}  = await supaclient.from(`${league}_scores`).select('*').eq('username', user)
+  let {data}  = await supaclient.from(`${league}_scores`).select('*').eq('username', player)
   return data[0]
 }
 
