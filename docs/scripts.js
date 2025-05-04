@@ -822,9 +822,12 @@ async function add_locked_preds(player = user) {
     delete data[0]['username']
     delete scores['username']
 
+    pred_label = user.endsWith("s") ? `${user}'` : `${user}'s`;
+
+
     html_pred =  `<div class="row justify-content-center">
                     <div class="col">
-                      <h3>Your Predictions</h3>
+                      <h3>${pred_label} Predictions</h3>
                     </div>
                   </div>
                   <table id="locked-pred" class="table table-bordered border-primary">
