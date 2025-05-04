@@ -411,6 +411,7 @@ async function mini_leagues(post)  {
                     <td>${league.seriea_limit}</td>
                     <td>${league.bundes_limit}</td>
                     <td>${league.ligue1_limit}</td>
+                    <td>${league.join_code}</td>
                   </tr>`
         new_html += row
     })
