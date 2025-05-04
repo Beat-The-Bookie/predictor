@@ -24,6 +24,7 @@ async function restoreSession() {
       document.getElementById('main-page-pre').classList.remove('d-none');
       retrieve_info();
     } else {
+      document.getElementById("viewing").textContent = user
       document.getElementById('main-page-post').classList.remove('d-none');
       add_locked_preds();
     }
@@ -63,6 +64,7 @@ async function login() {
 
         // Send username to local storage, check if deadline has passed
         localStorage.setItem("loggedInUser", user)
+        document.getElementById("viewing").textContent = (user)
         if (deadline_passed == false) {
           document.getElementById('main-page-pre').classList.remove('d-none');
           retrieve_info()
@@ -266,7 +268,7 @@ async function add_users() {
 
 async function mini_leagues(post)  {
   // Collect all mini-leagues that a user has joined
-  let {data, error} = await supaclient.from('mini_league_members').select('mini_league_id').eq('username', user)
+  let {data} = await supaclient.from('mini_league_members').select('mini_league_id').eq('username', user)
 
   // Create modals to create a new mini-league, and join an existing one
   new_html = ` <div class="row justify-content-between" style="margin-bottom:8px">
@@ -349,7 +351,7 @@ async function mini_leagues(post)  {
   let leagueIDs = data.map(item => item.mini_league_id);
   
   // Fetch mini-league details
-  let { data: leagues, error: leagueError } = await supaclient
+  let { data: leagues } = await supaclient
   .from("mini_leagues")
   .select("name, admin_username, prem_limit, champ_limit, la_liga_limit, seriea_limit, bundes_limit, ligue1_limit, id, join_code")
   .in("id", leagueIDs);
@@ -423,12 +425,11 @@ async function mini_leagues(post)  {
   } else {
     document.querySelector('#post-leagues').innerHTML = new_html
   }
-
-  }
+}
 
 async function league_entrants(league, id) {
   // Check if the user is the admin of the mini-league, change button depending on such
-  let {data, error} = await supaclient.from("mini_leagues").select("id, admin_username").eq("name", league)
+  let { data } = await supaclient.from("mini_leagues").select("id, admin_username").eq("name", league)
   if (user == data[0]['admin_username']) {
     button = `<button class="btn btn-primary" onclick="delete_league('${id}')">Delete League</button>`
   } else {
@@ -436,7 +437,7 @@ async function league_entrants(league, id) {
 }
 
   // Collect all members of a mini-league
-  let {data: users, error: userError} = await supaclient.from("mini_league_members").select("username").eq("mini_league_id", data[0]['id'])
+  let { data: users } = await supaclient.from("mini_league_members").select("username").eq("mini_league_id", data[0]['id'])
 
   // Create outline for mini-league member table
   new_html = `<div class="row justify-content-between" style="margin-bottom:8px">
@@ -806,12 +807,16 @@ async function reset_changes(league) {
   })
 }
 
-async function add_locked_preds() {
-  // Cycle through the league
+async function add_locked_preds(player = user) {
+
+  // Update the status
+  document.getElementById("viewing").textContent = player
+
+  // Cycle through the leagues
   for (let league = 0; league < league_shorthands.length; league++) {
 
     // Collect the user's predictions and scores
-    let { data } = await supaclient.from(`${league_shorthands[league]}_preds`).select('*').eq('username', user)
+    let { data } = await supaclient.from(`${league_shorthands[league]}_preds`).select('*').eq('username', player)
     let scores = await fetch_scores(league_shorthands[league])
     delete data[0]['username']
     delete scores['username']
@@ -892,7 +897,7 @@ async function add_leaderboard(sortBy = 'total') {
   for (let i = 0; i < (Object.keys(data).filter(key => !isNaN(key)).length); i++) {
     html_info += `<tr>
                     <td scope="row">${i+1}</td>
-                    <td>${data[i].username}</td>
+                    <td><button class="btn btn-link" onclick="add_locked_preds('${data[i].username}')">${data[i].username}</td>
                     <td>${data[i].prem}</td>
                     <td>${data[i].la_liga}</td>                          
                     <td>${data[i].champ}</td>
