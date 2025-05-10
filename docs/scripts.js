@@ -859,7 +859,13 @@ async function add_locked_preds(player = user) {
     document.querySelector(`#${league_shorthands[league]}-pred-locked`).innerHTML = html_pred
   }
 
-  if (player == user) { add_prem_table() } else { other_preds(player) }
+  if (player == user) {
+    document.getElementById('homeBtn').classList.add('d-none');
+    add_prem_table()
+  } else {
+    document.getElementById('homeBtn').classList.remove('d-none');
+    other_preds(player)
+  }
 
   add_leaderboard()
   mini_leagues(true)
