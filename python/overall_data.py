@@ -36,9 +36,6 @@ leagues = [
 # The get_odds function cannot currently be completed, suspicious at that is happening as the season has already started
 # collect.get_odds()
 
-# Collecting the current standings
+# Collecting the current standings AND updates scores
 standings = standings_collection(supabase=supabase, foot_api=API_KEY, leagues=leagues)
 standings.collect_info()
-
-score_calc = calc_scores(supabase, leagues)
-score_calc.run_scorer()

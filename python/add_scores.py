@@ -1,6 +1,6 @@
 class calc_scores:
 
-    def __init__(self, supabase, leagues):
+    def __init__(self, supabase, leagues, standings):
         # Constructor class
         self.supabase = supabase
         self.leagues = leagues
@@ -8,7 +8,7 @@ class calc_scores:
                  self.serie_a_scoring, self.bundesliga_scoring, self.ligue_1_scoring]
         self.points = [None] * 6
         self.names = ['prem', 'champ', 'la_liga', 'seriea', 'bundes', 'ligue1']
-
+        self.standings = standings
         
     def run_scorer(self):
 
@@ -60,7 +60,7 @@ class calc_scores:
 
         # Go through the point totals and upload all to Supabase
         for league in range(len(self.points)):
-            self.points[league] = self.funcs[league](preds[league], team_standings[league])
+            self.points[league] = self.funcs[league](preds[league], self.standings[league])
 
         # Create column names for the Supabase update
             columns = []

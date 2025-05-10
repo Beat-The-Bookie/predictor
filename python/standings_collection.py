@@ -1,4 +1,5 @@
 import requests
+from add_scores import calc_scores
 
 class standings_collection:
     def __init__(self, supabase, foot_api, leagues):
@@ -24,6 +25,7 @@ class standings_collection:
 
         standings = []
         responses = []
+        teams = []
 
         for url in range(len(urls)):
 
@@ -46,7 +48,12 @@ class standings_collection:
                     for i in range(1, self.leagues[url].team_num + 1):
                         columns.append(str(i))
                     self.supabase.table(self.leagues[url].shorthand+'_preds').update(dict(zip(columns, attributes[attribute]))).match({'username': self.attributes[attribute]}).execute()
+                    if attribute == 0:
+                        teams.append(standings)
 
             else:
                 print(f"Error: {responses[url].status_code} - {responses[url].text}")
+
+        score_calc = calc_scores(self.supabase, self.leagues, teams)
+        score_calc.run_scorer()
 
