@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Confirm Email</title>
+</head>
+<body>
+  <h1>Email Confirmation</h1>
+  <p id="status">Confirming your email, please wait...</p>
+
+  <!-- Supabase JS -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+  <script>
+    // Initialize Supabase client
+    const supabaseUrl = 'https://lcfqseitghkcxzjtamoz.supabase.co';
+    const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxjZnFzZWl0Z2hrY3h6anRhbW96Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDgxNzIzNzAsImV4cCI6MjA2Mzc0ODM3MH0.kPuKlk_UXlcF4WFGdh8o4Kl792B93-Q7q9Z8oFtK9Mk';
+    const supabase = supabase.createClient(supabaseUrl, supabaseAnonKey);
+
+    // Grab token from URL query parameters
+    const params = new URLSearchParams(window.location.search);
+    const token = params.get('token');
+
+    const statusEl = document.getElementById('status');
+
+    if (!token) {
+      statusEl.textContent = 'No confirmation token found in the URL.';
+    } else {
+      // Confirm email with Supabase
+      async function confirmEmail() {
+        const { error } = await supabase.auth.verifyEmail(token);
+        if (error) {
+          statusEl.textContent = 'Error confirming email: ' + error.message;
+        } else {
+          statusEl.textContent = 'Email confirmed successfully! You can now log in.';
+          // Optional: Redirect after a few seconds
+          setTimeout(() => {
+            window.location.href = '/index.html';
+          }, 3000);
+        }
+      }
+      confirmEmail();
+    }
+  </script>
+</body>
+</html>
