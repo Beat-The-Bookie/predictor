@@ -1,13 +1,13 @@
 document.addEventListener("DOMContentLoaded", async () => {
   const deadline = new Date('2025-03-30T20:00:00')
-  deadline_passed = new Date() > deadline
+  deadline_passed = false // new Date() > deadline
   if (deadline_passed == true) {
     disable_boxes()
   }
   await restoreSession()
 })
 
-const supaclient = supabase.createClient('https://srhywkedxssxlsjrholj.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNyaHl3a2VkeHNzeGxzanJob2xqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MjYzOTYxNjUsImV4cCI6MjA0MTk3MjE2NX0.lUZUAm20JIH3aoUxmyCAcr8l-A3_S3FpTaHuljrwm50')
+const supaclient = supabase.createClient('https://lcfqseitghkcxzjtamoz.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxjZnFzZWl0Z2hrY3h6anRhbW96Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDgxNzIzNzAsImV4cCI6MjA2Mzc0ODM3MH0.kPuKlk_UXlcF4WFGdh8o4Kl792B93-Q7q9Z8oFtK9Mk')
 let user = ""
 const league_shorthands = ['prem', 'la_liga', 'champ', 'seriea', 'bundes', 'ligue1']
 
@@ -88,53 +88,77 @@ async function login() {
 async function register() {
   let new_uname = document.getElementById('reg-uname').value
   let new_email = document.getElementById('reg-email').value
+  let new_pword = document.getElementById('reg-pword').value
 
-  // Call the db to check if username/email is already in use
-  let {data, error} = await supaclient
-    .from('credentials')
-    .select('username, email')
-    .or(`username.eq.${new_uname},email.eq.${new_email}`)
-
-  if (error) throw error
-  let uname_found = data.some(record => record.username === new_uname)
-  let email_found = data.some(record => record.email === new_email)
-
-  if (uname_found) {
-    alert("Unsuccessful. Username already in use.")
-
-  } else if (email_found) {
-    alert("Unsuccessful. Email already in use.")
-
-  } else {
-    created_pcode = createPasscode()
+  if (!new_uname || !new_email || !new_pword) {
+    alert("Please fill in all fields.")
+    return
+  }
 
     try {
-      // Write new user to the db
-      await supaclient
-      .from('credentials')
-      .insert([{ username: new_uname, passcode: created_pcode, email: new_email }])
-      .select()
+    const { data, error } = await supaclient.auth.signUp({
+      email: new_email,
+      password: new_pword,
+      options: {
+        data: { username: new_uname }
+      }
+    })
 
-      let serviceID = 'service_footpred';
-      let templateID = 'template_cek6i8r';
-    
-      let templateParams = {
-        to_name: new_uname,
-        email: new_email,
-        username: new_uname,
-        passcode: created_pcode,
-      };
+    if (error) throw error
 
-      // Send email to user with welcome and passcode
-      await emailjs.send(serviceID, templateID, templateParams);
-      alert('Email sent successfully!');
-    
-    } catch (error) {
-      console.log('Error:', error.message || JSON.stringify(error));
-      alert('An error occurred while creating the account. Please try again.');
-    }
-    user_team_list(new_uname)
+    alert("Registration successful! Please check your email to confirm your account.")
+  } catch (error) {
+    console.error("Signup error:", error)
+    alert("Error creating account: " + error.message)
   }
+
+
+  // // Call the db to check if username/email is already in use
+  // let {data, error} = await supaclient
+  //   .from('credentials')
+  //   .select('username, email')
+  //   .or(`username.eq.${new_uname},email.eq.${new_email}`)
+
+  // if (error) throw error
+  // let uname_found = data.some(record => record.username === new_uname)
+  // let email_found = data.some(record => record.email === new_email)
+
+  // if (uname_found) {
+  //   alert("Unsuccessful. Username already in use.")
+
+  // } else if (email_found) {
+  //   alert("Unsuccessful. Email already in use.")
+
+  // } else {
+  //   created_pcode = createPasscode()
+
+  //   try {
+  //     // Write new user to the db
+  //     await supaclient
+  //     .from('credentials')
+  //     .insert([{ username: new_uname, passcode: created_pcode, email: new_email }])
+  //     .select()
+
+  //     let serviceID = 'service_footpred';
+  //     let templateID = 'template_cek6i8r';
+    
+  //     let templateParams = {
+  //       to_name: new_uname,
+  //       email: new_email,
+  //       username: new_uname,
+  //       passcode: created_pcode,
+  //     };
+
+  //     // Send email to user with welcome and passcode
+  //     await emailjs.send(serviceID, templateID, templateParams);
+  //     alert('Email sent successfully!');
+    
+  //   } catch (error) {
+  //     console.log('Error:', error.message || JSON.stringify(error));
+  //     alert('An error occurred while creating the account. Please try again.');
+  //   }
+    // user_team_list(new_uname)
+  // }
 }
 
 function createPasscode() {
