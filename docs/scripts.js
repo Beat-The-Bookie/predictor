@@ -100,7 +100,8 @@ async function register() {
       email: new_email,
       password: new_pword,
       options: {
-        data: { username: new_uname }
+        data: { username: new_uname },
+        emailRedirectTo: 'https://willbrown5515.github.io/predictions/confirm'
       }
     })
 
