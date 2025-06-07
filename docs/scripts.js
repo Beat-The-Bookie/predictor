@@ -44,44 +44,42 @@ async function logout() {
 }
 
 async function login() {
-  try {
-    // Retrieve username from input, check if username already exists
-    user = document.getElementById('uname').value
-    let { data , error } = await supaclient
-      .from('credentials')
-      .select('username, passcode')
-      .eq('username', user)
-    
-    if (error) throw error
-    if (data.length === 0) {
-      alert("Username not recognised")
-      // Reset input boxes
-      document.getElementById('pword').value = ""
-      document.getElementById('uname').value = ""
+  const email = document.getElementById('email').value; // This now needs to be the email, not username
+  const password = document.getElementById('pword').value;
 
-    } else {
-      if (document.getElementById('pword').value == data[0]['passcode']) {
-        document.getElementById('login-page').classList.add('d-none');
+  const { data, error } = await supaclient.auth.signInWithPassword({
+    email,
+    password,
+  });
 
-        // Send username to local storage, check if deadline has passed
-        localStorage.setItem("loggedInUser", user)
-        document.getElementById("viewing").textContent = (user)
-        if (deadline_passed == false) {
-          document.getElementById('main-page-pre').classList.remove('d-none');
-          retrieve_info()
-        } else {
-          document.getElementById('main-page-post').classList.remove('d-none')
-          renderScoresTable()
-          add_locked_preds()     
-        }
+  if (error) {
+    alert("Login failed: " + error.message);
+    document.getElementById('pword').value = "";
+    return;
+  }
 
-      } else {
-        alert("Passcode is incorrect")
-        document.getElementById('pword').value = ""
-      }
-    }
-  } catch (error) {
-    console.log(error)
+  const user = data.user;
+  console.log("user", user.id)
+
+  if (!user.confirmed_at && !user.email_confirmed_at) {
+    alert("Please confirm your email before logging in.");
+    return;
+  }
+
+  // Save user email in localStorage
+  localStorage.setItem("loggedInUser", user.email);
+  document.getElementById("viewing").textContent = user.email;
+
+  // Show appropriate UI
+  document.getElementById('login-page').classList.add('d-none');
+
+  if (deadline_passed == false) {
+    document.getElementById('main-page-pre').classList.remove('d-none');
+    retrieve_info();
+  } else {
+    document.getElementById('main-page-post').classList.remove('d-none');
+    renderScoresTable();
+    add_locked_preds();
   }
 }
 
@@ -112,54 +110,6 @@ async function register() {
     console.error("Signup error:", error)
     alert("Error creating account: " + error.message)
   }
-
-
-  // // Call the db to check if username/email is already in use
-  // let {data, error} = await supaclient
-  //   .from('credentials')
-  //   .select('username, email')
-  //   .or(`username.eq.${new_uname},email.eq.${new_email}`)
-
-  // if (error) throw error
-  // let uname_found = data.some(record => record.username === new_uname)
-  // let email_found = data.some(record => record.email === new_email)
-
-  // if (uname_found) {
-  //   alert("Unsuccessful. Username already in use.")
-
-  // } else if (email_found) {
-  //   alert("Unsuccessful. Email already in use.")
-
-  // } else {
-  //   created_pcode = createPasscode()
-
-  //   try {
-  //     // Write new user to the db
-  //     await supaclient
-  //     .from('credentials')
-  //     .insert([{ username: new_uname, passcode: created_pcode, email: new_email }])
-  //     .select()
-
-  //     let serviceID = 'service_footpred';
-  //     let templateID = 'template_cek6i8r';
-    
-  //     let templateParams = {
-  //       to_name: new_uname,
-  //       email: new_email,
-  //       username: new_uname,
-  //       passcode: created_pcode,
-  //     };
-
-  //     // Send email to user with welcome and passcode
-  //     await emailjs.send(serviceID, templateID, templateParams);
-  //     alert('Email sent successfully!');
-    
-  //   } catch (error) {
-  //     console.log('Error:', error.message || JSON.stringify(error));
-  //     alert('An error occurred while creating the account. Please try again.');
-  //   }
-    // user_team_list(new_uname)
-  // }
 }
 
 function createPasscode() {
