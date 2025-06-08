@@ -22,15 +22,17 @@ async function handleConfirmation() {
 
   await user_team_list(id, uname);
 
-  statusEl.textContent = 'Setup complete! Redirecting...';
-  setTimeout(() => {
-    window.location.href = '/index.html';
-  }, 3000);
+//   statusEl.textContent = 'Setup complete! Redirecting...';
+//   setTimeout(() => {
+//     window.location.href = '/predictions/';
+//   }, 3000);
 }
 
 // When the user has registered, team list to be created
 async function user_team_list(id, uname) {
-    console.log("In user team list")
+
+  const league_shorthands = ['prem', 'la_liga', 'champ', 'seriea', 'bundes', 'ligue1']
+
   // Define how many teams are in each league
   const leagueTeamCounts = {
     prem: 20,
@@ -89,7 +91,7 @@ async function user_team_list(id, uname) {
   // Add to leaderboard
   const { error: leaderboardInsertError } = await supaclient
     .from("leaderboard")
-    .insert([{ username: uname, user_id: id }]);
+    .insert([{ 'username': uname, 'user_id': id }]);
 
   if (leaderboardInsertError) {
     console.error("Error inserting into leaderboard:", leaderboardInsertError.message);
