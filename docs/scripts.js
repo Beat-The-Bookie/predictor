@@ -11,6 +11,15 @@ const supaclient = supabase.createClient('https://lcfqseitghkcxzjtamoz.supabase.
 let user = ""
 const league_shorthands = ['prem', 'la_liga', 'champ', 'seriea', 'bundes', 'ligue1']
 
+const leagueTeamCounts = {
+  prem: 20,
+  champ: 24,
+  la_liga: 20,
+  seriea: 20,
+  bundes: 18,
+  ligue1: 18
+}
+
 async function restoreSession() {
 
   // Check if there is a user from LocalStorage
@@ -44,7 +53,7 @@ async function logout() {
 }
 
 async function login() {
-  const email = document.getElementById('email').value; // This now needs to be the email, not username
+  const email = document.getElementById('email').value;
   const password = document.getElementById('pword').value;
 
   const { data, error } = await supaclient.auth.signInWithPassword({
@@ -106,6 +115,7 @@ async function register() {
     if (error) throw error
 
     alert("Registration successful! Please check your email to confirm your account.")
+    // user_team_list(data.user.id, new_uname)
   } catch (error) {
     console.error("Signup error:", error)
     alert("Error creating account: " + error.message)
@@ -127,41 +137,73 @@ function change_tab(tab) {
   selectedTab.classList.add('show', 'active');
 }
 
-// When the user has registered, team list to be created
-async function user_team_list(uname) {
-  // Cycle through each league
-  for (let league of league_shorthands) {
+// // When the user has registered, team list to be created
+// async function user_team_list(id, uname) {
+//   // Define how many teams are in each league
+//   const leagueTeamCounts = {
+//     prem: 20,
+//     champ: 24,
+//     la_liga: 20,
+//     seriea: 20,
+//     bundes: 18,
+//     ligue1: 18
+//   };
 
-    // Collect all of the teams in a league
-    let { data } = await supaclient
-      .from(`${league}_preds`)
-      .select('*')
-      .eq('username','all_teams')
-    delete data[0].username
+//   for (let league of league_shorthands) {
+//     const teamCount = leagueTeamCounts[league];
 
-    // Create a row in the predictions table for the new user
-    await supaclient
-      .from(`${league}_preds`)
-      .insert([{ username: uname, ...data[0] }])
-      .select();
+//     // Get team names from default_predictions
+//     const { data, error: fetchError } = await supaclient
+//       .from("default_predictions")
+//       .select("*")
+//       .eq("name", `${league}_all_teams`);
 
-    // Create a row in the scores table for the new user
-    const updateData = {};
-    for (let i = 1; i <= (Object.keys(data[0]).filter(key => !isNaN(key)).length); i++) {
-        updateData[i] = 0;
-    }
-    updateData.username = uname
+//     if (fetchError) {
+//       console.error(`Error fetching default_predictions for ${league}:`, fetchError.message);
+//       continue;
+//     }
 
-    await supaclient
-      .from(`${league}_scores`)
-      .insert([updateData])
-      .select();
-  }
-  // Create a row in the leaderboard table for the new user
-  await supaclient
-  .from('leaderboard')
-  .insert([{'username': uname}])
-}
+//   const teamRow = { user_id: id };
+//   for (let i = 1; i <= teamCount; i++) {
+//     const key = i.toString();
+//     teamRow[key] = data[0][key] ?? null;
+//   }
+
+//    const {error: predInsertError} = await supaclient
+//     .from(`${league}_preds`)
+//     .insert([teamRow])
+//     .select();
+
+//     if (predInsertError) {
+//       console.error(`Error inserting into ${league}_preds:`, predInsertError.message);
+//     }
+
+//     // Insert default scores (all 0s)
+//     const updateData = {};
+//     for (let i = 1; i <= teamCount; i++) {
+//       updateData[i.toString()] = 0;
+//     }
+//     updateData.user_id = id;
+
+//     const { error: scoreInsertError } = await supaclient
+//       .from(`${league}_scores`)
+//       .insert([updateData]);
+
+//     if (scoreInsertError) {
+//       console.error(`Error inserting into ${league}_scores:`, scoreInsertError.message);
+//     }
+//   }
+
+//   // Add to leaderboard
+//   const { error: leaderboardInsertError } = await supaclient
+//     .from("leaderboard")
+//     .insert([{ username: uname, user_id: id }]);
+
+//   if (leaderboardInsertError) {
+//     console.error("Error inserting into leaderboard:", leaderboardInsertError.message);
+//   }
+// }
+
 
 async function retrieve_info() {
   // Cycle through each league
