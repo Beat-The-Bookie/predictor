@@ -1,14 +1,14 @@
 // Initialize Supabase client
 const supabaseUrl = 'https://lcfqseitghkcxzjtamoz.supabase.co';
 const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxjZnFzZWl0Z2hrY3h6anRhbW96Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDgxNzIzNzAsImV4cCI6MjA2Mzc0ODM3MH0.kPuKlk_UXlcF4WFGdh8o4Kl792B93-Q7q9Z8oFtK9Mk';
-const supabase = supabase.createClient(supabaseUrl, supabaseAnonKey);
+const supaclient = supabase.createClient(supabaseUrl, supabaseAnonKey);
 
 // DOM element for status
 const statusEl = document.getElementById('status');
 
 // Main logic
 async function handleConfirmation() {
-  const { data: { user }, error } = await supabase.auth.getUser();
+  const { data: { user }, error } = await supaclient.auth.getUser();
 
   if (error || !user) {
     statusEl.textContent = 'Could not confirm email. Please try logging in again.';
@@ -30,6 +30,7 @@ async function handleConfirmation() {
 
 // When the user has registered, team list to be created
 async function user_team_list(id, uname) {
+    console.log("In user team list")
   // Define how many teams are in each league
   const leagueTeamCounts = {
     prem: 20,
