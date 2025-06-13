@@ -1,6 +1,6 @@
 document.addEventListener("DOMContentLoaded", async () => {
-  const deadline = new Date('2025-03-30T20:00:00')
-  deadline_passed = false // new Date() > deadline
+  const deadline = new Date('2025-08-08T18:00:00')
+  deadline_passed = new Date() > deadline
   if (deadline_passed == true) {
     disable_boxes()
   }
@@ -8,9 +8,9 @@ document.addEventListener("DOMContentLoaded", async () => {
 })
 
 const supaclient = supabase.createClient('https://lcfqseitghkcxzjtamoz.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxjZnFzZWl0Z2hrY3h6anRhbW96Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDgxNzIzNzAsImV4cCI6MjA2Mzc0ODM3MH0.kPuKlk_UXlcF4WFGdh8o4Kl792B93-Q7q9Z8oFtK9Mk')
-let user = ""
 const league_shorthands = ['prem', 'la_liga', 'champ', 'seriea', 'bundes', 'ligue1']
-
+const league_teams = [20, 20, 24, 20, 18, 18]
+user = ""
 const leagueTeamCounts = {
   prem: 20,
   champ: 24,
@@ -21,23 +21,34 @@ const leagueTeamCounts = {
 }
 
 async function restoreSession() {
+  const {
+    data: { session },
+    error,
+  } = await supaclient.auth.getSession();
 
-  // Check if there is a user from LocalStorage
-  old_user = localStorage.getItem("loggedInUser")
-  if (old_user) {
+  if (error) {
+    console.error("Error restoring session:", error.message);
+    // Optionally handle the error here
+    return;
+  }
+
+  if (session && session.user) {
+    const current_user = session.user
+    user = session.user.id;
+    document.getElementById("viewing").textContent = current_user.user_metadata.username;
     document.getElementById('login-page').classList.add('d-none');
-    user = old_user
 
-    // Check if site is in a pre or post deadline state
     if (!deadline_passed) {
       document.getElementById('main-page-pre').classList.remove('d-none');
       retrieve_info();
     } else {
-      document.getElementById("viewing").textContent = user
       document.getElementById('main-page-post').classList.remove('d-none');
-      renderScoresTable()
+      renderScoresTable();
       add_locked_preds();
     }
+  } else {
+    // No active session — show login page
+    document.getElementById('login-page').classList.remove('d-none');
   }
 }
 
@@ -67,17 +78,15 @@ async function login() {
     return;
   }
 
-  const user = data.user;
-  console.log("user", user.id)
+  current_user = data.user;
+  user = current_user.id
 
-  if (!user.confirmed_at && !user.email_confirmed_at) {
+  if (!current_user.confirmed_at && !current_user.email_confirmed_at) {
     alert("Please confirm your email before logging in.");
     return;
   }
 
-  // Save user email in localStorage
-  localStorage.setItem("loggedInUser", user.email);
-  document.getElementById("viewing").textContent = user.email;
+  document.getElementById("viewing").textContent = current_user.email;
 
   // Show appropriate UI
   document.getElementById('login-page').classList.add('d-none');
@@ -115,7 +124,6 @@ async function register() {
     if (error) throw error
 
     alert("Registration successful! Please check your email to confirm your account.")
-    // user_team_list(data.user.id, new_uname)
   } catch (error) {
     console.error("Signup error:", error)
     alert("Error creating account: " + error.message)
@@ -137,84 +145,17 @@ function change_tab(tab) {
   selectedTab.classList.add('show', 'active');
 }
 
-// // When the user has registered, team list to be created
-// async function user_team_list(id, uname) {
-//   // Define how many teams are in each league
-//   const leagueTeamCounts = {
-//     prem: 20,
-//     champ: 24,
-//     la_liga: 20,
-//     seriea: 20,
-//     bundes: 18,
-//     ligue1: 18
-//   };
-
-//   for (let league of league_shorthands) {
-//     const teamCount = leagueTeamCounts[league];
-
-//     // Get team names from default_predictions
-//     const { data, error: fetchError } = await supaclient
-//       .from("default_predictions")
-//       .select("*")
-//       .eq("name", `${league}_all_teams`);
-
-//     if (fetchError) {
-//       console.error(`Error fetching default_predictions for ${league}:`, fetchError.message);
-//       continue;
-//     }
-
-//   const teamRow = { user_id: id };
-//   for (let i = 1; i <= teamCount; i++) {
-//     const key = i.toString();
-//     teamRow[key] = data[0][key] ?? null;
-//   }
-
-//    const {error: predInsertError} = await supaclient
-//     .from(`${league}_preds`)
-//     .insert([teamRow])
-//     .select();
-
-//     if (predInsertError) {
-//       console.error(`Error inserting into ${league}_preds:`, predInsertError.message);
-//     }
-
-//     // Insert default scores (all 0s)
-//     const updateData = {};
-//     for (let i = 1; i <= teamCount; i++) {
-//       updateData[i.toString()] = 0;
-//     }
-//     updateData.user_id = id;
-
-//     const { error: scoreInsertError } = await supaclient
-//       .from(`${league}_scores`)
-//       .insert([updateData]);
-
-//     if (scoreInsertError) {
-//       console.error(`Error inserting into ${league}_scores:`, scoreInsertError.message);
-//     }
-//   }
-
-//   // Add to leaderboard
-//   const { error: leaderboardInsertError } = await supaclient
-//     .from("leaderboard")
-//     .insert([{ username: uname, user_id: id }]);
-
-//   if (leaderboardInsertError) {
-//     console.error("Error inserting into leaderboard:", leaderboardInsertError.message);
-//   }
-// }
-
-
 async function retrieve_info() {
   // Cycle through each league
   for (let league = 0; league < league_shorthands.length; league++) {
 
     // Collect the data from the db for all teams in the league
-    let { data , error } = await supaclient.from(`${league_shorthands[league]}_preds`).select('*').or('username.eq.last_season_finishes,username.eq.all_teams')
+    let { data , error } = await supaclient.from("default_predictions").select('*').or(`name.eq.${league_shorthands[league]}_last_season_finishes,name.eq.${league_shorthands[league]}_all_teams`)
+
     let teams = data[0]
     let pos = data[1]
-    delete teams['username']
-    delete pos['username']
+    delete teams['name']
+    delete pos['name']
 
     // Create a table outline to display the collected info
     let html_info = `<div class="row justify-content-center">
@@ -233,7 +174,7 @@ async function retrieve_info() {
                           <tbody>`
 
     // Cycle through each team and display the name and last finishing position
-    for (let i = 1; i < (Object.keys(teams).filter(key => !isNaN(key)).length + 1); i++) {
+    for (let i = 1; i < (league_teams[league] + 1); i++) {
       html_info += `<tr>
                             <td scope="row">${i}</th>
                             <td>${teams[i.toString()]}</td>
@@ -287,7 +228,7 @@ async function add_users() {
 
 async function mini_leagues(post)  {
   // Collect all mini-leagues that a user has joined
-  let {data} = await supaclient.from('mini_league_members').select('mini_league_id').eq('username', user)
+  let {data} = await supaclient.from('mini_league_members').select('mini_league_id').eq('user_id', user)
 
   // Create modals to create a new mini-league, and join an existing one
   new_html = ` <div class="row justify-content-between" style="margin-bottom:8px">
@@ -372,7 +313,7 @@ async function mini_leagues(post)  {
   // Fetch mini-league details
   let { data: leagues } = await supaclient
   .from("mini_leagues")
-  .select("name, admin_username, prem_limit, champ_limit, la_liga_limit, seriea_limit, bundes_limit, ligue1_limit, id, join_code")
+  .select("name, admin_user_id, prem_limit, champ_limit, la_liga_limit, seriea_limit, bundes_limit, ligue1_limit, id, join_code")
   .in("id", leagueIDs);
 
   // Create outline of table to display mini-leagues and info
@@ -403,7 +344,7 @@ async function mini_leagues(post)  {
                               ${league.name}
                           </button>
                       </td>
-                      <td>${league.admin_username}</td>
+                      <td>${league.admin_user_id}</td>
                       <td>${league.prem_limit}</td>
                       <td>${league.champ_limit}</td>
                       <td>${league.la_liga_limit}</td>
@@ -423,7 +364,7 @@ async function mini_leagues(post)  {
                         ${league.name}
                       </button>
                     </td>
-                    <td>${league.admin_username}</td>
+                    <td>${league.admin_user_id}</td>
                     <td>${league.prem_limit}</td>
                     <td>${league.champ_limit}</td>
                     <td>${league.la_liga_limit}</td>
@@ -448,16 +389,17 @@ async function mini_leagues(post)  {
 }
 
 async function league_entrants(league, id) {
+
   // Check if the user is the admin of the mini-league, change button depending on such
-  let { data } = await supaclient.from("mini_leagues").select("id, admin_username").eq("name", league)
-  if (user == data[0]['admin_username']) {
+  let { data } = await supaclient.from("mini_leagues").select("id, admin_username, admin_user_id").eq("name", league)
+  if (user == data[0]['admin_user_id']) {
     button = `<button class="btn btn-primary" onclick="delete_league('${id}')">Delete League</button>`
   } else {
     button = `<button class="btn btn-primary" onclick="leave_league('${id}')">Leave League</button>`
 }
 
   // Collect all members of a mini-league
-  let { data: users } = await supaclient.from("mini_league_members").select("username").eq("mini_league_id", data[0]['id'])
+  let { data: users} = await supaclient.from("mini_league_members").select("user_id, username").eq("mini_league_id", data[0]['id'])
 
   // Create outline for mini-league member table
   new_html = `<div class="row justify-content-between" style="margin-bottom:8px">
@@ -502,7 +444,7 @@ async function leave_league(id) {
       .from("mini_league_members")
       .delete()
       .eq("mini_league_id", id)
-      .eq("username", user)
+      .eq("user_id", user)
     mini_leagues(false)
   }
 }
@@ -521,7 +463,7 @@ async function delete_league(id) {
 async function league_standings(league) {
   // Collect all info needed for a league leaderboard
   let {data} = await supaclient.from("mini_leagues").select("id").eq("name", league)
-  let {data: users} = await supaclient.from("mini_league_members").select("username, score_per_league, total_score").eq("mini_league_id", data[0]['id']).order("total_score", { ascending: false });
+  let {data: users} = await supaclient.from("mini_league_members").select("user_id, score_per_league, total_score").eq("mini_league_id", data[0]['id']).order("total_score", { ascending: false });
 
   // Create outline for mini-league leaderboard
   new_html = `<div class="row justify-content-between" style="margin-bottom:8px">
@@ -605,12 +547,12 @@ async function joinLeague() {
     .from("mini_league_members")
     .select("id", { count: "exact" })
     .eq("mini_league_id", leagueData[0].id)
-    .eq("username", username);
+    .eq("user_id", user);
 
   // Insert user into mini_league_members
   let { error: insertError } = await supaclient
       .from("mini_league_members")
-      .insert([{ mini_league_id: leagueData[0].id, username: username }]);
+      .insert([{ mini_league_id: leagueData[0].id, user_id: user }]);
 
   // Alert user if there was an error in joining the league
   if (insertError) {
@@ -632,8 +574,8 @@ async function joinLeague() {
 async function add_pred_table() {
   // Cycles through the leagues, retrieves current predictions
   for (let league = 0; league < league_shorthands.length; league++) {
-    let { data } = await supaclient.from(`${league_shorthands[league]}_preds`).select('*').eq('username', user)
-    delete data[0]['username']
+    let { data, error } = await supaclient.from(`${league_shorthands[league]}_preds`).select('*').eq('user_id', user)
+    delete data[0]['user_id']
     // Create outline for user predictions table
     html_pred =  `<div class="row justify-content-center">
                     <div class="col">
@@ -687,7 +629,6 @@ async function createLeague() {
   let serieaLimit = document.getElementById("serieaLimit").value;
   let bundesligaLimit = document.getElementById("bundesligaLimit").value;
   let ligue1Limit = document.getElementById("ligue1Limit").value;
-  let adminUsername = user; // Assuming "admin" field holds username
 
   // Validate input
   if (!leagueName.trim()) {
@@ -701,7 +642,8 @@ async function createLeague() {
   // Prepare data object for Supabase
   let newLeague = {
       name: leagueName,
-      admin_username: adminUsername,
+      admin_user_id: user,
+      admin_username: current_user.user_metadata.username,
       prem_limit: parseInt(premLimit),
       la_liga_limit: parseInt(laligaLimit),
       champ_limit: parseInt(champLimit),
@@ -713,12 +655,11 @@ async function createLeague() {
 
   // Insert into Supabase
   let { data, error} = await supaclient.from("mini_leagues").insert([newLeague]).select("id").single();;
-
   let leagueId = data.id; // Get the newly created league's ID
 
   // Insert admin as a member of the league
   let { error: memberError } = await supaclient.from("mini_league_members").insert([
-      { mini_league_id: leagueId, username: adminUsername }
+      { mini_league_id: leagueId, user_id: user, username: current_user.user_metadata.username }
   ]);
 
   // Error if the league is created, but the admin not added
@@ -777,15 +718,15 @@ async function save_changes(league) {
   await supaclient
   .from(`${league}_preds`)
   .update(dataToUpdate)
-  .eq('username', document.getElementById('uname').value);
+  .eq('user_id', user);
 
   alert("Changes saved successfully.")
 }
 
 async function reset_changes(league) {
   // Collect the old league predictions from Supabase for one specific league
-  let { data } = await supaclient.from(`${league}_preds`).select('*').eq('username', user)
-  delete data[0]['username']
+  let { data } = await supaclient.from(`${league}_preds`).select('*').eq('user_id', user)
+  delete data[0]['user_id']
   html_pred =  `<div class="row justify-content-center">
                   <div class="col">
                     <h3>Your Predictions</h3>
@@ -837,13 +778,12 @@ async function add_locked_preds(player = user) {
   for (let league = 0; league < league_shorthands.length; league++) {
 
     // Collect the user's predictions and scores
-    let { data } = await supaclient.from(`${league_shorthands[league]}_preds`).select('*').eq('username', user)
+    let { data } = await supaclient.from(`${league_shorthands[league]}_preds`).select('*').eq('user_id', user)
     let scores = await fetch_scores(league_shorthands[league], user)
-    delete data[0]['username']
-    delete scores['username']
+    delete data[0]['user_id']
+    delete scores['user_id']
 
     pred_label = user.endsWith("s") ? `${user}'` : `${user}'s`;
-
 
     html_pred =  `<div class="row justify-content-center">
                     <div class="col">
@@ -995,9 +935,9 @@ async function add_prem_table() {
   // Cycle through the leagues
   for (let league = 0; league < league_shorthands.length; league++) {
     // Collect the standings and other info
-    let { data } = await supaclient.from(`${league_shorthands[league]}_preds`).select('*').or('username.eq.standings, username.eq.points, username.eq.games_played, username.eq.goal_difference')
+    let { data } = await supaclient.from(`${league_shorthands[league]}_preds`).select('*').or(`username.${league_shorthands[league]}_eq.standings, username.${league_shorthands[league]}_eq.points, username.${league_shorthands[league]}_eq.games_played, username.${league_shorthands[league]}_eq.goal_difference`)
     for (let dat = 0; dat < 4; dat++) {
-      delete data[dat]['username']
+      delete data[dat]['user_id']
     }
 
     html_pred =  `<div class="row justify-content-center">
@@ -1038,13 +978,13 @@ async function add_prem_table() {
 
 async function fetch_scores(league, player) {
   // Collect the user's scores from one league
-  let {data}  = await supaclient.from(`${league}_scores`).select('*').eq('username', player)
+  let {data}  = await supaclient.from(`${league}_scores`).select('*').eq('username', user)
   return data[0]
 }
 
 async function other_scores(uname, shorthand) {
   // Collect another user's scores - not in use
-  let {data}  = await supaclient.from(`${shorthand}_scores`).select('*').eq('username', uname)
+  let {data}  = await supaclient.from(`${shorthand}_scores`).select('*').eq('username', user)
   return data[0]
 }
 
@@ -1061,7 +1001,7 @@ function disable_boxes() {
 
 async function renderScoresTable() {
 
-  let { data } = await supaclient.from('leaderboard').select('*').eq('username', user)
+  let { data } = await supaclient.from('leaderboard').select('*').eq('user_id', user)
   scores = data[0]
 
   html_text = `<table class="table table-bordered border-primary">
