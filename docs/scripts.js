@@ -19,6 +19,7 @@ const leagueTeamCounts = {
   bundes: 18,
   ligue1: 18
 }
+current_user = ""
 
 async function restoreSession() {
   const {
@@ -28,12 +29,11 @@ async function restoreSession() {
 
   if (error) {
     console.error("Error restoring session:", error.message);
-    // Optionally handle the error here
     return;
   }
 
   if (session && session.user) {
-    const current_user = session.user
+    current_user = session.user
     user = session.user.id;
     document.getElementById("viewing").textContent = current_user.user_metadata.username;
     document.getElementById('login-page').classList.add('d-none');
@@ -522,8 +522,7 @@ async function league_standings(league) {
 async function joinLeague() {
   // Get the input values
   let joinCode = document.getElementById("leagueJoinCode").value.trim();
-  let username = user; // Current user's username (from hidden input)
-
+  
   // Validate input
   if (!joinCode) {
       alert("Please enter a join code.");
@@ -545,14 +544,14 @@ async function joinLeague() {
   // Check if the user is already a member
   await supaclient
     .from("mini_league_members")
-    .select("id", { count: "exact" })
+    .select("mini_league_id", { count: "exact" })
     .eq("mini_league_id", leagueData[0].id)
     .eq("user_id", user);
 
   // Insert user into mini_league_members
   let { error: insertError } = await supaclient
       .from("mini_league_members")
-      .insert([{ mini_league_id: leagueData[0].id, user_id: user }]);
+      .insert([{ mini_league_id: leagueData[0].id, user_id: user, username: current_user.user_metadata.username}]);
 
   // Alert user if there was an error in joining the league
   if (insertError) {
