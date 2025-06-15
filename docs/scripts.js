@@ -7,6 +7,12 @@ document.addEventListener("DOMContentLoaded", async () => {
   await restoreSession()
 })
 
+const params = new URLSearchParams(window.location.search);
+const referrer = params.get('ref');
+if (referrer) {
+  localStorage.setItem('referrer', referrer);
+}
+
 const supaclient = supabase.createClient('https://lcfqseitghkcxzjtamoz.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxjZnFzZWl0Z2hrY3h6anRhbW96Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDgxNzIzNzAsImV4cCI6MjA2Mzc0ODM3MH0.kPuKlk_UXlcF4WFGdh8o4Kl792B93-Q7q9Z8oFtK9Mk')
 const league_shorthands = ['prem', 'la_liga', 'champ', 'seriea', 'bundes', 'ligue1']
 const league_teams = [20, 20, 24, 20, 18, 18]
@@ -37,6 +43,9 @@ async function restoreSession() {
     user = session.user.id;
     document.getElementById("viewing").textContent = current_user.user_metadata.username;
     document.getElementById('login-page').classList.add('d-none');
+    
+    const referral_link = `https://willbrown5515.github.io/predictions/?ref=${encodeURIComponent(referralCode)}`
+    document.getElementById("referral-link").value = referralLink;
 
     if (!deadline_passed) {
       document.getElementById('main-page-pre').classList.remove('d-none');
@@ -61,6 +70,15 @@ async function logout() {
     document.getElementById('main-page-pre').classList.add('d-none');
     document.getElementById('main-page-post').classList.add('d-none');
   }
+}
+
+function copyReferral() {
+  const input = document.getElementById("referral-link");
+  input.select();
+  input.setSelectionRange(0, 99999); // For mobile
+  navigator.clipboard.writeText(input.value)
+    .then(() => alert("Referral link copied!"))
+    .catch(() => alert("Failed to copy link."));
 }
 
 async function login() {
@@ -111,12 +129,18 @@ async function register() {
     return
   }
 
+  user_referral_code = Math.floor(1000 + Math.random() * 9000);
+
     try {
     const { data, error } = await supaclient.auth.signUp({
       email: new_email,
       password: new_pword,
       options: {
-        data: { username: new_uname },
+        data: { 
+          username: new_uname,
+          referrer: referrer,
+          referral_code: user_referral_code
+        },
         emailRedirectTo: 'https://willbrown5515.github.io/predictions/confirm'
       }
     })
