@@ -28,6 +28,21 @@ async function handleConfirmation() {
 
   statusEl.textContent = 'Email confirmed! Setting up your account...';
 
+  // Insert referral if referrer metadata exists
+  const referrer = user.user_metadata?.referrer;
+
+  if (referrer && referrer !== id) {
+    const { error: referralInsertError } = await supaclient
+      .from("referrals")
+      .insert([{ referred_user_id: id, referrer_user_id: referrer }]);
+
+    if (referralInsertError) {
+      console.error("Error inserting referral row:", referralInsertError.message);
+    } else {
+      console.log("Referral row inserted successfully.");
+    }
+  }
+
   await user_team_list(id, uname);
 
   statusEl.textContent = "Account set-up. Click the button below to return to FootPred"
