@@ -29,6 +29,9 @@ async function handleConfirmation() {
   statusEl.textContent = 'Email confirmed! Setting up your account...';
 
   await user_team_list(id, uname);
+
+  statusEl.textContent = "Account set-up. Click the button below to return to FootPred"
+  redirectBtn.disabled = false;
 }
 
 // return back to the main predictions page
