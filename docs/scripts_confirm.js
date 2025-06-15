@@ -13,15 +13,16 @@ function delay(ms) {
 
 // Main logic
 async function handleConfirmation() {
-  const { data: { user }, error } = await supaclient.auth.getUser();
+  await delay(2000); // slight delay to let Supabase hydrate session
 
-  await delay(5000);
+  const { data: sessionData, error: sessionError } = await supaclient.auth.getSession();
 
-  if (error || !user) {
+  if (sessionError || !sessionData?.session) {
     statusEl.textContent = 'Could not confirm email. Please try logging in again.';
     return;
   }
 
+  const user = sessionData.session.user;
   const id = user.id;
   const uname = user.user_metadata.username;
 
