@@ -120,39 +120,58 @@ async function login() {
 }
 
 async function register() {
-  let new_uname = document.getElementById('reg-uname').value
-  let new_email = document.getElementById('reg-email').value
-  let new_pword = document.getElementById('reg-pword').value
+  const new_uname = document.getElementById('reg-uname').value.trim();
+  const new_email = document.getElementById('reg-email').value.trim();
+  const new_pword = document.getElementById('reg-pword').value;
 
   if (!new_uname || !new_email || !new_pword) {
-    alert("Please fill in all fields.")
-    return
+    alert("Please fill in all fields.");
+    return;
   }
 
-  user_referral_code = createPasscode()
+  // Basic email format check
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!emailRegex.test(new_email)) {
+    alert("Please enter a valid email address.");
+    return;
+  }
+
+  // Password strength check (minimum length)
+  if (new_pword.length < 8) {
+    alert("Password must be at least 8 characters long.");
+    return;
+  }
+
+  const usernameRegex = /^[a-zA-Z0-9_]{3,20}$/;
+  if (!usernameRegex.test(new_uname)) {
+    alert("Username must be 3–20 characters and contain only letters, numbers, or underscores.");
+    return;
+  }
+
+  const user_referral_code = createPasscode(); // Assuming you define this elsewhere
   const params = new URLSearchParams(window.location.search);
   const referrer = params.get('ref');
-  
+
   try {
     const { data, error } = await supaclient.auth.signUp({
       email: new_email,
       password: new_pword,
       options: {
-        data: { 
+        data: {
           username: new_uname,
           referral_code: user_referral_code,
           referred_code: referrer
         },
         emailRedirectTo: 'https://willbrown5515.github.io/predictions/confirm'
       }
-    })
+    });
 
-    if (error) throw error
+    if (error) throw error;
 
-    alert("Registration successful! Please check your email to confirm your account.")
+    alert("Registration successful! Please check your email to confirm your account.");
   } catch (error) {
-    console.error("Signup error:", error)
-    alert("Error creating account: " + error.message)
+    console.error("Signup error:", error);
+    alert("Error creating account: " + error.message);
   }
 }
 
@@ -241,7 +260,7 @@ async function add_users() {
   for (let i = 0; i < (Object.keys(data).filter(key => !isNaN(key)).length); i++) {
     html_info += `<tr>
                           <td scope="row">${i+1}</th>
-                          <td>${data[i].username}</td>
+                          <td>${escapeHTML(data[i].username)}</td>
                         </tr>`
   }
 
@@ -367,7 +386,7 @@ async function mini_leagues(post)  {
         let row = ` <tr>
                       <td>
                           <button class="btn btn-link" onclick="league_entrants('${league.name}', '${league['id']}')">
-                              ${league.name}
+                              ${escapeHTML(league.name)}
                           </button>
                       </td>
                       <td>${league.admin_user_id}</td>
@@ -659,6 +678,12 @@ async function createLeague() {
   if (!leagueName.trim()) {
       alert("Please enter a league name.");
       return;
+  }
+
+  const leagueNameRegex = /^[a-zA-Z0-9 _\-]{3,20}$/;
+  if (!leagueNameRegex.test(leagueName)) {
+    alert("League name must be 3–20 characters and only include letters, numbers, spaces, dashes, or underscores.");
+    return;
   }
 
   // Create a league join code
@@ -1013,8 +1038,8 @@ async function other_scores(uname, shorthand) {
   return data[0]
 }
 
-function forgot_passcode() {
-  alert('Email footpredhelp@gmail.com')
+function forgot_password() {
+  alert('Please email footpredhelp@gmail.com')
 }
 
 function disable_boxes() {
@@ -1052,4 +1077,24 @@ async function renderScoresTable() {
                   <thead>
                 </table>`
   document.getElementById("current-scores").innerHTML = html_text
+}
+
+function escapeHTML(str) {
+  return str
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+}
+
+function togglePassword(inputId, button) {
+  const input = document.getElementById(inputId);
+  if (input.type === "password") {
+    input.type = "text";
+    button.textContent = "Hide";
+  } else {
+    input.type = "password";
+    button.textContent = "Show";
+  }
 }
