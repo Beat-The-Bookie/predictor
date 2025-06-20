@@ -29,9 +29,9 @@ async function handleConfirmation() {
   statusEl.textContent = 'Email confirmed! Setting up your account...';
 
   // Insert referral if referrer metadata exists
-  const referrer = user.user_metadata?.referrer;
+  const referrer = user.user_metadata?.referred_code;
 
-  if (referrer && referrer !== id) {
+  if (referrer) {
     const { error: referralInsertError } = await supaclient
       .from("referrals")
       .insert([{ referred_user_id: id, referrer_user_id: referrer }]);

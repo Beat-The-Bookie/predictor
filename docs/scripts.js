@@ -7,8 +7,6 @@ document.addEventListener("DOMContentLoaded", async () => {
   await restoreSession()
 })
 
-const params = new URLSearchParams(window.location.search);
-
 const supaclient = supabase.createClient('https://lcfqseitghkcxzjtamoz.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxjZnFzZWl0Z2hrY3h6anRhbW96Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDgxNzIzNzAsImV4cCI6MjA2Mzc0ODM3MH0.kPuKlk_UXlcF4WFGdh8o4Kl792B93-Q7q9Z8oFtK9Mk')
 const league_shorthands = ['prem', 'la_liga', 'champ', 'seriea', 'bundes', 'ligue1']
 const league_teams = [20, 20, 24, 20, 18, 18]
@@ -132,15 +130,18 @@ async function register() {
   }
 
   user_referral_code = createPasscode()
-
+  const params = new URLSearchParams(window.location.search);
+  const referrer = params.get('ref');
+  
   try {
-    const { data: user_data, error } = await supaclient.auth.signUp({
+    const { data, error } = await supaclient.auth.signUp({
       email: new_email,
       password: new_pword,
       options: {
         data: { 
           username: new_uname,
-          referral_code: user_referral_code
+          referral_code: user_referral_code,
+          referred_code: referrer
         },
         emailRedirectTo: 'https://willbrown5515.github.io/predictions/confirm'
       }
@@ -152,25 +153,6 @@ async function register() {
   } catch (error) {
     console.error("Signup error:", error)
     alert("Error creating account: " + error.message)
-  }
-
-  const referrer = params.get('ref');
-
-  try {
-    if (referrer) {
-      const referredUserId = user_data.user.id;
-
-      const { error: insertError } = await supaclient.from('referrals').insert({
-        referred_user_id: referredUserId,
-        referrer_user_id: referrer
-      });
-
-      if (insertError) {
-        console.error('Referral insert failed:', insertError.message);
-      }
-    }
-  } catch (error) {
-    ("Error processing referral: " + error)
   }
 }
 
