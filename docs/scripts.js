@@ -60,6 +60,12 @@ async function restoreSession() {
 async function logout() {
   // Check if the user would like to logout, to prevent misclicks
   if (confirm("Are you sure you would like to log out?")) {
+
+    try {
+      await supaclient.auth.signOut();
+    } catch (error) {
+      console.error("Error signing out:", error.message);
+    }
     // Clear stored user, reset screen to login
     localStorage.removeItem("loggedInUser")
     document.getElementById('login-page').classList.remove('d-none');
@@ -128,7 +134,7 @@ async function register() {
   user_referral_code = createPasscode()
 
   try {
-    const { data, error } = await supaclient.auth.signUp({
+    const { data: user_data, error } = await supaclient.auth.signUp({
       email: new_email,
       password: new_pword,
       options: {
@@ -148,14 +154,15 @@ async function register() {
     alert("Error creating account: " + error.message)
   }
 
+  const referrer = params.get('ref');
+
   try {
-    // after successful signup
-    if (referral_code) {
-      const referredUserId = data.user.id;
+    if (referrer) {
+      const referredUserId = user_data.user.id;
 
       const { error: insertError } = await supaclient.from('referrals').insert({
         referred_user_id: referredUserId,
-        referrer_user_id: referral_code
+        referrer_user_id: referrer
       });
 
       if (insertError) {
