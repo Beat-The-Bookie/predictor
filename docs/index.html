@@ -41,10 +41,16 @@
         </div>
         <div class="row">
           <div class="col-4">
-            <label for="pword" class="form-label">Passcode</label>
+            <label for="pword" class="form-label">Password</label>
           </div>
           <div class="col-6">
-            <input type="text" id="pword" class="form-control">
+            <label for="pword" class="form-label visually-hidden">Password</label>
+            <div class="input-group">
+              <input type="password" id="pword" class="form-control" aria-label="Password" />
+              <button class="btn btn-outline-secondary" type="button" onclick="togglePassword('pword', this)">
+                Show
+              </button>
+            </div>
           </div>
         </div>
         <div class="row">
@@ -52,7 +58,7 @@
             <button class="btn btn-primary" onclick="login()">Login</button>
           </div>
           <div class="col-6">
-            <button class="btn btn-link" onclick="forgot_passcode()">Forgotten Passcode</button>
+            <button class="btn btn-link" onclick="forgot_password()">Forgotten Password</button>
           </div>
         </div>
       </div>
@@ -78,7 +84,13 @@
             <label for="reg-pword" class="form-label">Password</label>
           </div>
           <div class="col-6">
-            <input type="text" id="reg-pword" class="form-control">
+            <label for="pword" class="form-label visually-hidden">Password</label>
+            <div class="input-group">
+              <input type="password" id="reg-pword" class="form-control">
+              <button class="btn btn-outline-secondary" type="button" onclick="togglePassword('reg-pword', this)">
+                Show
+              </button>
+            </div>  
           </div>
         </div>
         <div class="row">
