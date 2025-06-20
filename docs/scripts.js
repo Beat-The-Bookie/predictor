@@ -8,10 +8,6 @@ document.addEventListener("DOMContentLoaded", async () => {
 })
 
 const params = new URLSearchParams(window.location.search);
-const referrer = params.get('ref');
-if (referrer) {
-  localStorage.setItem('referrer', referrer);
-}
 
 const supaclient = supabase.createClient('https://lcfqseitghkcxzjtamoz.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxjZnFzZWl0Z2hrY3h6anRhbW96Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDgxNzIzNzAsImV4cCI6MjA2Mzc0ODM3MH0.kPuKlk_UXlcF4WFGdh8o4Kl792B93-Q7q9Z8oFtK9Mk')
 const league_shorthands = ['prem', 'la_liga', 'champ', 'seriea', 'bundes', 'ligue1']
@@ -44,8 +40,8 @@ async function restoreSession() {
     document.getElementById("viewing").textContent = current_user.user_metadata.username;
     document.getElementById('login-page').classList.add('d-none');
     
-    const referral_link = `https://willbrown5515.github.io/predictions/?ref=${encodeURIComponent(referralCode)}`
-    document.getElementById("referral-link").value = referralLink;
+    const referral_link = `https://willbrown5515.github.io/predictions/?ref=${encodeURIComponent(current_user.user_metadata.referral_code)}`
+    document.getElementById("referral-link").value = referral_link;
 
     if (!deadline_passed) {
       document.getElementById('main-page-pre').classList.remove('d-none');
@@ -129,16 +125,15 @@ async function register() {
     return
   }
 
-  user_referral_code = Math.floor(1000 + Math.random() * 9000);
+  user_referral_code = createPasscode()
 
-    try {
+  try {
     const { data, error } = await supaclient.auth.signUp({
       email: new_email,
       password: new_pword,
       options: {
         data: { 
           username: new_uname,
-          referrer: referrer,
           referral_code: user_referral_code
         },
         emailRedirectTo: 'https://willbrown5515.github.io/predictions/confirm'
@@ -151,6 +146,24 @@ async function register() {
   } catch (error) {
     console.error("Signup error:", error)
     alert("Error creating account: " + error.message)
+  }
+
+  try {
+    // after successful signup
+    if (referral_code) {
+      const referredUserId = data.user.id;
+
+      const { error: insertError } = await supaclient.from('referrals').insert({
+        referred_user_id: referredUserId,
+        referrer_user_id: referral_code
+      });
+
+      if (insertError) {
+        console.error('Referral insert failed:', insertError.message);
+      }
+    }
+  } catch (error) {
+    ("Error processing referral: " + error)
   }
 }
 
