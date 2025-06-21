@@ -39,7 +39,7 @@ async function restoreSession() {
     document.getElementById('login-page').classList.add('d-none');
     
     const referral_link = `https://willbrown5515.github.io/predictions/?ref=${encodeURIComponent(current_user.user_metadata.referral_code)}`
-    document.getElementById("referral-link").value = referral_link;
+    document.getElementById("referral-link").value = referral_link
 
     if (!deadline_passed) {
       document.getElementById('main-page-pre').classList.remove('d-none');
@@ -108,6 +108,9 @@ async function login() {
 
   // Show appropriate UI
   document.getElementById('login-page').classList.add('d-none');
+
+  const referral_link = `https://willbrown5515.github.io/predictions/?ref=${encodeURIComponent(current_user.user_metadata.referral_code)}`
+  document.getElementById("referral-link").value = referral_link
 
   if (deadline_passed == false) {
     document.getElementById('main-page-pre').classList.remove('d-none');
