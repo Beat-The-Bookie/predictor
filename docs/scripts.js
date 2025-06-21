@@ -1041,8 +1041,25 @@ async function other_scores(uname, shorthand) {
   return data[0]
 }
 
-function forgot_password() {
-  alert('Please email footpredhelp@gmail.com')
+async function sendPasswordReset() {
+  const email = document.getElementById("resetEmail").value;
+
+  if (!email) {
+    alert("Please enter your email address.");
+    return;
+  }
+
+  const { error } = await supaclient.auth.resetPasswordForEmail(email, {
+    redirectTo: "https://willbrown5515.github.io/predictions/reset.html"
+  });
+
+  if (error) {
+    alert("Error: " + error.message);
+  } else {
+    alert("Password reset email sent! Please check your inbox.");
+    const modalEl = bootstrap.Modal.getInstance(document.getElementById('resetPasswordModal'));
+    modalEl.hide();
+  }
 }
 
 function disable_boxes() {
