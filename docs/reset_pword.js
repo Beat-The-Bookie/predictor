@@ -45,7 +45,7 @@ async function submitNewPassword() {
     <div class="alert alert-success">
         Password updated successfully!
     </div>
-<a href="https://willbrown5515.github.io/predictions/" class="btn btn-primary mt-3">Return to Login</a>
+    <a href="https://willbrown5515.github.io/predictions/" class="btn btn-primary mt-3">Return to Login</a>
     `;
     document.getElementById("resetForm").classList.add("d-none");
   }
