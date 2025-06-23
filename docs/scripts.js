@@ -1118,3 +1118,30 @@ function togglePassword(inputId, button) {
     button.textContent = "Show";
   }
 }
+function changeLoginTab(tab) {
+  // Tab button elements
+  const loginTabBtn = document.getElementById('login-tab');
+  const registerTabBtn = document.getElementById('register-tab');
+
+  // Tab content elements
+  const loginForm = document.getElementById('login-form');
+  const registerForm = document.getElementById('register-form');
+
+  if (tab === 'login') {
+    loginTabBtn.classList.add('active');
+    registerTabBtn.classList.remove('active');
+
+    loginForm.classList.add('show', 'active');
+    loginForm.classList.remove('fade');
+    registerForm.classList.remove('show', 'active');
+    registerForm.classList.add('fade');
+  } else if (tab === 'register') {
+    registerTabBtn.classList.add('active');
+    loginTabBtn.classList.remove('active');
+
+    registerForm.classList.add('show', 'active');
+    registerForm.classList.remove('fade');
+    loginForm.classList.remove('show', 'active');
+    loginForm.classList.add('fade');
+  }
+}

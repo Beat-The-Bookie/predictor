@@ -29,104 +29,110 @@
     <img src="logo.png" alt="Logo" width="120" height="50">
   </header>
   <div class="container" id="login-page">
-    <div class="row">
-      <div class="col-md-6">
-        <div class="row">
-          <div class="col-4">
-            <label for="uname" class="form-label">Email Address</label>
+    <div class="card">
+      <div class="card-header bg-primary text-white">
+        Login / Register
+      </div>
+      <div class="card-body">
+        <nav class="mb-2">
+          <div class="nav nav-tabs" id="login-tabs" role="tablist">
+            <button class="nav-link active" id="login-tab" onclick="changeLoginTab('login')">Login</button>
+            <button class="nav-link" id="register-tab" onclick="changeLoginTab('register')">Register</button>
           </div>
-          <div class="col-6">
-            <input type="text" id="email" class="form-control">
-          </div>
-        </div>
-        <div class="row">
-          <div class="col-4">
-            <label for="pword" class="form-label">Password</label>
-          </div>
-          <div class="col-6">
-            <label for="pword" class="form-label visually-hidden">Password</label>
-            <div class="input-group">
-              <input type="password" id="pword" class="form-control" aria-label="Password" />
-              <button class="btn btn-outline-secondary" type="button" onclick="togglePassword('pword', this)">
-                Show
-              </button>
+        </nav>
+        <div class="tab-content" id="auth-tabContent">
+          <div class="tab-pane fade show active" id="login-form" role="tabpanel" aria-labelledby="login-tab">
+            <div class="mb-2 row">
+              <label for="email" class="col-sm-4 col-form-label">Email Address</label>
+              <div class="col-sm-8">
+                <input type="text" id="email" class="form-control">
+              </div>
             </div>
-          </div>
-        </div>
-        <div class="row">
-          <div class="col-4">
-            <button class="btn btn-primary" onclick="login()">Login</button>
-          </div>
-          <div class="col-6">
-            <a href="#" class="link-primary" data-bs-toggle="modal" data-bs-target="#resetPasswordModal">Forgot your password?</a>
-          </div>
-          <div class="modal fade" id="resetPasswordModal" tabindex="-1" aria-labelledby="resetPasswordModalLabel" aria-hidden="true">
-            <div class="modal-dialog">
-              <div class="modal-content">
-              
-                <div class="modal-header">
-                  <h5 class="modal-title" id="resetPasswordModalLabel">Reset Password</h5>
-                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            <div class="mb-2 row">
+              <label for="pword" class="col-sm-4 col-form-label">Password</label>
+              <div class="col-sm-8">
+                <div class="input-group">
+                  <input type="password" id="pword" class="form-control" />
+                  <button class="btn btn-outline-secondary" type="button" onclick="togglePassword('pword', this)">Show</button>
                 </div>
-
-                <div class="modal-body">
-                  <div class="mb-3">
-                    <label for="resetEmail" class="form-label">Enter your email</label>
-                    <input type="email" class="form-control" id="resetEmail" placeholder="you@example.com" required>
-                  </div>
-                </div>
-
-                <div class="modal-footer">
-                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                  <button type="button" class="btn btn-primary" onclick="sendPasswordReset()">Send Reset Email</button>
-                </div>
-
+              </div>
+            </div>
+            <div class="mb-2 row">
+              <div class="col-sm-4">
+                <button class="btn btn-primary" onclick="login()">Login</button>
+              </div>
+              <div class="col-sm-8">
+                <a href="#" class="link-primary" data-bs-toggle="modal" data-bs-target="#resetPasswordModal">Forgot your password?</a>
               </div>
             </div>
           </div>
+          <div class="tab-pane fade" id="register-form" role="tabpanel" aria-labelledby="register-tab">
+            <div class="mb-2 row">
+              <label for="reg-email" class="col-sm-4 col-form-label">Email Address</label>
+              <div class="col-sm-8">
+                <input type="text" id="reg-email" class="form-control">
+              </div>
+            </div>
 
+            <div class="mb-2 row">
+              <label for="reg-uname" class="col-sm-4 col-form-label">Username</label>
+              <div class="col-sm-8">
+                <input type="text" id="reg-uname" class="form-control">
+              </div>
+            </div>
+
+            <div class="mb-2 row">
+              <label for="reg-pword" class="col-sm-4 col-form-label">Password</label>
+              <div class="col-sm-8">
+                <div class="input-group">
+                  <input type="password" id="reg-pword" class="form-control">
+                  <button class="btn btn-outline-secondary" type="button" onclick="togglePassword('reg-pword', this)">Show</button>
+                </div>
+              </div>
+            </div>
+
+            <div class="mb-2 row">
+              <div class="col-sm-4">
+                <button type="submit" class="btn btn-primary" onclick="register()" id="reg-btn">Register</button>
+              </div>
+              <div class="col-sm-8">
+                <p class="mb-0">Note: Your username will be visible to other users.</p>
+              </div>
+            </div>
+          </div>
+        </div>  
+        <div class="modal fade" id="resetPasswordModal" tabindex="-1" aria-labelledby="resetPasswordModalLabel" aria-hidden="true">
+          <div class="modal-dialog">
+            <div class="modal-content">
+
+              <div class="modal-header">
+                <h5 class="modal-title" id="resetPasswordModalLabel">Reset Password</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
+
+              <div class="modal-body">
+                <div class="mb-2">
+                  <label for="resetEmail" class="form-label">Enter your email</label>
+                  <input type="email" class="form-control" id="resetEmail" placeholder="you@example.com" required>
+                </div>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary" onclick="sendPasswordReset()">Send Reset Email</button>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
-      <div class="col-md-6">
-        <div class="row">
-          <div class="col-4">
-            <label for="reg-email" class="form-label">Email Address</Address></label>
-          </div>
-          <div class="col-6">
-            <input type="text" id="reg-email" class="form-control">
-          </div>
-        </div>
-        <div class="row">
-          <div class="col-4">
-            <label for="reg-uname" class="form-label">Username</label>
-          </div>
-          <div class="col-6">
-            <input type="text" id="reg-uname" class="form-control">
-          </div>
-        </div>
-        <div class="row">
-          <div class="col-4">
-            <label for="reg-pword" class="form-label">Password</label>
-          </div>
-          <div class="col-6">
-            <label for="pword" class="form-label visually-hidden">Password</label>
-            <div class="input-group">
-              <input type="password" id="reg-pword" class="form-control">
-              <button class="btn btn-outline-secondary" type="button" onclick="togglePassword('reg-pword', this)">
-                Show
-              </button>
-            </div>  
-          </div>
-        </div>
-        <div class="row">
-          <div class="col-4">
-            <button type="submit" class="btn btn-primary" onclick="register()" id="reg-btn">Register</button>
-          </div>
-          <div class="col-6">
-            <p>Please note: Your username will be visible to other users, and your randomly
-              generated passcode will be sent to the email address.</p>
-          </div>
-        </div>
+    </div>
+    <div class="card mt-3">
+      <div class="card-body">
+        <h5 class="card-title text-primary">Welcome to Predictions</h5>
+        <p class="card-text">
+          Bookie
+          <br><br>
+          Bookie
+        </p>
       </div>
     </div>
   </div>

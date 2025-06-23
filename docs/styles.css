@@ -120,4 +120,8 @@ th {
 
 .btn-link {
     text-decoration: none !important;
-  }
+}
+
+#auth-tabContent {
+  min-height: 224px; /* adjust as needed */
+}
