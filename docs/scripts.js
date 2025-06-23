@@ -198,12 +198,22 @@ async function retrieve_info() {
   for (let league = 0; league < league_shorthands.length; league++) {
 
     // Collect the data from the db for all teams in the league
-    let { data , error } = await supaclient.from("default_predictions").select('*').or(`name.eq.${league_shorthands[league]}_last_season_finishes,name.eq.${league_shorthands[league]}_all_teams`)
+    let { data: teamsData } = await supaclient
+      .from("default_predictions")
+      .select('*')
+      .eq('name', `${league_shorthands[league]}_all_teams`);
 
-    let teams = data[0]
-    let pos = data[1]
-    delete teams['name']
-    delete pos['name']
+    let teams = teamsData[0];
+    delete teams['name'];
+
+    let { data: posData } = await supaclient
+      .from("default_predictions")
+      .select('*')
+      .eq('name', `${league_shorthands[league]}_last_season_finishes`);
+
+    let pos = posData[0];
+    delete pos['name'];
+
 
     // Create a table outline to display the collected info
     let html_info = `<div class="row justify-content-center">
