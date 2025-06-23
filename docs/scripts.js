@@ -198,12 +198,22 @@ async function retrieve_info() {
   for (let league = 0; league < league_shorthands.length; league++) {
 
     // Collect the data from the db for all teams in the league
-    let { data , error } = await supaclient.from("default_predictions").select('*').or(`name.eq.${league_shorthands[league]}_last_season_finishes,name.eq.${league_shorthands[league]}_all_teams`)
+    let { data: teamsData } = await supaclient
+      .from("default_predictions")
+      .select('*')
+      .eq('name', `${league_shorthands[league]}_all_teams`);
 
-    let teams = data[0]
-    let pos = data[1]
-    delete teams['name']
-    delete pos['name']
+    let teams = teamsData[0];
+    delete teams['name'];
+
+    let { data: posData } = await supaclient
+      .from("default_predictions")
+      .select('*')
+      .eq('name', `${league_shorthands[league]}_last_season_finishes`);
+
+    let pos = posData[0];
+    delete pos['name'];
+
 
     // Create a table outline to display the collected info
     let html_info = `<div class="row justify-content-center">
@@ -1116,5 +1126,32 @@ function togglePassword(inputId, button) {
   } else {
     input.type = "password";
     button.textContent = "Show";
+  }
+}
+function changeLoginTab(tab) {
+  // Tab button elements
+  const loginTabBtn = document.getElementById('login-tab');
+  const registerTabBtn = document.getElementById('register-tab');
+
+  // Tab content elements
+  const loginForm = document.getElementById('login-form');
+  const registerForm = document.getElementById('register-form');
+
+  if (tab === 'login') {
+    loginTabBtn.classList.add('active');
+    registerTabBtn.classList.remove('active');
+
+    loginForm.classList.add('show', 'active');
+    loginForm.classList.remove('fade');
+    registerForm.classList.remove('show', 'active');
+    registerForm.classList.add('fade');
+  } else if (tab === 'register') {
+    registerTabBtn.classList.add('active');
+    loginTabBtn.classList.remove('active');
+
+    registerForm.classList.add('show', 'active');
+    registerForm.classList.remove('fade');
+    loginForm.classList.remove('show', 'active');
+    loginForm.classList.add('fade');
   }
 }

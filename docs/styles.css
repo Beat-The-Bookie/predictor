@@ -120,4 +120,41 @@ th {
 
 .btn-link {
     text-decoration: none !important;
-  }
+}
+
+#auth-tabContent {
+  min-height: 224px; /* adjust as needed */
+}
+
+.referral-container {
+display: flex;
+align-items: center;
+gap: 0.5rem;
+flex-wrap: wrap; /* keeps it responsive on small screens */
+margin-top: 1rem;
+}
+
+.referral-label {
+white-space: nowrap;
+font-weight: bold;
+}
+
+#referral-link {
+flex: 1;
+min-width: 200px;
+padding: 0.5rem;
+font-size: 1rem;
+}
+
+button {
+padding: 0.5rem 1rem;
+background-color: #0077cc;
+color: white;
+border: none;
+cursor: pointer;
+border-radius: 4px;
+}
+
+button:hover {
+background-color: #005fa3;
+}
