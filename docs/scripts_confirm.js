@@ -45,7 +45,7 @@ async function handleConfirmation() {
 
   await user_team_list(id, uname);
 
-  statusEl.textContent = "Account set-up. Click the button below to return to Beat The Bookie"
+  statusEl.textContent = "Account set-up. Click the button below to return to Beat the Bookie"
   redirectBtn.disabled = false;
 }
 
