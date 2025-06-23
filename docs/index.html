@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Predictions 2024-25</title>
-  <link rel="icon" type="image/png" href="logo.png">
+  <link rel="icon" type="image/jpg" href="logo.jpg">
   <link rel="stylesheet" href="styles.css">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
   <script src="https://unpkg.com/@supabase/supabase-js"></script>
@@ -24,14 +24,13 @@
     })();
   </script>
 </head>
-<body>
-  <header class="banner">
-    <img src="logo.png" alt="Logo" width="120" height="50">
-  </header>
+<body style="padding: 0px;">
   <div class="container" id="login-page">
     <div class="card">
-      <div class="card-header bg-primary text-white">
-        Login / Register
+      <div class="card-header bg-primary text-white d-flex align-items-center justify-content-between">
+        <img src="logo.jpg" alt="Logo" width="100px", height="100px"/>
+        <h1 class="mx-auto mb-0 text-center flex-grow-1 text-white">Login / Register</h1>
+        <img src="logo.jpg" alt="Logo" width="100px", height="100px"/>
       </div>
       <div class="card-body">
         <nav class="mb-2">
@@ -127,19 +126,30 @@
     </div>
     <div class="card mt-3">
       <div class="card-body">
-        <h5 class="card-title text-primary">Welcome to Predictions</h5>
-        <p class="card-text">
-          Bookie
-          <br><br>
-          Bookie
-        </p>
+        <section class="intro">
+          <h1>Welcome to <strong>Beat the Bookie</strong></h1>
+          <p>
+            Think you have ball knowledge? Prove it! Predict the final standings for Europe's top leagues — the Premier League, La Liga, Serie A, Bundesliga, Ligue 1, and the Championship.
+          </p>
+          <p>
+            Drag and drop the teams in each league to lock in your predictions. At the end of the season, you'll score points based on how close your predictions were to reality.
+          </p>
+          <p>
+            Compete on the leaderboard, and create custom mini-leagues with friends. You choose how many teams to score per league, and climb the ranks!
+          </p>
+          <p>
+            And the twist? You’re not just playing each other. You’re up against <strong>The Bookie</strong> — our in-house prediction account based on real betting odds. Can you <em>Beat the Bookie</em>?
+          </p>
+        </section>
       </div>
     </div>
   </div>
   <div class="container d-none" id="main-page-pre">
     <div class="card">
-      <div class="card-header bg-primary text-white">
-        Predictions 2024/2025
+      <div class="card-header bg-primary text-white d-flex align-items-center justify-content-between">
+        <img src="logo.jpg" alt="Logo" width="100px", height="100px"/>
+        <h1 class="mx-auto mb-0 text-center flex-grow-1 text-white">Beat The Bookie 2025/26</h1>
+        <img src="logo.jpg" alt="Logo" width="100px", height="100px"/>
       </div>
       <div class="card-body">
         <nav class="d-flex align-items-center">
@@ -158,23 +168,50 @@
         </nav>
         <div class="tab-content" id="nav-tabContent">
           <div class="tab-pane show active" id="pre-nav-home" role="tabpanel" tabindex="0">
-            <h2>Welcome to Predictions 2024/2025!</h2>
-            <p>Hi, thanks a lot for joining the FootPred beta. This second round of beta testing will be much more interactive than the previous.
-              Your first job is to create your predictions, which mean something this time as I will announce a winner at the end of the season.
-              The deadline is Sunday 30th March, at 20:00, at the end of the international break. All teams are taken into account for this mini-competition.</p>
-            <p>I also need everyone to join and create leagues. This functionality is new and there will likely be bugs. The creator of each league
-              picks how many teams to score for in each league. For instance, if your prem limit was 4, only the top 4 teams would be scoring points.
-              Whilst this will not be much fun before the deadline, when the deadline passes you will be able to view others' predictions, and the
-              scores will be updated regularly.
-            </p>
-            <p>For any queries, issues, or suggestions, please do not hesitate to email at <a href="mailto:footpredinfo@gmail.com">footpredinfo@gmail.com</a></p>
-            <p>Stay tuned! There will be future updates, and more feedback requests!</p>
-            <p>All things going well, there should be a release in June 2025</p>
-            <div id="referral-section" class="mt-3">
-              <p>Your referral link:</p>
-              <input id="referral-link" type="text" readonly>
-              <button onclick="copyReferral()">Copy</button>
-            </div>
+            <section class="welcome">
+              <h1>Welcome to <strong>Beat the Bookie</strong>!</h1>
+
+              <p>
+                Think you’ve got ball knowledge? Now’s your chance to prove it. Rank every team in Europe’s top leagues — the Premier League, La Liga, Serie A, Bundesliga, Ligue 1, and the Championship — in the order you think they’ll finish this season.
+              </p>
+
+              <p>
+                Drag and drop teams within each league tab to lock in your predictions. The closer your picks are to the real final standings, the more points you score!
+              </p>
+
+              <p>
+                Compete on the global leaderboard — where all 20 Premier League teams are scored, and only the top 6 from each other league count.
+              </p>
+
+              <p>
+                You can also create custom mini-leagues with friends, where you decide how many teams count toward the score in each league.
+              </p>
+
+              <p>
+                And remember — you’re not just playing each other. You’re up against <strong>The Bookie</strong>: our official prediction account based on real betting odds. Can you <em>Beat the Bookie</em>?
+              </p>
+
+              <p>
+                <strong>Deadline:</strong> 8th August 2025 at 18:00. After this point, predictions will be locked. You’ll still be able to log in, view your score and others’, and see everyone’s predictions.
+              </p>
+
+              <h1>Prizes</h1>
+              <p>
+                Finish top of the main leaderboard and win a <strong>£10 Amazon voucher</strong>. If you referred the winner, you’ll get <strong>£10 too</strong>!
+              </p>
+
+              <h1>Your Referral Link</h1>
+              <p>
+                Share your unique referral link below — if a friend joins through your link and goes on to win, you both win!
+              </p>
+
+              <div id="referral-section" class="referral-container mt-3">
+                <label for="referral-link" class="referral-label">Your referral link:</label>
+                <input id="referral-link" type="text" readonly>
+                <button onclick="copyReferral()">Copy</button>
+              </div>
+            </section>
+
           </div>
           <div class="tab-pane" id="pre-nav-prem" role="tabpanel" tabindex="0">
             <div class="row justify-content-around">
