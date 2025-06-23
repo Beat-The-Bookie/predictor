@@ -38,7 +38,7 @@ async function restoreSession() {
     document.getElementById("viewing").textContent = current_user.user_metadata.username;
     document.getElementById('login-page').classList.add('d-none');
     
-    const referral_link = `https://willbrown5515.github.io/predictions/?ref=${encodeURIComponent(current_user.user_metadata.referral_code)}`
+    const referral_link = `https://beat-the-bookie.github.io/predictor/?ref=${encodeURIComponent(current_user.user_metadata.referral_code)}`
     document.getElementById("referral-link").value = referral_link
 
     if (!deadline_passed) {
@@ -109,7 +109,7 @@ async function login() {
   // Show appropriate UI
   document.getElementById('login-page').classList.add('d-none');
 
-  const referral_link = `https://willbrown5515.github.io/predictions/?ref=${encodeURIComponent(current_user.user_metadata.referral_code)}`
+  const referral_link = `https://beat-the-bookie.github.io/predictor/?ref=${encodeURIComponent(current_user.user_metadata.referral_code)}`
   document.getElementById("referral-link").value = referral_link
 
   if (deadline_passed == false) {
@@ -165,7 +165,7 @@ async function register() {
           referral_code: user_referral_code,
           referred_code: referrer
         },
-        emailRedirectTo: 'https://willbrown5515.github.io/predictions/confirm'
+        emailRedirectTo: 'https://beat-the-bookie.github.io/predictor/confirm'
       }
     });
 
@@ -1060,7 +1060,7 @@ async function sendPasswordReset() {
   }
 
   const { error } = await supaclient.auth.resetPasswordForEmail(email, {
-    redirectTo: "https://willbrown5515.github.io/predictions/reset.html"
+    redirectTo: "https://beat-the-bookie.github.io/predictor/reset"
   });
 
   if (error) {
