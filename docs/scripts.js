@@ -7,7 +7,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   await restoreSession()
 })
 
-const supaclient = supabase.createClient('https://lcfqseitghkcxzjtamoz.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxjZnFzZWl0Z2hrY3h6anRhbW96Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDgxNzIzNzAsImV4cCI6MjA2Mzc0ODM3MH0.kPuKlk_UXlcF4WFGdh8o4Kl792B93-Q7q9Z8oFtK9Mk')
+const supaclient = supabase.createClient('https://pssnuzrmazyxouoqsfhg.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBzc251enJtYXp5eG91b3FzZmhnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTExOTMyMjQsImV4cCI6MjA2Njc2OTIyNH0.4Vj8_1Yr6yc0KZadbdknBv548dr3_WXYfGmerswF3XY')
 const league_shorthands = ['prem', 'la_liga', 'champ', 'seriea', 'bundes', 'ligue1']
 const league_teams = [20, 20, 24, 20, 18, 18]
 user = ""
