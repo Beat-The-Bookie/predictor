@@ -54,7 +54,7 @@ async function handleConfirmation() {
 async function returnHome() {
   statusEl.textContent = 'Redirecting...';
   setTimeout(() => {
-    window.location.href = '/predictions/';
+    window.location.href = '/predictor/';
   }, 3000);
 }
 
