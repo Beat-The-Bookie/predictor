@@ -14,18 +14,7 @@ function delay(ms) {
 // Main logic
 async function handleConfirmation() {
 
-  try {
-    const { data, error } = await supaclient.auth.getSessionFromUrl();
-    if (error) {
-      console.error("Session exchange error:", error.message);
-      statusEl.textContent = 'Could not confirm email. Please try logging in again.';
-      return;
-    }
-  } catch (err) {
-    console.error("Unexpected error during session exchange:", err);
-    statusEl.textContent = 'Could not confirm email. Please try logging in again.';
-    return;
-  }
+  await delay(2000);
 
   const { data: sessionData, error: sessionError } = await supaclient.auth.getSession();
 
