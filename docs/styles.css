@@ -123,7 +123,7 @@ th {
 }
 
 #auth-tabContent {
-  min-height: 224px; /* adjust as needed */
+  min-height: 200px; /* adjust as needed */
 }
 
 .referral-container {
@@ -157,4 +157,8 @@ border-radius: 4px;
 
 button:hover {
 background-color: #005fa3;
+}
+
+.non-draggable {
+  cursor: default;
 }

@@ -7,7 +7,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   await restoreSession()
 })
 
-const supaclient = supabase.createClient('https://lcfqseitghkcxzjtamoz.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxjZnFzZWl0Z2hrY3h6anRhbW96Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDgxNzIzNzAsImV4cCI6MjA2Mzc0ODM3MH0.kPuKlk_UXlcF4WFGdh8o4Kl792B93-Q7q9Z8oFtK9Mk')
+const supaclient = supabase.createClient('https://pssnuzrmazyxouoqsfhg.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBzc251enJtYXp5eG91b3FzZmhnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTExOTMyMjQsImV4cCI6MjA2Njc2OTIyNH0.4Vj8_1Yr6yc0KZadbdknBv548dr3_WXYfGmerswF3XY')
 const league_shorthands = ['prem', 'la_liga', 'champ', 'seriea', 'bundes', 'ligue1']
 const league_teams = [20, 20, 24, 20, 18, 18]
 user = ""
@@ -69,6 +69,7 @@ async function logout() {
     document.getElementById('login-page').classList.remove('d-none');
     document.getElementById('main-page-pre').classList.add('d-none');
     document.getElementById('main-page-post').classList.add('d-none');
+    location.reload()
   }
 }
 
@@ -127,6 +128,18 @@ async function register() {
   const new_email = document.getElementById('reg-email').value.trim();
   const new_pword = document.getElementById('reg-pword').value;
 
+  // Query only for matching username
+  const { data: existingUser, error: testError } = await supaclient
+    .from("leaderboard")
+    .select("username")
+    .eq("username", new_uname)
+    .single(); // gets one row or null
+
+  if (existingUser) {
+    alert("Username is already taken. Please choose a different one.");
+    return;
+  }
+
   if (!new_uname || !new_email || !new_pword) {
     alert("Please fill in all fields.");
     return;
@@ -145,7 +158,7 @@ async function register() {
     return;
   }
 
-  const usernameRegex = /^[a-zA-Z0-9_]{3,20}$/;
+  const usernameRegex = /^[a-zA-Z0-9_ ]{3,20}$/;
   if (!usernameRegex.test(new_uname)) {
     alert("Username must be 3–20 characters and contain only letters, numbers, or underscores.");
     return;
@@ -218,7 +231,7 @@ async function retrieve_info() {
     // Create a table outline to display the collected info
     let html_info = `<div class="row justify-content-center">
                        <div class="col">
-                         <h3>Teams</h3>
+                         <h1>Teams</h1>
                         </div>
                       </div>
                         <table class="table table-bordered border-primary">
@@ -257,7 +270,7 @@ async function add_users() {
   // Create outline for leaderboard table
   let html_info = `<div class="row justify-content-center">
                     <div class="col">
-                      <h3>Players</h3>
+                      <h1>Players</h1>
                     </div>
                   </div>
                   <table class="table table-bordered border-primary">
@@ -307,27 +320,27 @@ async function mini_leagues(post)  {
                           </div>
                           <div class="mb-3">
                             <label for="premLimit" class="form-label">Premier League Max Teams</label>
-                            <input type="number" class="form-control" id="premLimit" min="0" value="20" required>
+                            <input type="number" class="form-control" id="premLimit" min="0" max="20" value="20" required>
                           </div>
                           <div class="mb-3">
                             <label for="laligalimit" class="form-label">La Liga Max Teams</label>
-                            <input type="number" class="form-control" id="laligaLimit" min="0" value="20" required>
+                            <input type="number" class="form-control" id="laligaLimit" min="0" max="20" value="20" required>
                           </div>
                           <div class="mb-3">
                             <label for="champLimit" class="form-label">Championship Max Teams</label>
-                            <input type="number" class="form-control" id="champLimit" min="0" value="24" required>
+                            <input type="number" class="form-control" id="champLimit" min="0" max="24" value="24" required>
                           </div>
                           <div class="mb-3">
                             <label for="serieaLimit" class="form-label">Serie A Max Teams</label>
-                            <input type="number" class="form-control" id="serieaLimit" min="0" value="20" required>
+                            <input type="number" class="form-control" id="serieaLimit" min="0" max="20" value="20" required>
                           </div>
                           <div class="mb-3">
                             <label for="bundesligaLimit" class="form-label">Bundesliga Max Teams</label>
-                            <input type="number" class="form-control" id="bundesligaLimit" min="0" value="18" required>
+                            <input type="number" class="form-control" id="bundesligaLimit" min="0" max="18" value="18" required>
                           </div>
                           <div class="mb-3">
                             <label for="ligue1Limit" class="form-label">Ligue 1 Max Teams</label>
-                            <input type="number" class="form-control" id="ligue1Limit" min="0" value="18" required>
+                            <input type="number" class="form-control" id="ligue1Limit" min="0" max="18" value="18" required>
                           </div>
                         </div>
                         <div class="modal-footer">
@@ -338,7 +351,7 @@ async function mini_leagues(post)  {
                     </div>
                   </div>
                   <div class="col-auto">
-                    <h3>Your Leagues</h3>
+                    <h1>Your Leagues</h1>
                   </div>
                   <div class="col-auto">
                     <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#joinLeagueModal">Join League</button>
@@ -398,14 +411,14 @@ async function mini_leagues(post)  {
     leagues.forEach(league => {
         let row = ` <tr>
                       <td>
-                          <button class="btn btn-link" onclick="league_entrants('${league.name}', '${league['id']}')">
+                          <button class="btn btn-link" onclick="league_entrants('${league.name}', '${league['id']}', '${league.prem_limit}', '${league.la_liga_limit}', '${league.champ_limit}', '${league.seriea_limit}', '${league.bundes_limit}', '${league.ligue1_limit}')">
                               ${escapeHTML(league.name)}
                           </button>
                       </td>
                       <td>${league.admin_user_id}</td>
                       <td>${league.prem_limit}</td>
-                      <td>${league.champ_limit}</td>
                       <td>${league.la_liga_limit}</td>
+                      <td>${league.champ_limit}</td>
                       <td>${league.seriea_limit}</td>
                       <td>${league.bundes_limit}</td>
                       <td>${league.ligue1_limit}</td>
@@ -446,7 +459,7 @@ async function mini_leagues(post)  {
   }
 }
 
-async function league_entrants(league, id) {
+async function league_entrants(league, id, prem, la_liga, champ, seriea, bundes, ligue1) {
 
   // Check if the user is the admin of the mini-league, change button depending on such
   let { data } = await supaclient.from("mini_leagues").select("id, admin_username, admin_user_id").eq("name", league)
@@ -454,20 +467,66 @@ async function league_entrants(league, id) {
     button = `<button class="btn btn-primary" onclick="delete_league('${id}')">Delete League</button>`
   } else {
     button = `<button class="btn btn-primary" onclick="leave_league('${id}')">Leave League</button>`
-}
+  }
 
   // Collect all members of a mini-league
   let { data: users} = await supaclient.from("mini_league_members").select("user_id, username").eq("mini_league_id", data[0]['id'])
 
   // Create outline for mini-league member table
-  new_html = `<div class="row justify-content-between" style="margin-bottom:8px">
+  new_html = `<div class="row justify-content-center">
+                <h1>${league}</h1>
+              <div class="row justify-content-between" style="margin-bottom:8px">
                 <div class="col-auto">
                   <button class="btn btn-primary" onclick="mini_leagues(false)">Back</button>
                 </div>
                 <div class="col-auto">
-                  <h3>${league}</h3>
-                </div> 
-                <div class="col-auto">${button}</div>
+                  <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modifyLeagueModal">Modify</button>
+                </div>
+                <div class="modal fade" id="modifyLeagueModal" tabindex="-1" aria-labelledby="modifyLeagueModalLabel" aria-hidden="true">
+                  <div class="modal-dialog">
+                    <div class="modal-content">
+                      <div class="modal-header">
+                        <h5 class="modal-title" id="modifyLeagueModalLabel">Modify League</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                      </div>
+                      <div class="modal-body">
+                        <div class="mb-3">
+                          <label for="leagueName" class="form-label">League Name</label>
+                          <input type="text" class="form-control" id="leagueName" value="${league}" disabled>
+                        </div>
+                        <div class="mb-3">
+                          <label for="premLimit" class="form-label">Premier League Max Teams</label>
+                          <input type="number" class="form-control" id="modifyPremLimit" min="0" max="20" value="${prem}" required>
+                        </div>
+                        <div class="mb-3">
+                          <label for="laligalimit" class="form-label">La Liga Max Teams</label>
+                          <input type="number" class="form-control" id="modifyLaligaLimit" min="0" max="20" value="${la_liga}" required>
+                        </div>
+                        <div class="mb-3">
+                          <label for="champLimit" class="form-label">Championship Max Teams</label>
+                          <input type="number" class="form-control" id="modifyChampLimit" min="0" max="24" value="${champ}" required>
+                        </div>
+                        <div class="mb-3">
+                          <label for="serieaLimit" class="form-label">Serie A Max Teams</label>
+                          <input type="number" class="form-control" id="modifySerieaLimit" min="0" max="20" value="${seriea}" required>
+                        </div>
+                        <div class="mb-3">
+                          <label for="bundesligaLimit" class="form-label">Bundesliga Max Teams</label>
+                          <input type="number" class="form-control" id="modifyBundesLimit" min="0" max="18" value="${bundes}" required>
+                        </div>
+                        <div class="mb-3">
+                          <label for="ligue1Limit" class="form-label">Ligue 1 Max Teams</label>
+                          <input type="number" class="form-control" id="modifyLigue1Limit" min="0" max="18" value="${ligue1}" required>
+                        </div>
+                      </div>
+                      <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-primary" onclick="modifyLeague('${id}')">Save Changes</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              <div class="col-auto">${button}</div>
               </div>
               <table class="table table-bordered border-primary">
                 <thead>
@@ -529,7 +588,7 @@ async function league_standings(league) {
                   <button class="btn btn-primary" onclick="mini_leagues(true)">Back</button>
                 </div>
                 <div class="col-auto">
-                  <h3>${league}</h3>
+                  <h1>${league}</h1>
                 </div> 
                 <div class="col-auto"></div>
               </div>
@@ -636,7 +695,7 @@ async function add_pred_table() {
     // Create outline for user predictions table
     html_pred =  `<div class="row justify-content-center">
                     <div class="col">
-                      <h3>Your Predictions</h3>
+                      <h1>Your Predictions</h1>
                     </div>
                   </div>
                   <table id="sortableTable" class="table table-bordered border-primary">
@@ -651,7 +710,7 @@ async function add_pred_table() {
     // Create table row for each team in the league
     for (let i = 1; i< (Object.keys(data[0]).filter(key => !isNaN(key)).length + 1); i++) {
       html_pred += `<tr>
-                      <td>${i}</td>
+                      <td class="non-draggable">${i}</td>
                       <td class="draggable-item">${data[0][i.toString()]}</td>
                     </tr>`
     }
@@ -696,6 +755,21 @@ async function createLeague() {
   const leagueNameRegex = /^[a-zA-Z0-9 _\-]{3,20}$/;
   if (!leagueNameRegex.test(leagueName)) {
     alert("League name must be 3–20 characters and only include letters, numbers, spaces, dashes, or underscores.");
+    return;
+  }
+
+  // Validate team limits
+  const errors = [];
+
+  if (premLimit < 0 || premLimit > 20) errors.push("Premier League max is 20.");
+  if (laligaLimit < 0 || laligaLimit > 20) errors.push("La Liga max is 20.");
+  if (champLimit < 0 || champLimit > 24) errors.push("Championship max is 24.");
+  if (serieaLimit < 0 || serieaLimit > 20) errors.push("Serie A max is 20.");
+  if (bundesligaLimit < 0 || bundesligaLimit > 18) errors.push("Bundesliga max is 18.");
+  if (ligue1Limit < 0 || ligue1Limit > 18) errors.push("Ligue 1 max is 18.");
+
+  if (errors.length > 0) {
+    alert("Invalid input:\n" + errors.join("\n"));
     return;
   }
 
@@ -792,7 +866,7 @@ async function reset_changes(league) {
   delete data[0]['user_id']
   html_pred =  `<div class="row justify-content-center">
                   <div class="col">
-                    <h3>Your Predictions</h3>
+                    <h1>Your Predictions</h1>
                   </div>
                 </div>
                 <table id="sortableTable" class="table table-bordered border-primary">
@@ -850,7 +924,7 @@ async function add_locked_preds(player = user) {
 
     html_pred =  `<div class="row justify-content-center">
                     <div class="col">
-                      <h3>${pred_label} Predictions</h3>
+                      <h1>${pred_label} Predictions</h1>
                     </div>
                   </div>
                   <table id="locked-pred" class="table table-bordered border-primary">
@@ -906,7 +980,7 @@ async function other_preds(player) {
 
     html_pred =  `<div class="row justify-content-center">
                     <div class="col">
-                      <h3>${possessive} Predictions</h3>
+                      <h1>${possessive} Predictions</h1>
                     </div>
                   </div>
                   <table id="locked-pred" class="table table-bordered border-primary">
@@ -940,7 +1014,7 @@ async function add_leaderboard(sortBy = 'total') {
   let { data } = await supaclient.from('leaderboard').select('*').order(sortBy, { ascending: false });
   let html_info = `  <div class="row justify-content-between align-items-center mb-3">
                       <div class="col-auto">
-                        <h3>The Leaderboard</h3>
+                        <h1>The Leaderboard</h1>
                       </div>
                       <div class="col-auto d-flex align-items-center ms-auto">
                         <label for="sort-select" class="form-label me-2 mb-0">Sort By:</label>
@@ -1005,7 +1079,7 @@ async function add_prem_table() {
 
     html_pred =  `<div class="row justify-content-center">
                     <div class="col">
-                      <h3>Current Standings</h3>
+                      <h1>Current Standings</h1>
                     </div>
                   </div>
                   <table id="current-prem" class="table table-bordered border-primary">
@@ -1153,5 +1227,48 @@ function changeLoginTab(tab) {
     registerForm.classList.remove('fade');
     loginForm.classList.remove('show', 'active');
     loginForm.classList.add('fade');
+  }
+}
+
+async function modifyLeague(id) {
+  const premLim = parseInt(document.getElementById("modifyPremLimit").value);
+  const laLigaLim = parseInt(document.getElementById("modifyLaligaLimit").value);
+  const champLim = parseInt(document.getElementById("modifyChampLimit").value);
+  const serieaLim = parseInt(document.getElementById("modifySerieaLimit").value);
+  const bundesLim = parseInt(document.getElementById("modifyBundesLimit").value);
+  const ligue1Lim = parseInt(document.getElementById("modifyLigue1Limit").value);
+
+  const errors = [];
+
+  if (premLim > 20) errors.push("Premier League max is 20.");
+  if (laLigaLim > 20) errors.push("La Liga max is 20.");
+  if (champLim > 24) errors.push("Championship max is 24.");
+  if (serieaLim > 20) errors.push("Serie A max is 20.");
+  if (bundesLim > 18) errors.push("Bundesliga max is 18.");
+  if (ligue1Lim > 18) errors.push("Ligue 1 max is 18.");
+
+  if (errors.length > 0) {
+    alert("Invalid input:\n" + errors.join("\n"));
+    return;
+  }
+
+  const update_data = {
+    prem_limit: premLim,
+    la_liga_limit: laLigaLim,
+    champ_limit: champLim,
+    seriea_limit: serieaLim,
+    bundes_limit: bundesLim,
+    ligue1_limit: ligue1Lim,
+  };
+
+  const { error } = await supaclient
+    .from("mini_leagues")
+    .update(update_data)
+    .eq("id", id);
+
+  if (error) {
+    alert("Failed to update league: " + error.message);
+  } else {
+    alert("Settings updated successfully");
   }
 }
