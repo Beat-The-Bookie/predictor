@@ -40,62 +40,62 @@
           </div>
         </nav>
         <div class="tab-content" id="auth-tabContent">
-          <div class="tab-pane fade show active" id="login-form" role="tabpanel" aria-labelledby="login-tab">
+          <div class="tab-pane fade show active" id="login-form" role="tabpanel" aria-labelledby="login-tab" style="padding: 0px;">
             <div class="mb-2 row">
-              <label for="email" class="col-sm-4 col-form-label">Email Address</label>
-              <div class="col-sm-8">
+              <label for="email" class="col-sm-2 col-form-label">Email Address</label>
+              <div class="col-sm-10">
                 <input type="text" id="email" class="form-control">
               </div>
             </div>
             <div class="mb-2 row">
-              <label for="pword" class="col-sm-4 col-form-label">Password</label>
-              <div class="col-sm-8">
+              <label for="pword" class="col-sm-2 col-form-label">Password</label>
+              <div class="col-sm-10">
                 <div class="input-group">
                   <input type="password" id="pword" class="form-control" />
-                  <button class="btn btn-outline-secondary" type="button" onclick="togglePassword('pword', this)">Show</button>
+                  <button class="btn btn-outline-primary" type="button" onclick="togglePassword('pword', this)">Show</button>
                 </div>
               </div>
             </div>
             <div class="mb-2 row">
-              <div class="col-sm-4">
-                <button class="btn btn-primary" onclick="login()">Login</button>
+              <div class="col-sm-3">
+                <button type="submit" class="btn btn-primary d-block" onclick="login()" style="padding: 14px 32px; font-size: 1.1rem; border-radius: 8px;">Login</button>
               </div>
-              <div class="col-sm-8">
-                <a href="#" class="link-primary" data-bs-toggle="modal" data-bs-target="#resetPasswordModal">Forgot your password?</a>
+              <div class="col-sm-9 d-flex align-items-center justify-content-center">
+                <a href="#" class="link-primary" data-bs-toggle="modal" data-bs-target="#resetPasswordModal">Forgotten your password?</a>
               </div>
             </div>
           </div>
-          <div class="tab-pane fade" id="register-form" role="tabpanel" aria-labelledby="register-tab">
+          <div class="tab-pane fade" id="register-form" role="tabpanel" aria-labelledby="register-tab" style="padding: 0px;">
             <div class="mb-2 row">
-              <label for="reg-email" class="col-sm-4 col-form-label">Email Address</label>
-              <div class="col-sm-8">
+              <label for="reg-email" class="col-sm-2 col-form-label">Email Address</label>
+              <div class="col-sm-10">
                 <input type="text" id="reg-email" class="form-control">
               </div>
             </div>
 
             <div class="mb-2 row">
-              <label for="reg-uname" class="col-sm-4 col-form-label">Username</label>
-              <div class="col-sm-8">
+              <label for="reg-uname" class="col-sm-2 col-form-label">Username</label>
+              <div class="col-sm-10">
                 <input type="text" id="reg-uname" class="form-control">
               </div>
             </div>
 
             <div class="mb-2 row">
-              <label for="reg-pword" class="col-sm-4 col-form-label">Password</label>
-              <div class="col-sm-8">
+              <label for="reg-pword" class="col-sm-2 col-form-label">Password</label>
+              <div class="col-sm-10">
                 <div class="input-group">
                   <input type="password" id="reg-pword" class="form-control">
-                  <button class="btn btn-outline-secondary" type="button" onclick="togglePassword('reg-pword', this)">Show</button>
+                  <button class="btn btn-outline-primary" type="button" onclick="togglePassword('reg-pword', this)">Show</button>
                 </div>
               </div>
             </div>
 
             <div class="mb-2 row">
-              <div class="col-sm-4">
-                <button type="submit" class="btn btn-primary" onclick="register()" id="reg-btn">Register</button>
+              <div class="col-sm-3">
+                <button type="submit" class="btn btn-primary d-block" onclick="register()" id="reg-btn" style="padding: 14px 32px; font-size: 1.1rem; border-radius: 8px;">Register</button>
               </div>
-              <div class="col-sm-8">
-                <p class="mb-0">Note: Your username will be visible to other users.</p>
+              <div class="col-sm-9 d-flex align-items-center justify-content-center">
+                <p class="mb-0 text-center">Note: Your username will be visible to other users.</p>
               </div>
             </div>
           </div>
@@ -135,10 +135,16 @@
             Drag and drop the teams in each league to lock in your predictions. At the end of the season, you'll score points based on how close your predictions were to reality.
           </p>
           <p>
-            Compete on the leaderboard, and create custom mini-leagues with friends. You choose how many teams to score per league, and climb the ranks!
+            You will be competing against all other players for a £10 Amazon Voucher! After the deadline, the leaderboard will display everyone's scores throughout the season.
+          </p>
+          <p>
+            Also create custom mini-leagues with friends! You choose how many teams to score per league, with score updates throughout the season!
           </p>
           <p>
             And the twist? You’re not just playing each other. You’re up against <strong>The Bookie</strong> — our in-house prediction account based on real betting odds. Can you <em>Beat the Bookie</em>?
+          </p>
+          <p>
+            If you have any questions, concerns or feedback, please contact <a href="mailto:beatthebookieinfo@gmail.com">beatthebookieinfo@gmail.com</a>
           </p>
         </section>
       </div>
@@ -163,6 +169,7 @@
             <button class="nav-link" id="pre-nav-ligue1-tab" type="button" role="tab" onclick="change_tab('pre-nav-ligue1')">Ligue 1</button>
             <button class="nav-link" id="pre-nav-leaderboard-tab"  type="button" role="tab" onclick="change_tab('pre-nav-leaderboard')">Leaderboard</button>
             <button class="nav-link" id="pre-nav-leagues-tab" type="button" role="tab" onclick="change_tab('pre-nav-leagues')">Leagues</button>
+            <button class="nav-link" id="pre-nav-about-tab" type="button" role="tab" onclick="change_tab('pre-nav-about')">About</button>
           </div>
           <button class="btn btn-danger ms-auto" onclick="logout()">Logout</button>
         </nav>
@@ -180,7 +187,7 @@
               </p>
 
               <p>
-                Compete on the global leaderboard — where all 20 Premier League teams are scored, and only the top 6 from each other league count.
+                Compete on the global leaderboard — where all 20 Premier League teams are scored, and only the top 6 from each other league are counted.
               </p>
 
               <p>
@@ -188,7 +195,7 @@
               </p>
 
               <p>
-                And remember — you’re not just playing each other. You’re up against <strong>The Bookie</strong>: our official prediction account based on real betting odds. Can you <em>Beat the Bookie</em>?
+                And remember — you’re not just playing each other. You’re up against <strong>The Bookie</strong>: the official prediction account based on real betting odds. If you would like the account added to your league, drop an email to <a href="mailto:beatthebookieinfo@gmail.com">beatthebookieinfo@gmail.com</a> with your league join code.
               </p>
 
               <p>
@@ -215,48 +222,48 @@
           </div>
           <div class="tab-pane" id="pre-nav-prem" role="tabpanel" tabindex="0">
             <div class="row justify-content-around">
-              <div class="col-md-6" id="prem-table"></div>
               <div class="col-md-5 list-group" id="prem-pred-table"></div>
+              <div class="col-md-6" id="prem-table"></div>
               <button class="btn btn-primary" onclick="save_changes('prem')">Save Changes</button>
               <button class="btn btn-danger" onclick="reset_changes('prem')">Cancel Changes</button>
             </div>
           </div>
           <div class="tab-pane" id="pre-nav-la_liga" role="tabpanel" tabindex="0">
             <div class="row justify-content-around">
-              <div class="col-md-6" id="la_liga-table"></div>
               <div class="col-md-5 list-group" id="la_liga-pred-table"></div>
+              <div class="col-md-6" id="la_liga-table"></div>
               <button class="btn btn-primary" onclick="save_changes('la_liga')">Save Changes</button>
               <button class="btn btn-danger" onclick="reset_changes('la_liga')">Cancel Changes</button>
             </div>
           </div>
           <div class="tab-pane" id="pre-nav-champ" role="tabpanel" tabindex="0">
             <div class="row justify-content-around">
-              <div class="col-md-6" id="champ-table"></div>
               <div class="col-md-5 list-group" id="champ-pred-table"></div>
+              <div class="col-md-6" id="champ-table"></div>
               <button class="btn btn-primary" onclick="save_changes('champ')">Save Changes</button>
               <button class="btn btn-danger" onclick="reset_changes('champ')">Cancel Changes</button>
             </div>
           </div>
           <div class="tab-pane" id="pre-nav-seriea" role="tabpanel" tabindex="0">
             <div class="row justify-content-around">
-              <div class="col-md-6" id="seriea-table"></div>
               <div class="col-md-5 list-group" id="seriea-pred-table"></div>
+              <div class="col-md-6" id="seriea-table"></div>
               <button class="btn btn-primary" onclick="save_changes('seriea')">Save Changes</button>
               <button class="btn btn-danger" onclick="reset_changes('seriea')">Cancel Changes</button>
             </div>
           </div>
           <div class="tab-pane" id="pre-nav-bundes" role="tabpanel" tabindex="0">
             <div class="row justify-content-around">
-              <div class="col-md-6" id="bundes-table"></div>
               <div class="col-md-5 list-group" id="bundes-pred-table"></div>
+              <div class="col-md-6" id="bundes-table"></div>
               <button class="btn btn-primary" onclick="save_changes('bundes')">Save Changes</button>
               <button class="btn btn-danger" onclick="reset_changes('bundes')">Cancel Changes</button>
             </div>
           </div>
           <div class="tab-pane" id="pre-nav-ligue1" role="tabpanel" tabindex="0">
             <div class="row justify-content-around">
-              <div class="col-md-6" id="ligue1-table"></div>
               <div class="col-md-5 list-group" id="ligue1-pred-table"></div>
+              <div class="col-md-6" id="ligue1-table"></div>
               <button class="btn btn-primary" onclick="save_changes('ligue1')">Save Changes</button>
               <button class="btn btn-danger" onclick="reset_changes('ligue1')">Cancel Changes</button>
             </div>
@@ -270,6 +277,43 @@
             <div class="row justify-content-around">
               <div class="col-12" id="pre-leagues"></div>
             </div>
+          </div>
+          <div class="tab-pane" id="pre-nav-about" role="tabpanel" tabindex="0">
+            <section>
+              <h1>The Story</h1>
+              <p>
+                The concept of predicting league standings is something that has been happening on a
+                small-scale for a number of years. We began in the 2016-17 season by noting down our predictions
+                in our secondary school planners, and spending time at the end of the season manually counting
+                the scores. After two years, in 2018-19, someone created a spreadsheet to store the predictions,
+                as it was much more reliable than a piece of paper. From 2021-22, I took over the spreadsheet
+                and automated it as much as possible. Then, following the start of the 2024-25 season, with
+                some knowledge of Supabase and web development, this public website was the clear next step.
+                Skip forward 9 months, hundreds of hours, 4 different names, lots of different designs, and 
+                Beat the Bookie was born!
+              </p>
+                            <h1>The Developer(s)</h1>
+              <p>
+                This website is the brain-child of a solo developer, Will Brown. Since September 2024,
+                I have been using a lot of my spare time to create this website. On a personal level, I
+                am a Software Engineer Degree Apprentice at STFC, UKRI, based in Harwell, England, and
+                although a lot of the processes have been learned through my experience at work, the
+                code used to create the backend through Supabase and the frontend through static HTML/JS,
+                has been new to me. The Supabase project has been wiped and re-made many more times than
+                you can imagine.
+              </p>
+              <p> 
+                If you would like to get in contact with me personally, please feel free to connect with
+                me on <a href="https://www.linkedin.com/in/william-brown-0a06b5338/">LinkedIn</a>
+              </p>
+              <p>
+                Although the idea, design, and the majority of the hours put into this is largely myself,
+                there is another developer, Rowan Moss, who has helped me in implementing certain parts, as
+                well as offering support, advice, and feedback on my sometimes woeful-looking designs. I met
+                Rowan through my work, STFC, and am extremely thankful for everything that he has done in
+                contributing to this project. 
+              </p>
+            </section>
           </div>
         </div>
       </div>
