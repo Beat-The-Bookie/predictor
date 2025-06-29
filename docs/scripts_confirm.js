@@ -1,6 +1,6 @@
 // Initialize Supabase client
-const supabaseUrl = 'https://lcfqseitghkcxzjtamoz.supabase.co';
-const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxjZnFzZWl0Z2hrY3h6anRhbW96Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDgxNzIzNzAsImV4cCI6MjA2Mzc0ODM3MH0.kPuKlk_UXlcF4WFGdh8o4Kl792B93-Q7q9Z8oFtK9Mk';
+const supabaseUrl = 'https://pssnuzrmazyxouoqsfhg.supabase.co';
+const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBzc251enJtYXp5eG91b3FzZmhnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTExOTMyMjQsImV4cCI6MjA2Njc2OTIyNH0.4Vj8_1Yr6yc0KZadbdknBv548dr3_WXYfGmerswF3XY';
 const supaclient = supabase.createClient(supabaseUrl, supabaseAnonKey);
 
 // DOM element for status
