@@ -464,9 +464,9 @@ async function league_entrants(league, id, prem, la_liga, champ, seriea, bundes,
   // Check if the user is the admin of the mini-league, change button depending on such
   let { data } = await supaclient.from("mini_leagues").select("id, admin_username, admin_user_id").eq("name", league)
   if (user == data[0]['admin_user_id']) {
-    button = `<button class="btn btn-primary" onclick="delete_league('${id}')">Delete League</button>`
+    button = `<button class="btn btn-primary" onclick="delete_league('${id}')">Delete</button>`
   } else {
-    button = `<button class="btn btn-primary" onclick="leave_league('${id}')">Leave League</button>`
+    button = `<button class="btn btn-primary" onclick="leave_league('${id}')">Leave</button>`
   }
 
   // Collect all members of a mini-league
@@ -474,12 +474,15 @@ async function league_entrants(league, id, prem, la_liga, champ, seriea, bundes,
 
   // Create outline for mini-league member table
   new_html = `<div class="row justify-content-center">
-                <h1>${league}</h1>
-              <div class="row justify-content-between" style="margin-bottom:8px">
                 <div class="col-auto">
+                  <h1>${league}</h1>
+                </div>  
+              </div>  
+              <div class="row justify-content-between" style="margin-bottom:8px">
+                <div class="col-2 d-flex justify-content-start">
                   <button class="btn btn-primary" onclick="mini_leagues(false)">Back</button>
                 </div>
-                <div class="col-auto">
+                <div class="col-2 d-flex justify-content-center">
                   <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modifyLeagueModal">Modify</button>
                 </div>
                 <div class="modal fade" id="modifyLeagueModal" tabindex="-1" aria-labelledby="modifyLeagueModalLabel" aria-hidden="true">
@@ -526,7 +529,9 @@ async function league_entrants(league, id, prem, la_liga, champ, seriea, bundes,
                     </div>
                   </div>
                 </div>
-              <div class="col-auto">${button}</div>
+              <div class="col-2 d-flex justify-content-end">
+                ${button}
+              </div>
               </div>
               <table class="table table-bordered border-primary">
                 <thead>
