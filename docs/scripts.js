@@ -384,7 +384,7 @@ async function mini_leagues(post)  {
   // Fetch mini-league details
   let { data: leagues } = await supaclient
   .from("mini_leagues")
-  .select("name, admin_user_id, prem_limit, champ_limit, la_liga_limit, seriea_limit, bundes_limit, ligue1_limit, id, join_code")
+  .select("name, admin_username, prem_limit, champ_limit, la_liga_limit, seriea_limit, bundes_limit, ligue1_limit, id, join_code")
   .in("id", leagueIDs);
 
   // Create outline of table to display mini-leagues and info
@@ -415,7 +415,7 @@ async function mini_leagues(post)  {
                               ${escapeHTML(league.name)}
                           </button>
                       </td>
-                      <td>${league.admin_user_id}</td>
+                      <td>${league.admin_username}</td>
                       <td>${league.prem_limit}</td>
                       <td>${league.la_liga_limit}</td>
                       <td>${league.champ_limit}</td>
@@ -435,7 +435,7 @@ async function mini_leagues(post)  {
                         ${league.name}
                       </button>
                     </td>
-                    <td>${league.admin_user_id}</td>
+                    <td>${league.admin_username}</td>
                     <td>${league.prem_limit}</td>
                     <td>${league.champ_limit}</td>
                     <td>${league.la_liga_limit}</td>
