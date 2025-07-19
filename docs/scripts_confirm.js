@@ -46,6 +46,10 @@ async function handleConfirmation() {
   await user_team_list(id, uname);
 
   statusEl.textContent = "Account set-up. Click the button below to return to Beat the Bookie"
+  const alertBox = document.getElementById('confirmationAlert');
+  alertBox.classList.remove('alert-warning');
+  alertBox.classList.add('alert-success');
+  alertBox.innerHTML = '✅ Your email has been confirmed and your account is ready!';
   redirectBtn.disabled = false;
 }
 

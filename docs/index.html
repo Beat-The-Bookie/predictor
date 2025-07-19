@@ -175,8 +175,21 @@
         </nav>
         <div class="tab-content" id="nav-tabContent">
           <div class="tab-pane show active" id="pre-nav-home" role="tabpanel" tabindex="0">
-            <section class="welcome">
+            <section class="welcome">            
               <h1>Welcome to <strong>Beat the Bookie</strong>!</h1>
+              <p style="font-weight: bold; font-size: 1.1em;">
+                At the time of writing, we are just three weeks away from the deadline and 37 people have signed up so far. My goal is simple: get as many people playing as possible!
+                <br><br>
+                This is a free game, so please share your referral link widely — group chats, social media, wherever. 
+                <br><br>
+                And remember: if someone you refer goes on to win, you’ll get <strong>£10 too</strong>!
+              </p>
+
+              <div id="referral-section" class="referral-container mt-3">
+                <label for="referral-link" class="referral-label">Your referral link:</label>
+                <input id="referral-link" type="text" readonly>
+                <button onclick="copyReferral()">Copy</button>
+              </div>
 
               <p>
                 Think you’ve got ball knowledge? Now’s your chance to prove it. Rank every team in Europe’s top leagues — the Premier League, La Liga, Serie A, Bundesliga, Ligue 1, and the Championship — in the order you think they’ll finish this season.
@@ -202,27 +215,12 @@
                 <strong>Deadline:</strong> 8th August 2025 at 18:00. After this point, predictions will be locked. You’ll still be able to log in, view your score and others’, and see everyone’s predictions.
               </p>
 
-              <p>
-                There is controversy surrounding Lyon being relegated to Ligue 2 — if this is confirmed, each player's Lyon entry will be directly be replaced with Reims, their alleged replacement. This should be confirmed before the deadline anyway.
-              </p>
-
               <p>Any issues, feedback, ideas for new features or anything else, please contact <a href="mailto:beatthebookieinfo@gmail.com">beatthebookieinfo@gmail.com</a>.</p>
 
               <h1>Prizes</h1>
               <p>
                 Finish top of the main leaderboard and win a <strong>£10 Amazon voucher</strong>. If you referred the winner, you’ll get <strong>£10 too</strong>!
               </p>
-
-              <h1>Your Referral Link</h1>
-              <p>
-                Share your unique referral link below — if a friend joins through your link and goes on to win, you both win!
-              </p>
-
-              <div id="referral-section" class="referral-container mt-3">
-                <label for="referral-link" class="referral-label">Your referral link:</label>
-                <input id="referral-link" type="text" readonly>
-                <button onclick="copyReferral()">Copy</button>
-              </div>
             </section>
 
           </div>
