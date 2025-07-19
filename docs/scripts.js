@@ -465,15 +465,8 @@ async function league_entrants(league, id, prem, la_liga, champ, seriea, bundes,
   let { data } = await supaclient.from("mini_leagues").select("id, admin_username, admin_user_id").eq("name", league)
   if (user == data[0]['admin_user_id']) {
     button = `<button class="btn btn-primary" onclick="delete_league('${id}')">Delete</button>`
-  } else {
-    button = `<button class="btn btn-primary" onclick="leave_league('${id}')">Leave</button>`
-  }
-
-  // Collect all members of a mini-league
-  let { data: users} = await supaclient.from("mini_league_members").select("user_id, username").eq("mini_league_id", data[0]['id'])
-
-  // Create outline for mini-league member table
-  new_html = `<div class="row justify-content-center">
+    // Create outline for mini-league member table
+    new_html = `<div class="row justify-content-center">
                 <div class="col-auto">
                   <h1>${league}</h1>
                 </div>  
@@ -531,8 +524,26 @@ async function league_entrants(league, id, prem, la_liga, champ, seriea, bundes,
                 </div>
               <div class="col-2 d-flex justify-content-end">
                 ${button}
-              </div>
-              </div>
+              </div>`
+  } else {
+    button = `<button class="btn btn-primary" onclick="leave_league('${id}')">Leave</button>`
+    new_html = `<div class="row justify-content-between" style="margin-bottom:8px">
+                <div class="col-auto">
+                  <button class="btn btn-primary" onclick="mini_leagues(false)">Back</button>
+                </div>
+                <div class="col-auto">
+                  <h3>${league}</h3>
+                </div> 
+                <div class="col-auto">${button}</div>
+                </div>`
+  }
+
+  // Collect all members of a mini-league
+  let { data: users} = await supaclient.from("mini_league_members").select("user_id, username").eq("mini_league_id", data[0]['id'])
+
+
+
+              new_html += `</div>
               <table class="table table-bordered border-primary">
                 <thead>
                     <tr>
