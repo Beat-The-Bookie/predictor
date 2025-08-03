@@ -1,6 +1,6 @@
 document.addEventListener("DOMContentLoaded", async () => {
   const deadline = new Date('2025-08-08T18:00:00')
-  deadline_passed = new Date() > deadline
+  deadline_passed = true //new Date() > deadline
   if (deadline_passed == true) {
     disable_boxes()
   }
@@ -596,11 +596,10 @@ async function delete_league(id) {
 }
 
 async function league_standings(league, sort="total_score") {
-  console.log("LEAGUE", league)
-  console.log("SORT", sort)
+
   // Collect all info needed for a league leaderboard
   let {data} = await supaclient.from("mini_leagues").select("id").eq("name", league)
-  let {data: users} = await supaclient.from("mini_league_members").select("username, total_score, prem, la_liga, champ, seriea, bundes, ligue1").eq("mini_league_id", data[0]['id']).order(sort, { ascending: false });
+  let {data: users} = await supaclient.from("mini_league_members").select("username, total_score, prem, la_liga, champ, seriea, bundes, ligue1, user_id").eq("mini_league_id", data[0]['id']).order(sort, { ascending: false });
 
   // Create outline for mini-league leaderboard
   new_html = `<div class="row align-items-center" mb-3">
@@ -644,7 +643,7 @@ async function league_standings(league, sort="total_score") {
   users.forEach(user => {
       let row = ` <tr>
                     <td>${place}</td>
-                    <td><button class="btn btn-link" onclick="add_locked_preds('${user['username']}')">${user['username']}</td>
+                    <td><button class="btn btn-link" onclick="add_locked_preds('${user['username']}', '${user['user_id']}')">${user['username']}</td>
                     <td>${user['prem']}</td>
                     <td>${user['champ']}</td>
                     <td>${user['la_liga']}</td>
@@ -1006,7 +1005,7 @@ async function add_locked_preds(player = user, user_id = null) {
 }
 
 async function other_preds(player, user_id = null) {
-
+  console.log("USER_ID", user_id)
   // Cycle through the leagues
   for (let league = 0; league < league_shorthands.length; league++) {
 
