@@ -1,6 +1,6 @@
 document.addEventListener("DOMContentLoaded", async () => {
   const deadline = new Date('2025-08-08T18:00:00')
-  deadline_passed = new Date() > deadline
+  deadline_passed = true // new Date() > deadline
   if (deadline_passed == true) {
     disable_boxes()
   }
@@ -302,8 +302,8 @@ async function mini_leagues(post)  {
   let {data} = await supaclient.from('mini_league_members').select('mini_league_id').eq('user_id', user)
 
   // Create modals to create a new mini-league, and join an existing one
-  new_html = ` <div class="row justify-content-between" style="margin-bottom:8px">
-                  <div class="col-auto">
+  new_html = ` <div class="row justify-content-between" style="margin-bottom:8px">`
+  if (!post) new_html += `<div class="col-auto">
                     <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createLeagueModal">Create League</button>
                   </div>
                   <div class="modal fade" id="createLeagueModal" tabindex="-1" aria-labelledby="createLeagueModalLabel" aria-hidden="true">
@@ -349,11 +349,12 @@ async function mini_leagues(post)  {
                         </div>
                       </div>
                     </div>
-                  </div>
-                  <div class="col-auto">
+                  </div>`
+        new_html += `<div class="col-auto mx-auto">
                     <h1>Your Leagues</h1>
-                  </div>
-                  <div class="col-auto">
+                  </div>`
+
+        if (!post) new_html += `<div class="col-auto">
                     <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#joinLeagueModal">Join League</button>
                   </div>
                   <div class="modal fade" id="joinLeagueModal" tabindex="-1" aria-labelledby="joinLeagueModalLabel" aria-hidden="true">
@@ -375,8 +376,8 @@ async function mini_leagues(post)  {
                         </div>
                       </div>
                     </div>
-                  </div>
-                </div>`
+                  </div>`
+                  new_html += `</div>`
 
   // Get list of mini-league IDs
   let leagueIDs = data.map(item => item.mini_league_id);
@@ -593,20 +594,33 @@ async function delete_league(id) {
   }
 }
 
-async function league_standings(league) {
+async function league_standings(league, sort="total_score") {
+  console.log("LEAGUE", league)
+  console.log("SORT", sort)
   // Collect all info needed for a league leaderboard
   let {data} = await supaclient.from("mini_leagues").select("id").eq("name", league)
-  let {data: users} = await supaclient.from("mini_league_members").select("username, total_score, prem, la_liga, champ, seriea, bundes, ligue1").eq("mini_league_id", data[0]['id']).order("total_score", { ascending: false });
+  let {data: users} = await supaclient.from("mini_league_members").select("username, total_score, prem, la_liga, champ, seriea, bundes, ligue1").eq("mini_league_id", data[0]['id']).order(sort, { ascending: false });
 
   // Create outline for mini-league leaderboard
-  new_html = `<div class="row justify-content-between" style="margin-bottom:8px">
-                <div class="col-auto">
+  new_html = `<div class="row align-items-center" mb-3">
+                <div class="col-4 text-start">
                   <button class="btn btn-primary" onclick="mini_leagues(true)">Back</button>
                 </div>
-                <div class="col-auto">
+                <div class="col-4 text-center">
                   <h1>${league}</h1>
                 </div> 
-                <div class="col-auto"></div>
+                <div class="col-4 text-end d-flex justify-content-end align-items-center">
+                  <label for="sort-league-select" class="form-label me-2 mb-0">Sort By:</label>
+                  <select class="form-select" id="sort-league-select" style="width: auto;" onchange="league_standings('${league}', this.value)">
+                    <option value="total_score" ${sort === 'total_score' ? 'selected' : ''}>Total</option>
+                    <option value="prem" ${sort === 'prem' ? 'selected' : ''}>Premier League</option>
+                    <option value="la_liga" ${sort === 'la_liga' ? 'selected' : ''}>La Liga</option>
+                    <option value="champ" ${sort === 'champ' ? 'selected' : ''}>Championship</option>
+                    <option value="seriea" ${sort === 'seriea' ? 'selected' : ''}>Serie A</option>
+                    <option value="bundes" ${sort === 'bundes' ? 'selected' : ''}>Bundesliga</option>
+                    <option value="ligue1" ${sort === 'ligue1' ? 'selected' : ''}>Ligue 1</option>
+                  </select>
+                </div>
               </div>
               <table class="table table-bordered border-primary">
                   <thead>
@@ -1044,7 +1058,7 @@ async function other_preds(player, user_id = null) {
 async function add_leaderboard(sortBy = 'total') {
   // Collect the leaderboard, sorted by the requested column
   let { data } = await supaclient.from('leaderboard').select('*').order(sortBy, { ascending: false });
-  let html_info = `  <div class="row justify-content-between align-items-center mb-3">
+  let html_info = ` <div class="row justify-content-between align-items-center mb-3">
                       <div class="col-auto">
                         <h1>The Leaderboard</h1>
                       </div>
