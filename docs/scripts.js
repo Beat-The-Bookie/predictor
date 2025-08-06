@@ -419,8 +419,8 @@ async function mini_leagues(post)  {
                       </td>
                       <td>${league.admin_username}</td>
                       <td>${league.prem_limit}</td>
-                      <td>${league.la_liga_limit}</td>
                       <td>${league.champ_limit}</td>
+                      <td>${league.la_liga_limit}</td>
                       <td>${league.seriea_limit}</td>
                       <td>${league.bundes_limit}</td>
                       <td>${league.ligue1_limit}</td>
