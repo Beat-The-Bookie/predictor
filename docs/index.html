@@ -85,7 +85,7 @@
               <div class="col-sm-10">
                 <div class="input-group">
                   <input type="password" id="reg-pword" class="form-control">
-                  <button class="btn btn-outline-primary" type="button" onclick="togglePassword('reg-pword', this)">Show</button>
+                  <button class="btn btn-outline-primary" type="button" id="show-pword" onclick="togglePassword('reg-pword', this)">Show</button>
                 </div>
               </div>
             </div>
@@ -328,15 +328,18 @@
   </div>
   <div class="container d-none" id="main-page-post">
     <div class="card">
-      <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
-        <div>
-          Predictions 2025/2026 - <span id="viewing"></span>
+      <div class="card-header bg-primary text-white d-flex align-items-center justify-content-between">
+        <div id="left-header-content">
+          <img src="logo.jpg" alt="Logo" width="100px" height="100px" />
         </div>
-        <button id="homeBtn" class="btn btn-light btn-sm d-none" onclick="add_locked_preds()">
-          <i class="bi bi-house"></i>
-        </button>
+
+        <h1 class="mx-auto mb-0 text-center flex-grow-1 text-white">
+          Beat the Bookie 2025/26 - <span id="viewing"></span>
+        </h1>
+
+        <img src="logo.jpg" alt="Logo" width="100px" height="100px" />
       </div>
-            <div class="card-body">
+      <div class="card-body">
         <nav class="d-flex align-items-center">
           <div class="nav nav-tabs" id="post-nav-tab" role="tablist">
             <button class="nav-link active" id="post-nav-home-tab" type="button" role="tab" onclick="change_tab('post-nav-home')">Home</button>
@@ -365,7 +368,7 @@
               <div id="current-scores"></div>
 
               <p>
-                You can now view your own predictions, check your score, and see how you’re doing compared to friends and rivals — including <strong>The Bookie</strong>, our official odds-based prediction account.
+                You can now view your own predictions, check your score, and see how you’re doing compared to friends and rivals — including <strong>The Bookie</strong>, our official odds-based prediction account. You can access these by clicking on other users' names on the leaderboard and within leagues. Return to your normal view by clicking the home button in the top left which will appear.
               </p>
 
               <p>

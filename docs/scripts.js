@@ -1,6 +1,6 @@
 document.addEventListener("DOMContentLoaded", async () => {
   const deadline = new Date('2025-08-08T18:00:00')
-  deadline_passed = new Date() > deadline
+  deadline_passed = true // new Date() > deadline
   if (deadline_passed == true) {
     disable_boxes()
   }
@@ -993,10 +993,19 @@ async function add_locked_preds(player = user, user_id = null) {
   }
 
   if (player == user) {
-    document.getElementById('homeBtn').classList.add('d-none');
+    const leftHeader = document.getElementById("left-header-content")
+    leftHeader.innerHTML = `<img src="logo.jpg" alt="Logo" width="100px" height="100px" />`
     add_prem_table()
   } else {
-    document.getElementById('homeBtn').classList.remove('d-none');
+    const leftHeader = document.getElementById("left-header-content");
+    leftHeader.innerHTML = `
+      <button id="homeBtn"
+              class="d-flex align-items-center justify-content-center p-0"
+              onclick="add_locked_preds()"
+              style="width: 100px; height: 100px; background-color: #FC8A06;">
+        <i class="bi bi-house-door-fill" style="font-size: 2.5rem; color: #0d6efd;"></i>
+      </button>
+    `;
     other_preds(player, user_id)
   }
 
@@ -1204,6 +1213,8 @@ function disable_boxes() {
   // Disable the register boxes after the deadline
   document.getElementById('reg-uname').disabled = true
   document.getElementById('reg-email').disabled = true
+  document.getElementById('reg-pword').disabled = true
+  document.getElementById('show-pword').disabled = true
   document.getElementById('reg-btn').disabled = true
 }
 
