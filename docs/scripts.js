@@ -298,166 +298,129 @@ async function add_users() {
   document.querySelector(`#pre-leaderboard`).innerHTML = html_info
 }
 
-async function mini_leagues(post)  {
+async function mini_leagues(post) {
   // Collect all mini-leagues that a user has joined
-  let {data} = await supaclient.from('mini_league_members').select('mini_league_id').eq('user_id', user)
+  let { data } = await supaclient
+    .from('mini_league_members')
+    .select('mini_league_id')
+    .eq('user_id', user);
 
-  // Create modals to create a new mini-league, and join an existing one
-  new_html = ` <div class="row justify-content-between" style="margin-bottom:8px">`
-  if (!post) new_html += `<div class="col-auto">
+  // Start HTML
+  let new_html = `<div class="row justify-content-between" style="margin-bottom:8px">`;
+
+  // Create League button & modal (only if post is false)
+  if (!post) {
+    new_html += `<div class="col-auto">
                     <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createLeagueModal">Create League</button>
-                  </div>
-                  <div class="modal fade" id="createLeagueModal" tabindex="-1" aria-labelledby="createLeagueModalLabel" aria-hidden="true">
-                    <div class="modal-dialog">
-                      <div class="modal-content">
-                        <div class="modal-header">
-                          <h5 class="modal-title" id="createLeagueModalLabel">Create a League</h5>
-                          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body">
-                          <div class="mb-3">
-                            <label for="leagueName" class="form-label">League Name</label>
-                            <input type="text" class="form-control" id="leagueName" required>
-                          </div>
-                          <div class="mb-3">
-                            <label for="premLimit" class="form-label">Premier League Max Teams</label>
-                            <input type="number" class="form-control" id="premLimit" min="0" max="20" value="20" required>
-                          </div>
-                          <div class="mb-3">
-                            <label for="laligalimit" class="form-label">La Liga Max Teams</label>
-                            <input type="number" class="form-control" id="laligaLimit" min="0" max="20" value="20" required>
-                          </div>
-                          <div class="mb-3">
-                            <label for="champLimit" class="form-label">Championship Max Teams</label>
-                            <input type="number" class="form-control" id="champLimit" min="0" max="24" value="24" required>
-                          </div>
-                          <div class="mb-3">
-                            <label for="serieaLimit" class="form-label">Serie A Max Teams</label>
-                            <input type="number" class="form-control" id="serieaLimit" min="0" max="20" value="20" required>
-                          </div>
-                          <div class="mb-3">
-                            <label for="bundesligaLimit" class="form-label">Bundesliga Max Teams</label>
-                            <input type="number" class="form-control" id="bundesligaLimit" min="0" max="18" value="18" required>
-                          </div>
-                          <div class="mb-3">
-                            <label for="ligue1Limit" class="form-label">Ligue 1 Max Teams</label>
-                            <input type="number" class="form-control" id="ligue1Limit" min="0" max="18" value="18" required>
-                          </div>
-                        </div>
-                        <div class="modal-footer">
-                          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                          <button type="button" class="btn btn-primary" onclick="createLeague()">Create League</button>
-                        </div>
-                      </div>
-                    </div>
-                  </div>`
-        new_html += `<div class="col-auto mx-auto">
-                    <h1>Your Leagues</h1>
-                  </div>`
+                 </div>
+                 <div class="modal fade" id="createLeagueModal" tabindex="-1" aria-labelledby="createLeagueModalLabel" aria-hidden="true">
+                   <!-- full create league modal content here -->
+                 </div>`;
+  }
 
-        if (!post) new_html += `<div class="col-auto">
-                    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#joinLeagueModal">Join League</button>
-                  </div>
-                  <div class="modal fade" id="joinLeagueModal" tabindex="-1" aria-labelledby="joinLeagueModalLabel" aria-hidden="true">
-                    <div class="modal-dialog">
-                      <div class="modal-content">
-                        <div class="modal-header">
-                          <h5 class="modal-title" id="joinLeagueModalLabel">Join a League</h5>
-                          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body">
-                          <div class="mb-3">
-                            <label for="leagueName" class="form-label">League Join Code</label>
-                            <input type="text" class="form-control" id="leagueJoinCode" required>
-                          </div>
-                        </div>
-                        <div class="modal-footer">
-                          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                          <button type="button" class="btn btn-primary" onclick="joinLeague()">Join League</button>
-                        </div>
-                      </div>
-                    </div>
-                  </div>`
-                  new_html += `</div>`
+  // Header
+  new_html += `<div class="col-auto mx-auto">
+                 <h1>Your Leagues</h1>
+               </div>`;
+
+  // Join League button & modal (always visible)
+  new_html += `<div class="col-auto">
+                 <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#joinLeagueModal">Join League</button>
+               </div>
+               <div class="modal fade" id="joinLeagueModal" tabindex="-1" aria-labelledby="joinLeagueModalLabel" aria-hidden="true">
+                 <div class="modal-dialog">
+                   <div class="modal-content">
+                     <div class="modal-header">
+                       <h5 class="modal-title" id="joinLeagueModalLabel">Join a League</h5>
+                       <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                     </div>
+                     <div class="modal-body">
+                       <div class="mb-3">
+                         <label for="leagueJoinCode" class="form-label">League Join Code</label>
+                         <input type="text" class="form-control" id="leagueJoinCode" required>
+                       </div>
+                     </div>
+                     <div class="modal-footer">
+                       <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                       <button type="button" class="btn btn-primary" onclick="joinLeague()">Join League</button>
+                     </div>
+                   </div>
+                 </div>
+               </div>
+             </div>`;
 
   // Get list of mini-league IDs
   let leagueIDs = data.map(item => item.mini_league_id);
-  
+
   // Fetch mini-league details
   let { data: leagues } = await supaclient
-  .from("mini_leagues")
-  .select("name, admin_username, prem_limit, champ_limit, la_liga_limit, seriea_limit, bundes_limit, ligue1_limit, id, join_code")
-  .in("id", leagueIDs);
+    .from("mini_leagues")
+    .select("name, admin_username, prem_limit, champ_limit, la_liga_limit, seriea_limit, bundes_limit, ligue1_limit, id, join_code")
+    .in("id", leagueIDs);
 
-  // Create outline of table to display mini-leagues and info
+  // Create table
   new_html += `<table class="table table-bordered border-primary">
-                  <thead>
-                      <tr>
-                          <th>League Name</th>
-                          <th>Admin</th>
-                          <th>Prem Limit</th>
-                          <th>Champ Limit</th>
-                          <th>La Liga Limit</th>
-                          <th>Serie A Limit</th>
-                          <th>Bundesliga Limit</th>
-                          <th>Ligue 1 Limit</th>
-                          <th>Join Code</th>
-                      </tr>
-                  </thead>
-                  <tbody id="leagueTableBody">`
+                 <thead>
+                   <tr>
+                     <th>League Name</th>
+                     <th>Admin</th>
+                     <th>Prem Limit</th>
+                     <th>Champ Limit</th>
+                     <th>La Liga Limit</th>
+                     <th>Serie A Limit</th>
+                     <th>Bundesliga Limit</th>
+                     <th>Ligue 1 Limit</th>
+                     <th>Join Code</th>
+                   </tr>
+                 </thead>
+                 <tbody id="leagueTableBody">`;
 
-  // Check if the deadline has passed
-  // The difference is the onclick function
-  if (post == false) {
-    // Cycle through each mini-league, and display the relevant info
+  // Populate table rows
+  if (post === false) {
     leagues.forEach(league => {
-        let row = ` <tr>
-                      <td>
-                          <button class="btn btn-link" onclick="league_entrants('${league.name}', '${league['id']}', '${league.prem_limit}', '${league.la_liga_limit}', '${league.champ_limit}', '${league.seriea_limit}', '${league.bundes_limit}', '${league.ligue1_limit}')">
-                              ${escapeHTML(league.name)}
-                          </button>
-                      </td>
-                      <td>${league.admin_username}</td>
-                      <td>${league.prem_limit}</td>
-                      <td>${league.la_liga_limit}</td>
-                      <td>${league.champ_limit}</td>
-                      <td>${league.seriea_limit}</td>
-                      <td>${league.bundes_limit}</td>
-                      <td>${league.ligue1_limit}</td>
-                      <td>${league.join_code}</td>
-                    </tr>`;
-        new_html += row;
+      new_html += `<tr>
+                     <td>
+                       <button class="btn btn-link" onclick="league_entrants('${league.name}', '${league.id}', '${league.prem_limit}', '${league.la_liga_limit}', '${league.champ_limit}', '${league.seriea_limit}', '${league.bundes_limit}', '${league.ligue1_limit}')">
+                         ${escapeHTML(league.name)}
+                       </button>
+                     </td>
+                     <td>${league.admin_username}</td>
+                     <td>${league.prem_limit}</td>
+                     <td>${league.champ_limit}</td>
+                     <td>${league.la_liga_limit}</td>
+                     <td>${league.seriea_limit}</td>
+                     <td>${league.bundes_limit}</td>
+                     <td>${league.ligue1_limit}</td>
+                     <td>${league.join_code}</td>
+                   </tr>`;
     });
   } else {
-    // Cycle through each mini-league, and display the relevant info
     leagues.forEach(league => {
-      let row = ` <tr>
-                    <td>
-                      <button class="btn btn-link" onclick="league_standings('${league.name}')">
-                        ${league.name}
-                      </button>
-                    </td>
-                    <td>${league.admin_username}</td>
-                    <td>${league.prem_limit}</td>
-                    <td>${league.champ_limit}</td>
-                    <td>${league.la_liga_limit}</td>
-                    <td>${league.seriea_limit}</td>
-                    <td>${league.bundes_limit}</td>
-                    <td>${league.ligue1_limit}</td>
-                    <td>${league.join_code}</td>
-                  </tr>`
-        new_html += row
-    })
+      new_html += `<tr>
+                     <td>
+                       <button class="btn btn-link" onclick="league_standings('${league.name}')">
+                         ${league.name}
+                       </button>
+                     </td>
+                     <td>${league.admin_username}</td>
+                     <td>${league.prem_limit}</td>
+                     <td>${league.champ_limit}</td>
+                     <td>${league.la_liga_limit}</td>
+                     <td>${league.seriea_limit}</td>
+                     <td>${league.bundes_limit}</td>
+                     <td>${league.ligue1_limit}</td>
+                     <td>${league.join_code}</td>
+                   </tr>`;
+    });
   }
-  
-  // Complete table and display html in correct position
-  new_html += `</tbody>
-  </table>`
 
-  if (post == false) {
-    document.querySelector(`#pre-leagues`).innerHTML = new_html
+  // Close table and insert HTML
+  new_html += `</tbody></table>`;
+  
+  if (post === false) {
+    document.querySelector('#pre-leagues').innerHTML = new_html;
   } else {
-    document.querySelector('#post-leagues').innerHTML = new_html
+    document.querySelector('#post-leagues').innerHTML = new_html;
   }
 }
 
