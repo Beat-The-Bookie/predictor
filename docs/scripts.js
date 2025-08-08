@@ -898,8 +898,7 @@ async function reset_changes(league) {
   })
 }
 
-async function add_locked_preds(player = user, user_id = null) {
-
+async function add_locked_preds(player = user, user_id = user) {
   // Update the status
   if (player == user) {
       document.getElementById("viewing").textContent = current_user.user_metadata.username
@@ -913,11 +912,8 @@ async function add_locked_preds(player = user, user_id = null) {
     let scores = ""
     // Collect the user's predictions and scores
     let { data } = await supaclient.from(`${league_shorthands[league]}_preds`).select('*').eq('user_id', user)
-    if (player == user) {
-      scores = await fetch_scores(league_shorthands[league], user)
-    } else {
-      scores = await fetch_scores(league_shorthands[league], user_id)
-    }
+
+    scores = await fetch_scores(league_shorthands[league], user)
 
     delete data[0]['user_id']
     delete scores['user_id']
@@ -956,10 +952,24 @@ async function add_locked_preds(player = user, user_id = null) {
   }
 
   if (player == user) {
-    document.getElementById('homeBtn').classList.add('d-none');
+    const leftHeader = document.getElementById("left-header-content")
+    leftHeader.innerHTML = `<img src="logo.jpg" alt="Logo" width="100px" height="100px" />`
+    document.getElementById('post-nav-home-tab').style.display = ''
+    document.getElementById('post-nav-about-tab').style.display = ''
     add_prem_table()
   } else {
-    document.getElementById('homeBtn').classList.remove('d-none');
+    const leftHeader = document.getElementById("left-header-content");
+    leftHeader.innerHTML = `
+      <button id="homeBtn"
+              class="d-flex align-items-center justify-content-center p-0"
+              onclick="add_locked_preds()"
+              style="width: 100px; height: 100px; background-color: #FC8A06;">
+        <i class="bi bi-house-door-fill" style="font-size: 2.5rem; color: #0d6efd;"></i>
+      </button>
+    `
+    document.getElementById('post-nav-home-tab').style.display = 'none'
+    document.getElementById('post-nav-about-tab').style.display = 'none'
+    change_tab('post-nav-prem')
     other_preds(player, user_id)
   }
 
@@ -968,7 +978,7 @@ async function add_locked_preds(player = user, user_id = null) {
 }
 
 async function other_preds(player, user_id = null) {
-  console.log("USER_ID", user_id)
+  
   // Cycle through the leagues
   for (let league = 0; league < league_shorthands.length; league++) {
 
@@ -1167,6 +1177,8 @@ function disable_boxes() {
   // Disable the register boxes after the deadline
   document.getElementById('reg-uname').disabled = true
   document.getElementById('reg-email').disabled = true
+  document.getElementById('reg-pword').disabled = true
+  document.getElementById('show-pword').disabled = true
   document.getElementById('reg-btn').disabled = true
 }
 
