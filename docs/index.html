@@ -351,6 +351,7 @@
             <button class="nav-link" id="post-nav-ligue1-tab" type="button" role="tab" onclick="change_tab('post-nav-ligue1')">Ligue 1</button>
             <button class="nav-link" id="post-nav-leaderboard-tab"  type="button" role="tab" onclick="change_tab('post-nav-leaderboard')">Leaderboard</button>
             <button class="nav-link" id="post-nav-leagues-tab" type="button" role="tab" onclick="change_tab('post-nav-leagues')">Leagues</button>
+            <button class="nav-link" id="post-nav-scoring-tab" type="button" role="tab" onclick="change_tab('post-nav-scoring')">Scoring</button>
             <button class="nav-link" id="post-nav-about-tab" type="button" role="tab" onclick="change_tab('post-nav-about')">About</button>
           </div>
           <button class="btn btn-danger ms-auto" onclick="logout()">Logout</button>
@@ -442,6 +443,31 @@
         <div class="row justify-content-around">
           <div class="col-12" id="post-leagues"></div>
         </div>
+      </div>
+      <div class="tab-pane" id="post-nav-scoring" role="tabpanel" tabindex="0">
+        <section class="scoring">
+          <h1>How Scoring Works</h1>
+          <p>
+            Your score depends on how close your predictions are to the final league standings. 
+            The closer you are to the correct position for each team, the more points you earn.
+          </p>
+
+          <h2>Key Rules</h2>
+          <ul>
+            <li><strong>Exact predictions:</strong> Place a team exactly where they finish in the league and earn the maximum points for that spot.</li>
+            <li><strong>Near misses:</strong> If you’re just one position off, you earn roughly half the points.</li>
+            <li><strong>Further off:</strong> No points if your prediction is more than one place away from the actual result.</li>
+            <li><strong>Top and bottom teams:</strong> Points are higher for correctly predicting the champions, top-four positions, and relegated teams.</li>
+          </ul>
+
+          <p>
+            Each league has slightly different weightings, but the main idea is simple: <strong>the closer your prediction to reality, the more points you score</strong>.
+          </p>
+
+          <p>
+            Scores are updated daily based on the latest league standings, so you can track your progress all season long.
+          </p>
+        </section>
       </div>
       <div class="tab-pane" id="post-nav-about" role="tabpanel" tabindex="0">
         <section>
