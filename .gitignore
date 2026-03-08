@@ -1,5 +1,3 @@
-get-pip.py
-# overall_data.py
-
 __pycache__/
 *.pyc
+.idea/
