@@ -1031,7 +1031,23 @@ async function other_preds(player, user_id = null) {
 
 async function add_leaderboard(sortBy = 'total') {
   // Collect the leaderboard, sorted by the requested column
-  let { data } = await supaclient.from('leaderboard').select('*').order(sortBy, { ascending: false });
+  let query = supaclient
+    .from('leaderboard')
+    .select('*');
+
+  // If sorting by total → tiebreak on prem
+  if (sortBy === 'total') {
+    query = query
+      .order('total', { ascending: false })
+      .order('prem', { ascending: false });
+  } else {
+    // Any other column → tiebreak on total
+    query = query
+      .order(sortBy, { ascending: false })
+      .order('total', { ascending: false });
+  }
+
+  let { data } = await query;
   let html_info = ` <div class="row justify-content-between align-items-center mb-3">
                       <div class="col-auto">
                         <h1>The Leaderboard</h1>
