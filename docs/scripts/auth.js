@@ -115,3 +115,13 @@ function togglePassword(id, button) {
     button.textContent = "Show";
   }
 }
+
+
+function disable_boxes() {
+  // Disable the register boxes after the deadline
+  document.getElementById('reg-uname').disabled = true
+  document.getElementById('reg-email').disabled = true
+  document.getElementById('reg-pword').disabled = true
+  document.getElementById('show-pword').disabled = true
+  document.getElementById('reg-btn').disabled = true
+}

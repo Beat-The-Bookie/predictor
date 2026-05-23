@@ -1,3 +1,15 @@
+const MINI_LEAGUES_DEADLINE_TEXT = `Deadline: ${new Intl.DateTimeFormat("en-GB", {
+  day: "numeric",
+  month: "short",
+  year: "numeric",
+  hour: "2-digit",
+  minute: "2-digit",
+  hour12: false
+}).format(new Date(PREDICTION_DEADLINE))}`;
+const MINI_LEAGUES_DEADLINE_PAST = isDeadlinePassed();
+window.PAGE_DEADLINE_TEXT = MINI_LEAGUES_DEADLINE_TEXT;
+window.PAGE_DEADLINE_IS_PAST = MINI_LEAGUES_DEADLINE_PAST;
+
 async function loadMiniLeagues() {
   const { data: { session } } = await supaclient.auth.getSession();
   const user = session?.user?.id;
@@ -29,15 +41,17 @@ async function loadMiniLeagues() {
 
   // Header and action buttons
   let html = `
-  <div class="row justify-content-between mb-3">
+  <div class="row mb-1 d-none d-md-block">
+    <div class="col-12 text-center">
+      <h1>Mini Leagues</h1>
+    </div>
+  </div>
+
+  <div class="row justify-content-between align-items-center mb-2">
     <div class="col-auto">
       <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createLeagueModal">
         Create League
       </button>
-    </div>
-
-    <div class="col-auto mx-auto">
-      <h1>Your Leagues</h1>
     </div>
 
     <div class="col-auto">
@@ -121,6 +135,17 @@ async function loadMiniLeagues() {
   html += generateJoinCreateModals();
 
   document.querySelector("#mini-leagues-container").innerHTML = html;
+
+  const formattedDeadline = new Intl.DateTimeFormat("en-GB", {
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: false
+  }).format(new Date(PREDICTION_DEADLINE));
+
+  setHeaderDeadline(`Deadline: ${formattedDeadline}`, isDeadlinePassed());
 }
 
 // Move the join/create modals into a helper function for clarity

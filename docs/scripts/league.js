@@ -26,6 +26,8 @@ const LEAGUES = {
 };
 
 let currentUserId = null;
+let deadline_passed = false;
+let isGuestViewingBookie = false;
 
 function getLeagueFromURL() {
   const params = new URLSearchParams(window.location.search);
@@ -41,22 +43,59 @@ async function initLeaguePage() {
     return;
   }
 
-  const { data: { session } } = await supaclient.auth.getSession();
+ const { data: { session } } = await supaclient.auth.getSession();
 
   if (session?.user) {
-  currentUserId = session.user.id;
-}
-  // if (!session?.user) {
-  //   disableLeagueEditing();
-  // } else if (!deadline_passed) {
-  //   enableLeagueEditing();
-  // }
+    // Logged in user
+    currentUserId = session.user.id;
+  } else {
+    // Guest viewing The Bookie predictions
+    isGuestViewingBookie = true;
+
+    const { data: bookieUser, error } = await supaclient
+      .from("leaderboard")
+      .select("user_id")
+      .eq("username", "The Bookie")
+      .single();
+
+    if (error || !bookieUser) {
+      console.error("Could not find The Bookie user:", error);
+      return;
+    }
+
+    currentUserId = bookieUser.user_id;
+  }
+
+  // Check if deadline has passed
+  deadline_passed = isDeadlinePassed();
 
   loadHeader(`${league.name}`);
 
   const h1 = document.getElementById("league-title");
   if (h1) {
     h1.textContent = league.name;
+  }
+
+  const guestMessage = document.getElementById("guest-message");
+
+  if (isGuestViewingBookie && guestMessage) {
+    guestMessage.innerHTML = `
+      <div class="alert alert-warning text-center mb-4" role="alert">
+        <strong>You are viewing The Bookie's predictions.</strong><br>
+        Sign up or log in to create and save your own league predictions.
+      </div>
+    `;
+  }
+
+  // Setup buttons and disable if deadline passed
+  const saveBtn = document.getElementById("save-btn");
+  const cancelBtn = document.getElementById("cancel-btn");
+
+  if (deadline_passed) {
+    saveBtn.disabled = true;
+    cancelBtn.disabled = true;
+    saveBtn.title = "Predictions are locked after the deadline.";
+    cancelBtn.title = "Predictions are locked after the deadline.";
   }
 
   document.getElementById("save-btn").onclick =
@@ -212,4 +251,13 @@ async function reset_changes(league) {
 
   await loadPredictions(league);
 
+}
+
+// Function to update the position numbers in the first column
+function updatePositions(tableBody) {
+  const rows = tableBody.querySelectorAll('tr');
+  rows.forEach((row, index) => {
+    const positionCell = row.querySelector('td:first-child');
+    positionCell.textContent = index + 1; // Update position
+  });
 }
