@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta charset="UTF-8" />
+  <title>About</title>
+
+  <link rel="stylesheet" href="styles.css">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <script src="https://unpkg.com/@supabase/supabase-js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" defer></script>
+
+  <script src="scripts/league.js" defer></script>
+  <script src="scripts/header.js" defer></script>
+
+  <script defer>
+    document.addEventListener("DOMContentLoaded", async () => {
+      loadHeader("About");
+    });
+  </script>
+</head>
+
+<body>
+  <div id="header-placeholder"></div>
+
+  <main class="container mt-4">
+    <section id="about-content">
+      <h1>The Story</h1>
+      <p>
+        The concept of predicting league standings is something that has been happening on a
+        small-scale for a number of years. We began in the 2016-17 season by noting down our predictions
+        in our secondary school planners, and spending time at the end of the season manually counting
+        the scores. After two years, in 2018-19, someone created a spreadsheet to store the predictions,
+        as it was much more reliable than a piece of paper. From 2021-22, I took over the spreadsheet
+        and automated it as much as possible. Then, following the start of the 2024-25 season, with
+        some knowledge of Supabase and web development, this public website was the clear next step.
+        Skip forward 9 months, hundreds of hours, 4 different names, lots of different designs, and 
+        Beat the Bookie was born!
+      </p>
+
+      <h1>The Developer</h1>
+      <p>
+        This website is the brain-child of a solo developer, Will Brown. Since September 2024,
+        I have been using a lot of my spare time to create this website. On a personal level, I
+        am a Software Engineer Degree Apprentice at STFC, UKRI, based in Harwell, England, and
+        although a lot of the processes have been learned through my experience at work, the
+        code used to create the backend through Supabase and the frontend through static HTML/JS,
+        has been new to me. The Supabase project has been wiped and re-made many more times than
+        you can imagine.
+      </p>
+
+      <p>
+        If you would like to get in contact with me personally, please feel free to connect with
+        me on <a href="https://www.linkedin.com/in/william-brown-0a06b5338/">LinkedIn</a>.
+      </p>
+
+    </section>
+  </main>
+</body>
+</html>

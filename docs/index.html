@@ -1,515 +1,135 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Predictions 2025-26</title>
-  <link rel="icon" type="image/jpg" href="logo.jpg">
-  <link rel="stylesheet" href="styles.css">
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
-  <script src="https://unpkg.com/@supabase/supabase-js"></script>
-  <script src="scripts.js"></script>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
-  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.14.0/Sortable.min.js"></script>
-  <script type="text/javascript"
-        src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js">
-  </script>
-  <script type="text/javascript">
-    (function(){
-        emailjs.init({
-          publicKey: "XmiXoggW_rXm35ZzW",
-        });
-    })();
-  </script>
-</head>
-<body style="padding: 0px;">
-  <div class="container" id="login-page">
-    <div class="card">
-      <div class="card-header bg-primary text-white d-flex align-items-center justify-content-between">
-        <img src="logo.jpg" alt="Logo" width="100px", height="100px"/>
-        <h1 class="mx-auto mb-0 text-center flex-grow-1 text-white">Login / Register</h1>
-        <img src="logo.jpg" alt="Logo" width="100px", height="100px"/>
-      </div>
-      <div class="card-body">
-        <nav class="mb-2">
-          <div class="nav nav-tabs" id="login-tabs" role="tablist">
-            <button class="nav-link active" id="login-tab" onclick="changeLoginTab('login')">Login</button>
-            <button class="nav-link" id="register-tab" onclick="changeLoginTab('register')">Register</button>
-          </div>
-        </nav>
-        <div class="tab-content" id="auth-tabContent">
-          <div class="tab-pane fade show active" id="login-form" role="tabpanel" aria-labelledby="login-tab" style="padding: 0px;">
-            <div class="mb-2 row">
-              <label for="email" class="col-sm-2 col-form-label">Email Address</label>
-              <div class="col-sm-10">
-                <input type="text" id="email" class="form-control">
-              </div>
-            </div>
-            <div class="mb-2 row">
-              <label for="pword" class="col-sm-2 col-form-label">Password</label>
-              <div class="col-sm-10">
-                <div class="input-group">
-                  <input type="password" id="pword" class="form-control" />
-                  <button class="btn btn-outline-primary" type="button" onclick="togglePassword('pword', this)">Show</button>
-                </div>
-              </div>
-            </div>
-            <div class="mb-2 row">
-              <div class="col-sm-3">
-                <button type="submit" class="btn btn-primary d-block" onclick="login()" style="padding: 14px 32px; font-size: 1.1rem; border-radius: 8px;">Login</button>
-              </div>
-              <div class="col-sm-9 d-flex align-items-center justify-content-center">
-                <a href="#" class="link-primary" data-bs-toggle="modal" data-bs-target="#resetPasswordModal">Forgotten your password?</a>
-              </div>
-            </div>
-          </div>
-          <div class="tab-pane fade" id="register-form" role="tabpanel" aria-labelledby="register-tab" style="padding: 0px;">
-            <div class="mb-2 row">
-              <label for="reg-email" class="col-sm-2 col-form-label">Email Address</label>
-              <div class="col-sm-10">
-                <input type="text" id="reg-email" class="form-control">
-              </div>
-            </div>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Predictions 2025-26</title>
+    <link rel="icon" type="image/jpg" href="logo.jpg" />
+    <link rel="stylesheet" href="styles.css" />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css"
+      rel="stylesheet"
+    />
+    <script src="https://unpkg.com/@supabase/supabase-js"></script>
+    <script src="scripts/league.js"></script>
+    <script src="scripts/auth.js"></script>
+    <script src="scripts/header.js"></script>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65"
+      crossorigin="anonymous"
+    />
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.14.0/Sortable.min.js"></script>
+    <script
+      type="text/javascript"
+      src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"
+    ></script>
+    <script type="text/javascript">
+      (function () {
+        emailjs.init({ publicKey: "XmiXoggW_rXm35ZzW" });
+      })();
+    </script>
+    <script>
+      document.addEventListener("DOMContentLoaded", async () => {
+        loadHeader("Beat the Bookie");
+        const {
+          data: { session },
+        } = await supaclient.auth.getSession();
+        if (session?.user) {
+          const section = document.getElementById("referral-section");
+          if (section) section.classList.remove("d-none");
+          const input = document.getElementById("referral-link");
+          if (input) {
+            input.value =
+              "https://beat-the-bookie.github.io/predictor/?ref=" +
+              encodeURIComponent(session.user.user_metadata.referral_code);
+          }
+        }
+      });
+    </script>
+  </head>
+  <body style="padding: 0px">
+    <div id="header-placeholder"></div>
 
-            <div class="mb-2 row">
-              <label for="reg-uname" class="col-sm-2 col-form-label">Username</label>
-              <div class="col-sm-10">
-                <input type="text" id="reg-uname" class="form-control">
-              </div>
-            </div>
+    <div class="container main-container">
+      <section class="welcome">
+        <h1>Welcome to <strong>Beat the Bookie</strong>!</h1>
 
-            <div class="mb-2 row">
-              <label for="reg-pword" class="col-sm-2 col-form-label">Password</label>
-              <div class="col-sm-10">
-                <div class="input-group">
-                  <input type="password" id="reg-pword" class="form-control">
-                  <button class="btn btn-outline-primary" type="button" id="show-pword" onclick="togglePassword('reg-pword', this)">Show</button>
-                </div>
-              </div>
-            </div>
+        <p style="font-weight: bold; font-size: 1.1em">
+          At the time of writing, we are just one week from the deadline and 47
+          people have signed up so far. My goal is simple: get as many people
+          playing as possible.
+          <br /><br />
+          This is a free game, so please share your referral link widely — group
+          chats, social media, wherever.
+          <br /><br />
+          And remember: if someone you refer goes on to win, you’ll get
+          <strong>£10 too</strong>!
+        </p>
 
-            <div class="mb-2 row">
-              <div class="col-sm-3">
-                <button type="submit" class="btn btn-primary d-block" onclick="register()" id="reg-btn" style="padding: 14px 32px; font-size: 1.1rem; border-radius: 8px;">Register</button>
-              </div>
-              <div class="col-sm-9 d-flex align-items-center justify-content-center">
-                <p class="mb-0 text-center">Note: Your username will be visible to other users.</p>
-              </div>
-            </div>
-          </div>
-        </div>  
-        <div class="modal fade" id="resetPasswordModal" tabindex="-1" aria-labelledby="resetPasswordModalLabel" aria-hidden="true">
-          <div class="modal-dialog">
-            <div class="modal-content">
-
-              <div class="modal-header">
-                <h5 class="modal-title" id="resetPasswordModalLabel">Reset Password</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-              </div>
-
-              <div class="modal-body">
-                <div class="mb-2">
-                  <label for="resetEmail" class="form-label">Enter your email</label>
-                  <input type="email" class="form-control" id="resetEmail" placeholder="you@example.com" required>
-                </div>
-              </div>
-              <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                <button type="button" class="btn btn-primary" onclick="sendPasswordReset()">Send Reset Email</button>
-              </div>
-            </div>
-          </div>
+        <div
+          id="referral-section"
+          class="referral-container mt-3 d-none"
+        >
+          <label for="referral-link" class="referral-label"
+            >Your referral link:</label
+          >
+          <input id="referral-link" type="text" readonly />
+          <button onclick="copyReferral()">Copy</button>
         </div>
-      </div>
+
+        <p>
+          Think you’ve got ball knowledge? Now’s your chance to prove it. Rank
+          every team in Europe’s top leagues — the Premier League, La Liga, Serie
+          A, Bundesliga, Ligue 1, and the Championship — in the order you think
+          they’ll finish this season.
+        </p>
+
+        <p>
+          Drag and drop teams within each league to lock in your predictions.
+          The closer your picks are to the real final standings, the more points
+          you score.
+        </p>
+
+        <p>
+          Compete on the global leaderboard — where all 20 Premier League teams
+          are scored, and only the top 6 from each other league are counted.
+        </p>
+
+        <p>
+          You can also create custom mini-leagues with friends, where you decide
+          how many teams count toward the score in each league.
+        </p>
+
+        <p>
+          And remember — you’re not just playing each other. You’re up against
+          <strong>The Bookie</strong>, the official prediction account based on
+          real betting odds.
+        </p>
+
+        <p>
+          <strong>Deadline:</strong> 8th August 2025 at 18:00. After this point,
+          predictions will be locked. You’ll still be able to log in, view
+          scores, and browse all predictions.
+        </p>
+
+        <p>
+          Any issues, feedback, or ideas, please contact
+          <a href="mailto:beatthebookieinfo@gmail.com"
+            >beatthebookieinfo@gmail.com</a
+          >.
+        </p>
+
+        <h1>Prizes</h1>
+        <p>
+          Finish top of the main leaderboard and win a
+          <strong>£10 Amazon voucher</strong>. If you referred the winner, you’ll
+          get <strong>£10 too</strong>.
+        </p>
+      </section>
     </div>
-    <div class="card mt-3">
-      <div class="card-body">
-        <section class="intro">
-          <h1>Welcome to <strong>Beat the Bookie</strong></h1>
-          <p>
-            Think you have ball knowledge? Prove it! Predict the final standings for Europe's top leagues — the Premier League, La Liga, Serie A, Bundesliga, Ligue 1, and the Championship.
-          </p>
-          <p>
-            Drag and drop the teams in each league to lock in your predictions. At the end of the season, you'll score points based on how close your predictions were to reality.
-          </p>
-          <p>
-            You will be competing against all other players for a £10 Amazon Voucher! After the deadline, the leaderboard will display everyone's scores throughout the season.
-          </p>
-          <p>
-            Also create custom mini-leagues with friends! You choose how many teams to score per league, with score updates throughout the season!
-          </p>
-          <p>
-            And the twist? You’re not just playing each other. You’re up against <strong>The Bookie</strong> — our in-house prediction account based on real betting odds. Can you <em>Beat the Bookie</em>?
-          </p>
-          <p>
-            If you have any questions, concerns or feedback, please contact <a href="mailto:beatthebookieinfo@gmail.com">beatthebookieinfo@gmail.com</a>
-          </p>
-        </section>
-      </div>
-    </div>
-  </div>
-  <div class="container d-none" id="main-page-pre">
-    <div class="card">
-      <div class="card-header bg-primary text-white d-flex align-items-center justify-content-between">
-        <img src="logo.jpg" alt="Logo" width="100px", height="100px"/>
-        <h1 class="mx-auto mb-0 text-center flex-grow-1 text-white">Beat the Bookie 2025/26</h1>
-        <img src="logo.jpg" alt="Logo" width="100px", height="100px"/>
-      </div>
-      <div class="card-body">
-        <nav class="d-flex align-items-center">
-          <div class="nav nav-tabs" id="pre-nav-tab" role="tablist">
-            <button class="nav-link active" id="pre-nav-home-tab" type="button" role="tab" onclick="change_tab('pre-nav-home')">Welcome</button>
-            <button class="nav-link" id="pre-nav-prem-tab" type="button" role="tab" onclick="change_tab('pre-nav-prem')">Premier League</button>
-            <button class="nav-link" id="pre-nav-la_liga-tab" type="button" role="tab" onclick="change_tab('pre-nav-la_liga')">La Liga</button>
-            <button class="nav-link" id="pre-nav-champ-tab" type="button" role="tab" onclick="change_tab('pre-nav-champ')">Championship</button>
-            <button class="nav-link" id="pre-nav-seriea-tab" type="button" role="tab" onclick="change_tab('pre-nav-seriea')">Serie A</button>
-            <button class="nav-link" id="pre-nav-bundes-tab" type="button" role="tab" onclick="change_tab('pre-nav-bundes')">Bundesliga</button>
-            <button class="nav-link" id="pre-nav-ligue1-tab" type="button" role="tab" onclick="change_tab('pre-nav-ligue1')">Ligue 1</button>
-            <button class="nav-link" id="pre-nav-leaderboard-tab"  type="button" role="tab" onclick="change_tab('pre-nav-leaderboard')">Leaderboard</button>
-            <button class="nav-link" id="pre-nav-leagues-tab" type="button" role="tab" onclick="change_tab('pre-nav-leagues')">Leagues</button>
-            <button class="nav-link" id="pre-nav-about-tab" type="button" role="tab" onclick="change_tab('pre-nav-about')">About</button>
-          </div>
-          <button class="btn btn-danger ms-auto" onclick="logout()">Logout</button>
-        </nav>
-        <div class="tab-content" id="nav-tabContent">
-          <div class="tab-pane show active" id="pre-nav-home" role="tabpanel" tabindex="0">
-            <section class="welcome">            
-              <h1>Welcome to <strong>Beat the Bookie</strong>!</h1>
-              <p style="font-weight: bold; font-size: 1.1em;">
-                At the time of writing, we are just one week from the deadline and 47 people have signed up so far. My goal is simple: get as many people playing as possible!
-                <br><br>
-                This is a free game, so please share your referral link widely — group chats, social media, wherever. 
-                <br><br>
-                And remember: if someone you refer goes on to win, you’ll get <strong>£10 too</strong>!
-              </p>
-
-              <div id="referral-section" class="referral-container mt-3">
-                <label for="referral-link" class="referral-label">Your referral link:</label>
-                <input id="referral-link" type="text" readonly>
-                <button onclick="copyReferral()">Copy</button>
-              </div>
-
-              <p>
-                Think you’ve got ball knowledge? Now’s your chance to prove it. Rank every team in Europe’s top leagues — the Premier League, La Liga, Serie A, Bundesliga, Ligue 1, and the Championship — in the order you think they’ll finish this season.
-              </p>
-
-              <p>
-                Drag and drop teams within each league tab to lock in your predictions. The closer your picks are to the real final standings, the more points you score!
-              </p>
-
-              <p>
-                Compete on the global leaderboard — where all 20 Premier League teams are scored, and only the top 6 from each other league are counted.
-              </p>
-
-              <p>
-                You can also create custom mini-leagues with friends, where you decide how many teams count toward the score in each league.
-              </p>
-
-              <p>
-                And remember — you’re not just playing each other. You’re up against <strong>The Bookie</strong>: the official prediction account based on real betting odds. If you would like the account added to your league, drop an email to <a href="mailto:beatthebookieinfo@gmail.com">beatthebookieinfo@gmail.com</a> with your league join code.
-              </p>
-
-              <p>
-                <strong>Deadline:</strong> 8th August 2025 at 18:00. After this point, predictions will be locked. You’ll still be able to log in, view your score and others’, and see everyone’s predictions.
-              </p>
-
-              <p>Any issues, feedback, ideas for new features or anything else, please contact <a href="mailto:beatthebookieinfo@gmail.com">beatthebookieinfo@gmail.com</a>.</p>
-
-              <h1>Prizes</h1>
-              <p>
-                Finish top of the main leaderboard and win a <strong>£10 Amazon voucher</strong>. If you referred the winner, you’ll get <strong>£10 too</strong>!
-              </p>
-            </section>
-
-          </div>
-          <div class="tab-pane" id="pre-nav-prem" role="tabpanel" tabindex="0">
-            <div class="row justify-content-around">
-              <div class="col-md-5 list-group" id="prem-pred-table"></div>
-              <div class="col-md-6" id="prem-table"></div>
-              <button class="btn btn-primary" onclick="save_changes('prem')">Save Changes</button>
-              <button class="btn btn-danger" onclick="reset_changes('prem')">Cancel Changes</button>
-            </div>
-          </div>
-          <div class="tab-pane" id="pre-nav-la_liga" role="tabpanel" tabindex="0">
-            <div class="row justify-content-around">
-              <div class="col-md-5 list-group" id="la_liga-pred-table"></div>
-              <div class="col-md-6" id="la_liga-table"></div>
-              <button class="btn btn-primary" onclick="save_changes('la_liga')">Save Changes</button>
-              <button class="btn btn-danger" onclick="reset_changes('la_liga')">Cancel Changes</button>
-            </div>
-          </div>
-          <div class="tab-pane" id="pre-nav-champ" role="tabpanel" tabindex="0">
-            <div class="row justify-content-around">
-              <div class="col-md-5 list-group" id="champ-pred-table"></div>
-              <div class="col-md-6" id="champ-table"></div>
-              <button class="btn btn-primary" onclick="save_changes('champ')">Save Changes</button>
-              <button class="btn btn-danger" onclick="reset_changes('champ')">Cancel Changes</button>
-            </div>
-          </div>
-          <div class="tab-pane" id="pre-nav-seriea" role="tabpanel" tabindex="0">
-            <div class="row justify-content-around">
-              <div class="col-md-5 list-group" id="seriea-pred-table"></div>
-              <div class="col-md-6" id="seriea-table"></div>
-              <button class="btn btn-primary" onclick="save_changes('seriea')">Save Changes</button>
-              <button class="btn btn-danger" onclick="reset_changes('seriea')">Cancel Changes</button>
-            </div>
-          </div>
-          <div class="tab-pane" id="pre-nav-bundes" role="tabpanel" tabindex="0">
-            <div class="row justify-content-around">
-              <div class="col-md-5 list-group" id="bundes-pred-table"></div>
-              <div class="col-md-6" id="bundes-table"></div>
-              <button class="btn btn-primary" onclick="save_changes('bundes')">Save Changes</button>
-              <button class="btn btn-danger" onclick="reset_changes('bundes')">Cancel Changes</button>
-            </div>
-          </div>
-          <div class="tab-pane" id="pre-nav-ligue1" role="tabpanel" tabindex="0">
-            <div class="row justify-content-around">
-              <div class="col-md-5 list-group" id="ligue1-pred-table"></div>
-              <div class="col-md-6" id="ligue1-table"></div>
-              <button class="btn btn-primary" onclick="save_changes('ligue1')">Save Changes</button>
-              <button class="btn btn-danger" onclick="reset_changes('ligue1')">Cancel Changes</button>
-            </div>
-          </div>
-          <div class="tab-pane" id="pre-nav-leaderboard" role="tabpanel" tabindex="0">
-            <div class="row justify-content-around">
-              <div class="col-12" id="pre-leaderboard"></div>
-            </div>
-          </div>
-          <div class="tab-pane" id="pre-nav-leagues" role="tabpanel" tabindex="0">
-            <div class="row justify-content-around">
-              <div class="col-12" id="pre-leagues"></div>
-            </div>
-          </div>
-          <div class="tab-pane" id="pre-nav-about" role="tabpanel" tabindex="0">
-            <section>
-              <h1>The Story</h1>
-              <p>
-                The concept of predicting league standings is something that has been happening on a
-                small-scale for a number of years. We began in the 2016-17 season by noting down our predictions
-                in our secondary school planners, and spending time at the end of the season manually counting
-                the scores. After two years, in 2018-19, someone created a spreadsheet to store the predictions,
-                as it was much more reliable than a piece of paper. From 2021-22, I took over the spreadsheet
-                and automated it as much as possible. Then, following the start of the 2024-25 season, with
-                some knowledge of Supabase and web development, this public website was the clear next step.
-                Skip forward 9 months, hundreds of hours, 4 different names, lots of different designs, and 
-                Beat the Bookie was born!
-              </p>
-                            <h1>The Developer(s)</h1>
-              <p>
-                This website is the brain-child of a solo developer, Will Brown. Since September 2024,
-                I have been using a lot of my spare time to create this website. On a personal level, I
-                am a Software Engineer Degree Apprentice at STFC, UKRI, based in Harwell, England, and
-                although a lot of the processes have been learned through my experience at work, the
-                code used to create the backend through Supabase and the frontend through static HTML/JS,
-                has been new to me. The Supabase project has been wiped and re-made many more times than
-                you can imagine.
-              </p>
-              <p> 
-                If you would like to get in contact with me personally, please feel free to connect with
-                me on <a href="https://www.linkedin.com/in/william-brown-0a06b5338/">LinkedIn</a>.
-              </p>
-              <p>
-                Although the idea, design, and the majority of the hours put into this is largely myself,
-                there is another developer, Rowan Moss, who has helped me in implementing certain parts, as
-                well as offering support, advice, and feedback on my sometimes woeful-looking designs. I met
-                Rowan through my work, STFC, and am extremely thankful for everything that he has done in
-                contributing to this project. 
-              </p>
-              <p>
-                Feel free to connect with Rowan on <a href="https://uk.linkedin.com/in/rowanmoss">LinkedIn</a>.
-              </p>
-            </section>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-  <div class="container d-none" id="main-page-post">
-    <div class="card">
-      <div class="card-header bg-primary text-white d-flex align-items-center justify-content-between">
-        <div id="left-header-content">
-          <img src="logo.jpg" alt="Logo" width="100px" height="100px" />
-        </div>
-
-        <h1 class="mx-auto mb-0 text-center flex-grow-1 text-white">
-          Beat the Bookie 2025/26 - <span id="viewing"></span>
-        </h1>
-
-        <img src="logo.jpg" alt="Logo" width="100px" height="100px" />
-      </div>
-      <div class="card-body">
-        <nav class="d-flex align-items-center">
-          <div class="nav nav-tabs" id="post-nav-tab" role="tablist">
-            <button class="nav-link active" id="post-nav-home-tab" type="button" role="tab" onclick="change_tab('post-nav-home')">Home</button>
-            <button class="nav-link" id="post-nav-prem-tab" type="button" role="tab" onclick="change_tab('post-nav-prem')">Premier League</button>
-            <button class="nav-link" id="post-nav-la_liga-tab" type="button" role="tab" onclick="change_tab('post-nav-la_liga')">La Liga</button>
-            <button class="nav-link" id="post-nav-champ-tab" type="button" role="tab" onclick="change_tab('post-nav-champ')">Championship</button>
-            <button class="nav-link" id="post-nav-seriea-tab" type="button" role="tab" onclick="change_tab('post-nav-seriea')">Serie A</button>
-            <button class="nav-link" id="post-nav-bundes-tab" type="button" role="tab" onclick="change_tab('post-nav-bundes')">Bundesliga</button>
-            <button class="nav-link" id="post-nav-ligue1-tab" type="button" role="tab" onclick="change_tab('post-nav-ligue1')">Ligue 1</button>
-            <button class="nav-link" id="post-nav-leaderboard-tab"  type="button" role="tab" onclick="change_tab('post-nav-leaderboard')">Leaderboard</button>
-            <button class="nav-link" id="post-nav-leagues-tab" type="button" role="tab" onclick="change_tab('post-nav-leagues')">Leagues</button>
-            <button class="nav-link" id="post-nav-scoring-tab" type="button" role="tab" onclick="change_tab('post-nav-scoring')">Scoring</button>
-            <button class="nav-link" id="post-nav-about-tab" type="button" role="tab" onclick="change_tab('post-nav-about')">About</button>
-          </div>
-          <button class="btn btn-danger ms-auto" onclick="logout()">Logout</button>
-        </nav>
-        <div class="tab-content" id="nav-tabContent">
-          <div class="tab-pane show active" id="post-nav-home" role="tabpanel" tabindex="0">
-            <section class="welcome">            
-              <h1>Welcome to <strong>Beat the Bookie</strong>!</h1>
-              <p style="font-weight: bold; font-size: 1.1em;">
-                The deadline has passed — predictions are now locked! Over 50 players are in the game, and the season is underway. You do not need to do anything for the rest of the season.
-                <br><br>
-                It’s time to sit back, follow the action, and see how your football knowledge stacks up. Your score will update overnight daily as the real-life standings evolve. Your current scores are below.
-              </p>
-
-              <div id="current-scores"></div>
-
-              <p>
-                You can now view your own predictions, check your score, and see how you’re doing compared to friends and rivals — including <strong>The Bookie</strong>, our official odds-based prediction account. You can access these by clicking on other users' names on the leaderboard and within leagues. Return to your normal view by clicking the home button in the top left which will appear.
-              </p>
-
-              <p>
-                View the global leaderboard (Premier League + top 6 from other leagues) or hop into your custom mini-leagues to see who's leading the pack.
-              </p>
-
-              <p>
-                You’ll score more points the closer your predictions are to the actual final standings. Think you've got what it takes to finish top?
-              </p>
-
-              <p>
-                And don’t forget: if you referred the winner, you’ll get <strong>£10 too</strong>!
-              </p>
-
-              <p>
-                If you'd like <strong>The Bookie</strong> added to your league, just email <a href="mailto:beatthebookieinfo@gmail.com">beatthebookieinfo@gmail.com</a> with your league join code.
-              </p>
-
-              <p>
-                Got feedback, ideas, or issues? Drop us a line any time at <a href="mailto:beatthebookieinfo@gmail.com">beatthebookieinfo@gmail.com</a>.
-              </p>
-
-              <h1>Prizes</h1>
-              <p>
-                Finish top of the main leaderboard and win a <strong>£10 Amazon voucher</strong>. If you referred the winner, you’ll get <strong>£10 too</strong>!
-              </p>
-            </section>
-          </div>
-          <div class="tab-pane" id="post-nav-prem" role="tabpanel" tabindex="0">
-            <div class="row justify-content-around">
-              <div class="col-md-6" id="prem-pred-locked"></div>
-              <div class="col-md-6" id="prem-standings"></div>
-            </div>
-          </div>
-          <div class="tab-pane" id="post-nav-la_liga" role="tabpanel" tabindex="0">
-            <div class="row justify-content-around">
-              <div class="col-md-6" id="la_liga-pred-locked"></div>
-              <div class="col-md-6" id="la_liga-standings"></div>
-            </div>
-          </div>
-          <div class="tab-pane" id="post-nav-champ" role="tabpanel" tabindex="0">
-            <div class="row justify-content-around">
-          <div class="col-md-6" id="champ-pred-locked"></div>
-          <div class="col-md-6" id="champ-standings"></div>
-        </div>
-      </div>
-      <div class="tab-pane" id="post-nav-seriea" role="tabpanel" tabindex="0">
-        <div class="row justify-content-around">
-          <div class="col-md-6" id="seriea-pred-locked"></div>
-          <div class="col-md-6" id="seriea-standings"></div>
-        </div>
-      </div>
-      <div class="tab-pane" id="post-nav-bundes" role="tabpanel" tabindex="0">
-        <div class="row justify-content-around">
-          <div class="col-md-6" id="bundes-pred-locked"></div>
-          <div class="col-md-6" id="bundes-standings"></div>
-        </div>
-      </div>
-      <div class="tab-pane" id="post-nav-ligue1" role="tabpanel" tabindex="0">
-        <div class="row justify-content-around">
-          <div class="col-md-6" id="ligue1-pred-locked"></div>
-          <div class="col-md-6" id="ligue1-standings"></div>
-        </div>
-      </div>
-      <div class="tab-pane" id="post-nav-leaderboard" role="tabpanel" tabindex="0">
-        <div class="row justify-content-around">
-          <div class="col-12" id="post-leaderboard"></div>
-        </div>
-      </div>
-      <div class="tab-pane" id="post-nav-leagues" role="tabpanel" tabindex="0">
-        <div class="row justify-content-around">
-          <div class="col-12" id="post-leagues"></div>
-        </div>
-      </div>
-      <div class="tab-pane" id="post-nav-scoring" role="tabpanel" tabindex="0">
-        <section class="scoring">
-          <h1>How Scoring Works</h1>
-          <p>
-            Your score depends on how close your predictions are to the final league standings. 
-            The closer you are to the correct position for each team, the more points you earn.
-          </p>
-
-          <h2>Key Rules</h2>
-          <ul>
-            <li><strong>Exact predictions:</strong> Place a team exactly where they finish in the league and earn the maximum points for that spot.</li>
-            <li><strong>Near misses:</strong> If you’re just one position off, you earn roughly half the points.</li>
-            <li><strong>Further off:</strong> No points if your prediction is more than one place away from the actual result.</li>
-            <li><strong>Top and bottom teams:</strong> Points are higher for correctly predicting the champions, top-four positions, and relegated teams.</li>
-          </ul>
-
-          <p>
-            Each league has slightly different weightings, but the main idea is simple: <strong>the closer your prediction to reality, the more points you score</strong>.
-          </p>
-
-          <p>
-            Scores are updated daily based on the latest league standings, so you can track your progress all season long.
-          </p>
-        </section>
-      </div>
-      <div class="tab-pane" id="post-nav-about" role="tabpanel" tabindex="0">
-        <section>
-          <h1>The Story</h1>
-          <p>
-            The concept of predicting league standings is something that has been happening on a
-            small-scale for a number of years. We began in the 2016-17 season by noting down our predictions
-            in our secondary school planners, and spending time at the end of the season manually counting
-            the scores. After two years, in 2018-19, someone created a spreadsheet to store the predictions,
-            as it was much more reliable than a piece of paper. From 2021-22, I took over the spreadsheet
-            and automated it as much as possible. Then, following the start of the 2024-25 season, with
-            some knowledge of Supabase and web development, this public website was the clear next step.
-            Skip forward 9 months, hundreds of hours, 4 different names, lots of different designs, and 
-            Beat the Bookie was born!
-          </p>
-                        <h1>The Developer(s)</h1>
-          <p>
-            This website is the brain-child of a solo developer, Will Brown. Since September 2024,
-            I have been using a lot of my spare time to create this website. On a personal level, I
-            am a Software Engineer Degree Apprentice at STFC, UKRI, based in Harwell, England, and
-            although a lot of the processes have been learned through my experience at work, the
-            code used to create the backend through Supabase and the frontend through static HTML/JS,
-            has been new to me. The Supabase project has been wiped and re-made many more times than
-            you can imagine.
-          </p>
-          <p> 
-            If you would like to get in contact with me personally, please feel free to connect with
-            me on <a href="https://www.linkedin.com/in/william-brown-0a06b5338/">LinkedIn</a>.
-          </p>
-          <p>
-            Although the idea, design, and the majority of the hours put into this is largely myself,
-            there is another developer, Rowan Moss, who has helped me in implementing certain parts, as
-            well as offering support, advice, and feedback on my sometimes woeful-looking designs. I met
-            Rowan through my work, STFC, and am extremely thankful for everything that he has done in
-            contributing to this project. 
-          </p>
-          <p>
-            Feel free to connect with Rowan on <a href="https://uk.linkedin.com/in/rowanmoss">LinkedIn</a>.
-          </p>
-        </section>
-      </div>
-    </div>
-  </div>
-</body>
+  </body>
 </html>
