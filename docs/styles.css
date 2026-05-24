@@ -207,8 +207,52 @@ button:hover {
   font-size: 1rem;
 }
 
+/* Draggable items styling (all screen sizes) */
+.draggable-enabled::before {
+  content: "⋮ ";
+  color: #999;
+  font-weight: bold;
+  margin-right: 0.5rem;
+}
+
+.draggable-item {
+  cursor: grab;
+  user-select: none;
+}
+
+.draggable-item:active {
+  cursor: grabbing;
+}
+
 @media (max-width: 576px) {
   .card-body {
     padding: 0.75rem;
+  }
+
+  /* League page mobile improvements */
+  .main-container {
+    padding: 20px 10px;
+    margin-bottom: 2rem;
+  }
+
+  /* Mobile draggable item styling */
+  .draggable-enabled::before {
+    display: inline;
+  }
+
+  .draggable-item {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    touch-action: none;
+    border-left: none !important;
+  }
+
+  .draggable-item:active {
+    opacity: 0.8;
+  }
+
+  #pred-table {
+    margin-bottom: 1rem;
   }
 }

@@ -41,9 +41,9 @@ async function loadMiniLeagues() {
 
   // Header and action buttons
   let html = `
-  <div class="row mb-1 d-none d-md-block">
-    <div class="col-12 text-center">
-      <h1>Mini Leagues</h1>
+  <div class="row mb-1">
+    <div class="col-12">
+      <h1 style="font-weight: bold;">Mini Leagues</h1>
     </div>
   </div>
 
