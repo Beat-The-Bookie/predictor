@@ -28,6 +28,7 @@ const LEAGUES = {
 let currentUserId = null;
 let deadline_passed = false;
 let isGuestViewingBookie = false;
+let changes_made = false;
 
 function getLeagueFromURL() {
   const params = new URLSearchParams(window.location.search);
@@ -85,17 +86,31 @@ async function initLeaguePage() {
         Sign up or log in to create and save your own league predictions.
       </div>
     `;
+  } else if (!deadline_passed && !isGuestViewingBookie && guestMessage) {
+    guestMessage.innerHTML = `
+      <div class="alert alert-info text-center mb-2" role="alert">
+        <strong>Drag the teams to change your predictions.</strong><br>
+        Don't forget to save your changes!
+      </div>
+    `;
   }
 
-  // Setup buttons and disable if deadline passed
+  // Setup buttons and disable if deadline passed or guest viewing The Bookie
   const saveBtn = document.getElementById("save-btn");
   const cancelBtn = document.getElementById("cancel-btn");
+  const disableEditing = deadline_passed || isGuestViewingBookie;
 
-  if (deadline_passed) {
+  if (disableEditing) {
     saveBtn.disabled = true;
     cancelBtn.disabled = true;
-    saveBtn.title = "Predictions are locked after the deadline.";
-    cancelBtn.title = "Predictions are locked after the deadline.";
+
+    if (deadline_passed) {
+      saveBtn.title = "Predictions are locked after the deadline.";
+      cancelBtn.title = "Predictions are locked after the deadline.";
+    } else if (isGuestViewingBookie) {
+      saveBtn.title = "Login to create and save your own predictions.";
+      cancelBtn.title = "Login to create and save your own predictions.";
+    }
   }
 
   document.getElementById("save-btn").onclick =
@@ -104,8 +119,19 @@ async function initLeaguePage() {
   document.getElementById("cancel-btn").onclick =
     () => reset_changes(league.code);
 
+  updateUnsavedMessage();
+
   await loadPredictions(league.code);
   await loadStandings(league.code);
+
+  // Warn user before leaving page with unsaved changes
+  window.addEventListener("beforeunload", (event) => {
+    if (changes_made) {
+      event.preventDefault();
+      event.returnValue = "You have unsaved changes. Are you sure you want to leave?";
+      return event.returnValue;
+    }
+  });
 }
 
 async function loadPredictions(league) {
@@ -128,21 +154,26 @@ async function loadPredictions(league) {
   `;
 
   Object.keys(data[0]).forEach((key, i) => {
+    const draggableClass = !deadline_passed && !isGuestViewingBookie ? "draggable-item draggable-enabled" : "draggable-item";
     html += `
       <tr>
         <td class="non-draggable">${i + 1}</td>
-        <td class="draggable-item">${data[0][key]}</td>
+        <td class="${draggableClass}">${data[0][key]}</td>
       </tr>`;
   });
 
   html += `</tbody></table></div>`;
   document.getElementById("pred-table").innerHTML = html;
 
-  if (!deadline_passed) {
+  if (!deadline_passed && !isGuestViewingBookie) {
     new Sortable(document.getElementById("pred-body"), {
       animation: 150,
       handle: ".draggable-item",
-      onEnd: () => updatePositions(document.getElementById("pred-body"))
+      onEnd: () => {
+        updatePositions(document.getElementById("pred-body"));
+        changes_made = true;
+        updateUnsavedMessage();
+      }
     });
   }
 }
@@ -205,8 +236,8 @@ async function loadStandings(league) {
 
 async function save_changes(league) {
 
-  if (deadline_passed) {
-    alert("Predictions are locked.");
+  if (deadline_passed || isGuestViewingBookie) {
+    alert("You must be logged in to save changes.");
     return;
   }
 
@@ -240,9 +271,16 @@ async function save_changes(league) {
   }
 
   alert("Changes saved successfully.");
+  changes_made = false;
+  updateUnsavedMessage();
 }
 
 async function reset_changes(league) {
+
+  if (deadline_passed || isGuestViewingBookie) {
+    alert("You must be logged in to discard changes.");
+    return;
+  }
 
   if (!currentUserId) return;
 
@@ -250,7 +288,24 @@ async function reset_changes(league) {
   if (!confirmReset) return;
 
   await loadPredictions(league);
+  changes_made = false;
+  updateUnsavedMessage();
+}
 
+// Function to show/hide unsaved changes message
+function updateUnsavedMessage() {
+  const messageDiv = document.getElementById("unsaved-message");
+  if (messageDiv) {
+    if (changes_made) {
+      messageDiv.innerHTML = `
+        <div class="alert alert-danger text-center" role="alert">
+          <strong>Unsaved changes!</strong> Remember to save your changes.
+        </div>
+      `;
+    } else {
+      messageDiv.innerHTML = "";
+    }
+  }
 }
 
 // Function to update the position numbers in the first column

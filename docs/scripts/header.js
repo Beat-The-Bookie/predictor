@@ -22,7 +22,6 @@ const PREDICTION_DEADLINE = new Date("2026-08-01T20:00:00").getTime();
 const DEFAULT_DEADLINE_TEXT = `Deadline: ${new Intl.DateTimeFormat("en-GB", {
   day: "numeric",
   month: "short",
-  year: "numeric",
   hour: "2-digit",
   minute: "2-digit",
   hour12: false
@@ -38,6 +37,7 @@ function isDeadlinePassed() {
 function setHeaderDeadline(deadlineText, isPast) {
   const render = () => {
     const container = document.getElementById("page-deadline-container");
+
     if (!container) {
       setTimeout(render, 50);
       return;
@@ -48,13 +48,16 @@ function setHeaderDeadline(deadlineText, isPast) {
       return;
     }
 
-    const badgeClass = isPast ? "bg-danger text-white" : "text-white";
-    const badgeStyle = isPast
-      ? "display:inline-flex; align-items:center; height:2rem; padding:0 0.75rem; font-size:0.8rem;"
-      : "display:inline-flex; align-items:center; height:2rem; padding:0 0.75rem; font-size:0.8rem; background-color:#28a745; color:#ffffff;";
+    // Remove the year
+    const formattedDeadline = deadlineText.replace(/\s\d{4}/, "");
+
+    const style = isPast
+      ? "background-color:#dc3545; border-color:#dc3545; color:#ffffff; font-weight:700; pointer-events:none;"
+      : "background-color:#28a745; border-color:#28a745; color:#ffffff; font-weight:700; pointer-events:none;";
+
     container.innerHTML = `
-      <div class="badge ${badgeClass} text-nowrap" style="${badgeStyle}">
-        ${escapeHTML(deadlineText)}
+      <div class="btn btn-sm" style="${style}">
+        ${escapeHTML(formattedDeadline)}
       </div>
     `;
   };
@@ -136,17 +139,24 @@ function buildNav() {
     </li>
   `
 
-  if (typeof LEAGUES === "object") {
-    Object.entries(LEAGUES).forEach(([key, league]) => {
-      nav.innerHTML += `
-        <li class="nav-item">
-          <a class="nav-link" href="league.html?league=${key}">
-            ${league.name}
-          </a>
-        </li>
-      `;
-    });
-  }
+  const leagueDefinitions = typeof LEAGUES === "object" ? LEAGUES : {
+    prem: { name: "Premier League", code: "prem" },
+    la_liga: { name: "La Liga", code: "la_liga" },
+    champ: { name: "Championship", code: "champ" },
+    seriea: { name: "Serie A", code: "seriea" },
+    bundes: { name: "Bundesliga", code: "bundes" },
+    ligue1: { name: "Ligue 1", code: "ligue1" }
+  };
+
+  Object.entries(leagueDefinitions).forEach(([key, league]) => {
+    nav.innerHTML += `
+      <li class="nav-item">
+        <a class="nav-link" href="league.html?league=${key}">
+          ${league.name}
+        </a>
+      </li>
+    `;
+  });
 
   nav.innerHTML += `
     <li class="nav-item">

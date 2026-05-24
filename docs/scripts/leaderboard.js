@@ -18,7 +18,7 @@ async function renderLeaderboard(sortBy = "total") {
   let html = `
     <div class="row justify-content-between align-items-center mb-3">
       <div class="col-12 col-md-auto mb-2 mb-md-0">
-        <h1>The Leaderboard</h1>
+        <h1 style="font-weight: bold;">The Leaderboard</h1>
       </div>
       <div class="col-12 col-md-auto d-flex align-items-center">
         <label class="form-label me-2 mb-0">Sort By:</label>

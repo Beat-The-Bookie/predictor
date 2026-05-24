@@ -37,9 +37,9 @@ async function loadMiniLeaguePage() {
   if (isAdmin) {
 
     html += `
-    <div class="row justify-content-center">
+    <div class="row">
       <div class="col-auto">
-        <h1>${league.name}</h1>
+        <h1 style="font-weight: bold;">${league.name}</h1>
       </div>
     </div>
 
