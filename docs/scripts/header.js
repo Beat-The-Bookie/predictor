@@ -129,7 +129,7 @@ function loadHeader(titleText = null) {
     .catch(err => console.error("Header load failed:", err));
 }
 
-function buildNav() {
+async function buildNav() {
   const nav = document.getElementById("nav-links");
   if (!nav) return;
 
@@ -169,6 +169,16 @@ function buildNav() {
       <a class="nav-link" href="about.html">About</a>
     </li>
   `;
+
+  // Add Settings link if user is logged in
+  const { data: { session } } = await supaclient.auth.getSession();
+  if (session?.user) {
+    nav.innerHTML += `
+    <li class="nav-item">
+      <a class="nav-link" href="profile.html">Settings</a>
+    </li>
+    `;
+  }
 }
 
 async function setupAuthButton() {

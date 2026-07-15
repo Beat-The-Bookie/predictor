@@ -38,7 +38,10 @@ async function register() {
     return;
   }
 
-  const referralCode = crypto.randomUUID().slice(0, 8);
+  const deadlineReminders = document.getElementById("reg-deadline-reminders").checked;
+  const seasonOverview = document.getElementById("reg-season-overview").checked;
+
+  const referralCode = Math.random().toString(36).substring(2, 10);
 
   const { data, error } = await supaclient.auth.signUp({
     email,
@@ -46,6 +49,8 @@ async function register() {
     options: {
       data: {
         username,
+        deadline_reminders: deadlineReminders,
+        season_overview: seasonOverview,
         referral_code: referralCode,
       },
       emailRedirectTo:
