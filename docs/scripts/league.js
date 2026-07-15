@@ -78,6 +78,16 @@ async function initLeaguePage() {
   }
 
   const guestMessage = document.getElementById("guest-message");
+  const actionButtonsTop = document.getElementById("action-buttons-top");
+
+  if (actionButtonsTop) {
+    actionButtonsTop.innerHTML = `
+      <div class="text-center mb-3">
+        <button class="btn btn-primary me-2" id="save-btn-top">Save Changes</button>
+        <button class="btn btn-danger" id="cancel-btn-top">Discard Changes</button>
+      </div>
+    `;
+  }
 
   if (isGuestViewingBookie && guestMessage) {
     guestMessage.innerHTML = `
@@ -89,7 +99,7 @@ async function initLeaguePage() {
   } else if (!deadline_passed && !isGuestViewingBookie && guestMessage) {
     guestMessage.innerHTML = `
       <div class="alert alert-info text-center mb-2" role="alert">
-        <strong>Drag the teams to change your predictions.</strong><br>
+        <strong>Use the arrows to change your predictions.</strong><br>
         Don't forget to save your changes!
       </div>
     `;
@@ -98,26 +108,50 @@ async function initLeaguePage() {
   // Setup buttons and disable if deadline passed or guest viewing The Bookie
   const saveBtn = document.getElementById("save-btn");
   const cancelBtn = document.getElementById("cancel-btn");
+  const saveBtnTop = document.getElementById("save-btn-top");
+  const cancelBtnTop = document.getElementById("cancel-btn-top");
   const disableEditing = deadline_passed || isGuestViewingBookie;
+  const setButtonState = (button, title) => {
+    if (button) {
+      button.disabled = disableEditing;
+      button.title = title;
+    }
+  };
 
   if (disableEditing) {
-    saveBtn.disabled = true;
-    cancelBtn.disabled = true;
-
     if (deadline_passed) {
-      saveBtn.title = "Predictions are locked after the deadline.";
-      cancelBtn.title = "Predictions are locked after the deadline.";
+      setButtonState(saveBtn, "Predictions are locked after the deadline.");
+      setButtonState(cancelBtn, "Predictions are locked after the deadline.");
+      setButtonState(saveBtnTop, "Predictions are locked after the deadline.");
+      setButtonState(cancelBtnTop, "Predictions are locked after the deadline.");
     } else if (isGuestViewingBookie) {
-      saveBtn.title = "Login to create and save your own predictions.";
-      cancelBtn.title = "Login to create and save your own predictions.";
+      setButtonState(saveBtn, "Login to create and save your own predictions.");
+      setButtonState(cancelBtn, "Login to create and save your own predictions.");
+      setButtonState(saveBtnTop, "Login to create and save your own predictions.");
+      setButtonState(cancelBtnTop, "Login to create and save your own predictions.");
     }
+  } else {
+    setButtonState(saveBtn, "");
+    setButtonState(cancelBtn, "");
+    setButtonState(saveBtnTop, "");
+    setButtonState(cancelBtnTop, "");
   }
 
-  document.getElementById("save-btn").onclick =
-    () => save_changes(league.code);
+  if (saveBtn) {
+    saveBtn.onclick = () => save_changes(league.code);
+  }
 
-  document.getElementById("cancel-btn").onclick =
-    () => reset_changes(league.code);
+  if (cancelBtn) {
+    cancelBtn.onclick = () => reset_changes(league.code);
+  }
+
+  if (saveBtnTop) {
+    saveBtnTop.onclick = () => save_changes(league.code);
+  }
+
+  if (cancelBtnTop) {
+    cancelBtnTop.onclick = () => reset_changes(league.code);
+  }
 
   updateUnsavedMessage();
 
@@ -134,12 +168,8 @@ async function initLeaguePage() {
   });
 }
 
-async function loadPredictions(league) {
-  let { data } = await supaclient
-    .from(`${league}_preds`)
-    .select("*")
-    .eq("user_id", currentUserId);
-  delete data[0].user_id;
+function renderPredictionTable(teamNames) {
+  const editable = !deadline_passed && !isGuestViewingBookie;
 
   let html = `
     <div class="table-responsive">
@@ -153,29 +183,67 @@ async function loadPredictions(league) {
         <tbody id="pred-body">
   `;
 
-  Object.keys(data[0]).forEach((key, i) => {
-    const draggableClass = !deadline_passed && !isGuestViewingBookie ? "draggable-item draggable-enabled" : "draggable-item";
+  teamNames.forEach((teamName, i) => {
+    const canMoveUp = editable && i > 0;
+    const canMoveDown = editable && i < teamNames.length - 1;
+    // Always render the left and right containers when editable so grid columns stay consistent.
+    const leftControls = editable ? `
+      <div class="move-controls move-controls-left">
+        ${canMoveDown ? `<button type="button" class="btn btn-sm btn-outline-primary move-btn" data-direction="down" aria-label="Move ${teamName} down">↓</button>` : ``}
+      </div>` : "";
+    const rightControls = editable ? `
+      <div class="move-controls move-controls-right">
+        ${canMoveUp ? `<button type="button" class="btn btn-sm btn-outline-primary move-btn" data-direction="up" aria-label="Move ${teamName} up">↑</button>` : ``}
+      </div>` : "";
+
     html += `
       <tr>
         <td class="non-draggable">${i + 1}</td>
-        <td class="${draggableClass}">${data[0][key]}</td>
+        <td class="team-cell">
+          <div class="team-cell-content">
+            ${leftControls}
+            <span class="team-name">${teamName}</span>
+            ${rightControls}
+          </div>
+        </td>
       </tr>`;
   });
 
   html += `</tbody></table></div>`;
   document.getElementById("pred-table").innerHTML = html;
 
-  if (!deadline_passed && !isGuestViewingBookie) {
-    new Sortable(document.getElementById("pred-body"), {
-      animation: 150,
-      handle: ".draggable-item",
-      onEnd: () => {
-        updatePositions(document.getElementById("pred-body"));
+  if (editable) {
+    document.querySelectorAll("#pred-body .move-btn").forEach(button => {
+      button.addEventListener("click", () => {
+        const row = button.closest("tr");
+        const rows = Array.from(document.querySelectorAll("#pred-body tr"));
+        const currentIndex = rows.indexOf(row);
+        const targetIndex = button.dataset.direction === "up" ? currentIndex - 1 : currentIndex + 1;
+
+        if (targetIndex < 0 || targetIndex >= rows.length) return;
+
+        const teamNamesFromRows = Array.from(document.querySelectorAll("#pred-body .team-name"))
+          .map(team => team.textContent.trim());
+        const [movedTeam] = teamNamesFromRows.splice(currentIndex, 1);
+        teamNamesFromRows.splice(targetIndex, 0, movedTeam);
+
+        renderPredictionTable(teamNamesFromRows);
         changes_made = true;
         updateUnsavedMessage();
-      }
+      });
     });
   }
+}
+
+async function loadPredictions(league) {
+  let { data } = await supaclient
+    .from(`${league}_preds`)
+    .select("*")
+    .eq("user_id", currentUserId);
+  delete data[0].user_id;
+
+  const teamNames = Object.keys(data[0]).map(key => data[0][key]);
+  renderPredictionTable(teamNames);
 }
 
 async function loadStandings(league) {
@@ -243,8 +311,8 @@ async function save_changes(league) {
 
   // Collect the new order of teams
   const newOrder = [];
-  document.querySelectorAll("#pred-body .draggable-item").forEach(row => {
-    newOrder.push(row.textContent.trim());
+  document.querySelectorAll("#pred-body .team-name").forEach(team => {
+    newOrder.push(team.textContent.trim());
   });
 
   // Create column names (1,2,3,4...)

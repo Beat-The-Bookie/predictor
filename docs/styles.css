@@ -130,6 +130,10 @@ th {
   font-size: 1rem;
 }
 
+#league-title {
+  text-align: center;
+}
+
 button {
   padding: 0.5rem 1rem;
   background-color: #0077cc;
@@ -207,21 +211,37 @@ button:hover {
   font-size: 1rem;
 }
 
-/* Draggable items styling (all screen sizes) */
-.draggable-enabled::before {
-  content: "⋮ ";
-  color: #999;
-  font-weight: bold;
-  margin-right: 0.5rem;
+/* Team movement controls */
+.team-cell-content {
+  display: grid;
+  grid-template-columns: minmax(2rem, auto) 1fr minmax(2rem, auto);
+  align-items: center;
+  gap: 0.5rem;
 }
 
-.draggable-item {
-  cursor: grab;
-  user-select: none;
+.team-name {
+  justify-self: center;
+  text-align: center;
 }
 
-.draggable-item:active {
-  cursor: grabbing;
+.move-controls {
+  display: flex;
+  align-items: center;
+  min-width: 2rem;
+}
+
+.move-controls-left {
+  justify-self: start;
+}
+
+.move-controls-right {
+  justify-self: end;
+}
+
+.move-btn {
+  min-width: 2rem;
+  padding: 0.2rem 0.5rem;
+  line-height: 1;
 }
 
 @media (max-width: 576px) {
@@ -235,21 +255,13 @@ button:hover {
     margin-bottom: 2rem;
   }
 
-  /* Mobile draggable item styling */
-  .draggable-enabled::before {
-    display: inline;
+  .team-cell-content {
+    grid-template-columns: minmax(2rem, auto) 1fr minmax(2rem, auto);
   }
 
-  .draggable-item {
-    display: flex;
-    align-items: center;
-    padding: 10px;
-    touch-action: none;
-    border-left: none !important;
-  }
-
-  .draggable-item:active {
-    opacity: 0.8;
+  .move-controls-left,
+  .move-controls-right {
+    margin: 0;
   }
 
   #pred-table {
