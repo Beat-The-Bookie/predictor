@@ -39,7 +39,7 @@ async function loadMiniLeaguePage() {
     html += `
     <div class="row">
       <div class="col-auto">
-        <h1 style="font-weight: bold;">${league.name}</h1>
+        <h1 class="page-title">${league.name}</h1>
       </div>
     </div>
 
@@ -159,7 +159,7 @@ async function loadMiniLeaguePage() {
       </div>
 
       <div class="col-auto">
-        <h3>${league.name}</h3>
+        <h3 class="page-title">${league.name}</h3>
       </div>
 
       <div class="col-auto">

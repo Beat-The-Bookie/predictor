@@ -43,7 +43,7 @@ async function loadMiniLeagues() {
   let html = `
   <div class="row mb-1">
     <div class="col-12">
-      <h1 style="font-weight: bold;">Mini Leagues</h1>
+      <h1 class="page-title">Mini Leagues</h1>
     </div>
   </div>
 

@@ -9,6 +9,14 @@ h1 {
   color: #007bff;
 }
 
+.page-title,
+#league-title {
+  color: #007bff;
+  font-weight: 700;
+  text-align: center;
+  margin-bottom: 1rem;
+}
+
 .card {
   width: 100%; /* Ensures the card spans the full width of its container */
   margin: 0 auto; /* Centers the card horizontally */
@@ -187,6 +195,51 @@ button:hover {
 
 .navbar-dark .navbar-nav .nav-link:hover {
   color: #cccccc; /* Gray on hover */
+}
+
+.leaderboard-view-toggle {
+  max-width: 320px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: center;
+}
+
+.leaderboard-view-toggle .btn {
+  font-size: 0.95rem;
+  padding: 0.55rem 0.9rem;
+}
+
+.leaderboard-sort-select {
+  width: auto;
+  min-width: 220px;
+}
+
+.leaderboard-table-scroll {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  border: 1px solid #dee2e6;
+  border-radius: 0.5rem;
+  background: #fff;
+}
+
+.leaderboard-table-scroll table {
+  min-width: 640px;
+  margin-bottom: 0;
+}
+
+.leaderboard-table-scroll .table-striped > tbody > tr:nth-of-type(odd) > td,
+.leaderboard-table-scroll .table-striped > tbody > tr:nth-of-type(odd) > th {
+  background-color: rgba(0, 123, 255, 0.05);
+}
+
+.leaderboard-table-scroll th {
+  background-color: #0d6efd;
+  color: #fff;
+  white-space: nowrap;
+}
+
+.leaderboard-table-scroll td {
+  white-space: nowrap;
 }
 
 @media (max-width: 576px) {

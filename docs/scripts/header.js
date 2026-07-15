@@ -78,17 +78,55 @@ async function restoreSession() {
     current_user = session.user;
     user = session.user.id;
 
-    enableLoggedInUI(session.user);
+    await enableLoggedInUI(session.user);
   }
 }
 
-function enableLoggedInUI(userObj) {
+function getReferralCode(userObj) {
+  const metadata = userObj?.user_metadata || {};
+
+  return (
+    metadata.referral_code ||
+    metadata.referralCode ||
+    metadata.referral ||
+    ""
+  );
+}
+
+function buildReferralUrl(referralCode) {
+  return `https://beat-the-bookie.github.io/predictor/?ref=${encodeURIComponent(referralCode)}`;
+}
+
+async function enableLoggedInUI(userObj) {
   const referralInput = document.getElementById("referral-link");
-  if (referralInput) {
-    referralInput.value = `
-      https://beat-the-bookie.github.io/predictor/?ref=${encodeURIComponent(
-        userObj.user_metadata.referral_code
-      )}`;
+  const referralSection = document.getElementById("referral-section");
+
+  if (!referralInput) {
+    return;
+  }
+
+  let referralCode = getReferralCode(userObj);
+
+  if (!referralCode) {
+    referralCode = Math.random().toString(36).substring(2, 10);
+
+    try {
+      const { data, error } = await supaclient.auth.updateUser({
+        data: { referral_code: referralCode },
+      });
+
+      if (!error && data?.user?.user_metadata?.referral_code) {
+        referralCode = data.user.user_metadata.referral_code;
+      }
+    } catch (updateError) {
+      console.error("Failed to save referral code:", updateError);
+    }
+  }
+
+  referralInput.value = buildReferralUrl(referralCode);
+
+  if (referralSection) {
+    referralSection.classList.remove("d-none");
   }
 }
 
@@ -164,6 +202,9 @@ async function buildNav() {
     </li>
     <li class="nav-item">
       <A class="nav-link" href="mini-leagues.html">Mini Leagues</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="updates.html">Updates</a>
     </li>
     <li class="nav-item">
       <a class="nav-link" href="about.html">About</a>

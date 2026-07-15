@@ -35,19 +35,7 @@
     <script>
       document.addEventListener("DOMContentLoaded", async () => {
         loadHeader("Beat the Bookie");
-        const {
-          data: { session },
-        } = await supaclient.auth.getSession();
-        if (session?.user) {
-          const section = document.getElementById("referral-section");
-          if (section) section.classList.remove("d-none");
-          const input = document.getElementById("referral-link");
-          if (input) {
-            input.value =
-              "https://beat-the-bookie.github.io/predictor/?ref=" +
-              encodeURIComponent(session.user.user_metadata.referral_code);
-          }
-        }
+        await restoreSession();
       });
     </script>
   </head>
@@ -56,20 +44,7 @@
 
     <div class="container main-container">
       <section class="welcome">
-        <h1>Welcome to <strong>Beat the Bookie</strong>!</h1>
-
-        <p style="font-weight: bold; font-size: 1.1em">
-          At the time of writing, we are just one week from the deadline and 47
-          people have signed up so far. My goal is simple: get as many people
-          playing as possible.
-          <br /><br />
-          This is a free game, so please share your referral link widely — group
-          chats, social media, wherever.
-          <br /><br />
-          And remember: if someone you refer goes on to win, you’ll get
-          <strong>£10 too</strong>!
-        </p>
-
+        <h1 class="page-title">Welcome to <strong>Beat the Bookie</strong>!</h1>
         <div
           id="referral-section"
           class="referral-container mt-3 d-none"
@@ -111,7 +86,7 @@
         </p>
 
         <p>
-          <strong>Deadline:</strong> 8th August 2025 at 18:00. After this point,
+          <strong>Deadline:</strong> 7th August 2026 at 18:00. After this point,
           predictions will be locked. You’ll still be able to log in, view
           scores, and browse all predictions.
         </p>
@@ -123,11 +98,11 @@
           >.
         </p>
 
-        <h1>Prizes</h1>
+        <h1 class="page-title">Prizes</h1>
         <p>
           Finish top of the main leaderboard and win a
           <strong>£10 Amazon voucher</strong>. If you referred the winner, you’ll
-          get <strong>£10 too</strong>.
+          get <strong>£10 too</strong>. If a returning player wins, they’ll get <strong>£15!
         </p>
       </section>
     </div>
