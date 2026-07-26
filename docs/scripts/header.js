@@ -18,7 +18,7 @@ const leagueTeamCounts = {
 };
 
 // Deadline configuration (August 1st, 2026, 20:00)
-const PREDICTION_DEADLINE = new Date("2026-08-01T20:00:00").getTime();
+const PREDICTION_DEADLINE = new Date("2026-08-14T20:00:00").getTime();
 const DEFAULT_DEADLINE_TEXT = `Deadline: ${new Intl.DateTimeFormat("en-GB", {
   day: "numeric",
   month: "short",
@@ -205,6 +205,9 @@ async function buildNav() {
     </li>
     <li class="nav-item">
       <a class="nav-link" href="updates.html">Updates</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="scoring.html">Scoring</a>
     </li>
     <li class="nav-item">
       <a class="nav-link" href="about.html">About</a>

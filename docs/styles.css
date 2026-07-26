@@ -61,6 +61,36 @@ th {
   z-index: 1; /* Ensure it appears above other columns */
 }
 
+#pred-table table thead th,
+#league-table table td,
+#league-table table th {
+  height: 48px;
+  vertical-align: middle;
+}
+
+#pred-table table thead th {
+  padding: 0 0.7rem;
+}
+
+#league-table table td,
+#league-table table th {
+  padding: 0 0.7rem;
+}
+
+@media (min-width: 992px) {
+  #pred-table table thead th,
+  #league-table table td,
+  #league-table table th {
+    height: 48px;
+  }
+
+  #pred-table table thead th,
+  #league-table table td,
+  #league-table table th {
+    padding: 0 0.8rem;
+  }
+}
+
 .banner {
   background-color: black;
   color: white;
@@ -142,6 +172,24 @@ th {
   text-align: center;
 }
 
+.scoring-intro {
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.scoring-card {
+  border-left: 4px solid #007bff;
+}
+
+.scoring-table th {
+  background-color: #f8f9fa;
+  color: #212529;
+}
+
+.scoring-table td:first-child {
+  font-weight: 600;
+}
+
 button {
   padding: 0.5rem 1rem;
   background-color: #0077cc;
@@ -176,6 +224,60 @@ button:hover {
 .page-header img {
   width: 100px;
   height: 100px;
+}
+
+.header-nav-row {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  min-height: 56px;
+}
+
+.header-left-group {
+  justify-self: start;
+}
+
+.header-right-group {
+  justify-self: end;
+}
+
+.header-title-centered {
+  justify-self: center;
+  white-space: nowrap;
+  text-align: center;
+}
+
+@media (max-width: 767px) {
+  .header-nav-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.35rem;
+    min-height: auto;
+  }
+
+  .header-left-group {
+    justify-self: auto;
+  }
+
+  .header-right-group {
+    justify-self: auto;
+    margin-left: auto;
+    flex-wrap: wrap;
+    gap: 0.35rem;
+  }
+
+  .header-title-centered {
+    display: none;
+  }
+
+  #page-deadline-container {
+    flex-wrap: wrap;
+  }
+
+  #page-deadline-container .btn {
+    white-space: nowrap;
+  }
 }
 
 /* Optional: keep content visually separated from header */

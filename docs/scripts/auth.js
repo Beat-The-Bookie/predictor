@@ -1,3 +1,11 @@
+function getSiteBaseUrl() {
+  return window.location.href.replace(/\/[^/]*$/, "/");
+}
+
+function getRedirectUrl(page) {
+  return `${getSiteBaseUrl()}${page}`;
+}
+
 async function login() {
   const email = document.getElementById("email").value.trim();
   const password = document.getElementById("pword").value;
@@ -53,8 +61,7 @@ async function register() {
         season_overview: seasonOverview,
         referral_code: referralCode,
       },
-      emailRedirectTo:
-        "https://beat-the-bookie.github.io/predictor/auth.html",
+      emailRedirectTo: getRedirectUrl("confirm.html"),
     },
   });
 
@@ -79,8 +86,7 @@ async function sendPasswordReset() {
   }
 
   const { error } = await supaclient.auth.resetPasswordForEmail(email, {
-    redirectTo:
-      "https://beat-the-bookie.github.io/predictor/auth.html",
+    redirectTo: getRedirectUrl("auth.html"),
   });
 
   if (error) {
