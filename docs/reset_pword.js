@@ -1,4 +1,4 @@
-const supaclient = supabase.createClient("https://mqmicljcchdzbfjfnxbx.supabase.co", "sb_publishable_ctiZ2Z5jmQ-vfF0XM-QHsw_tjuo1uBP");
+const supaclient = supabase.createClient("https://mqmicljcchdzbfjfnxbx.supabase.co", "sb_publishable_7JNqVD9EbOI42bFrFEdx1A_3_ThPzne");
 
 window.addEventListener('DOMContentLoaded', async () => {
   const params = new URLSearchParams(window.location.hash.slice(1));

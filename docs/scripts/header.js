@@ -1,5 +1,5 @@
 // Supabase client
-const supaclient = supabase.createClient('https://ovtvjcwvhbkjljhmqacy.supabase.co', 'sb_publishable_7JNqVD9EbOI42bFrFEdx1A_3_ThPzne');
+const supaclient = supabase.createClient('https://mqmicljcchdzbfjfnxbx.supabase.co', 'sb_publishable_ctiZ2Z5jmQ-vfF0XM-QHsw_tjuo1uBP');
 
 // Global user state
 let user = "";

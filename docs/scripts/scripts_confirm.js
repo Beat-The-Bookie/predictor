@@ -1,6 +1,6 @@
 // Initialize Supabase client
-const supabaseUrl = 'https://ovtvjcwvhbkjljhmqacy.supabase.co';
-const supabaseAnonKey = 'sb_publishable_7JNqVD9EbOI42bFrFEdx1A_3_ThPzne';
+const supabaseUrl = 'https://mqmicljcchdzbfjfnxbx.supabase.co';
+const supabaseAnonKey = 'sb_publishable_ctiZ2Z5jmQ-vfF0XM-QHsw_tjuo1uBP';
 const supaclient = supabase.createClient(supabaseUrl, supabaseAnonKey);
 
 // DOM element for status
