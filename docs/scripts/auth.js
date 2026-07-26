@@ -71,7 +71,7 @@ async function register() {
   }
 
   alert(
-    "Registration successful! Please check your inbox for the confirmation email from Supabase to confirm your account."
+    "Registration successful! Please login."
   );
 
   changeLoginTab("login");
