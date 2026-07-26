@@ -18,7 +18,7 @@ const leagueTeamCounts = {
 };
 
 // Deadline configuration (August 1st, 2026, 20:00)
-const PREDICTION_DEADLINE = new Date("2026-08-01T20:00:00").getTime();
+const PREDICTION_DEADLINE = new Date("2026-08-14T20:00:00").getTime();
 const DEFAULT_DEADLINE_TEXT = `Deadline: ${new Intl.DateTimeFormat("en-GB", {
   day: "numeric",
   month: "short",
@@ -78,17 +78,55 @@ async function restoreSession() {
     current_user = session.user;
     user = session.user.id;
 
-    enableLoggedInUI(session.user);
+    await enableLoggedInUI(session.user);
   }
 }
 
-function enableLoggedInUI(userObj) {
+function getReferralCode(userObj) {
+  const metadata = userObj?.user_metadata || {};
+
+  return (
+    metadata.referral_code ||
+    metadata.referralCode ||
+    metadata.referral ||
+    ""
+  );
+}
+
+function buildReferralUrl(referralCode) {
+  return `https://beat-the-bookie.github.io/predictor/?ref=${encodeURIComponent(referralCode)}`;
+}
+
+async function enableLoggedInUI(userObj) {
   const referralInput = document.getElementById("referral-link");
-  if (referralInput) {
-    referralInput.value = `
-      https://beat-the-bookie.github.io/predictor/?ref=${encodeURIComponent(
-        userObj.user_metadata.referral_code
-      )}`;
+  const referralSection = document.getElementById("referral-section");
+
+  if (!referralInput) {
+    return;
+  }
+
+  let referralCode = getReferralCode(userObj);
+
+  if (!referralCode) {
+    referralCode = Math.random().toString(36).substring(2, 10);
+
+    try {
+      const { data, error } = await supaclient.auth.updateUser({
+        data: { referral_code: referralCode },
+      });
+
+      if (!error && data?.user?.user_metadata?.referral_code) {
+        referralCode = data.user.user_metadata.referral_code;
+      }
+    } catch (updateError) {
+      console.error("Failed to save referral code:", updateError);
+    }
+  }
+
+  referralInput.value = buildReferralUrl(referralCode);
+
+  if (referralSection) {
+    referralSection.classList.remove("d-none");
   }
 }
 
@@ -129,7 +167,7 @@ function loadHeader(titleText = null) {
     .catch(err => console.error("Header load failed:", err));
 }
 
-function buildNav() {
+async function buildNav() {
   const nav = document.getElementById("nav-links");
   if (!nav) return;
 
@@ -166,9 +204,25 @@ function buildNav() {
       <A class="nav-link" href="mini-leagues.html">Mini Leagues</a>
     </li>
     <li class="nav-item">
+      <a class="nav-link" href="updates.html">Updates</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="scoring.html">Scoring</a>
+    </li>
+    <li class="nav-item">
       <a class="nav-link" href="about.html">About</a>
     </li>
   `;
+
+  // Add Settings link if user is logged in
+  const { data: { session } } = await supaclient.auth.getSession();
+  if (session?.user) {
+    nav.innerHTML += `
+    <li class="nav-item">
+      <a class="nav-link" href="profile.html">Settings</a>
+    </li>
+    `;
+  }
 }
 
 async function setupAuthButton() {

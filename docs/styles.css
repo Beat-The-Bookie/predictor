@@ -9,6 +9,14 @@ h1 {
   color: #007bff;
 }
 
+.page-title,
+#league-title {
+  color: #007bff;
+  font-weight: 700;
+  text-align: center;
+  margin-bottom: 1rem;
+}
+
 .card {
   width: 100%; /* Ensures the card spans the full width of its container */
   margin: 0 auto; /* Centers the card horizontally */
@@ -51,6 +59,36 @@ th {
   left: 0;
   background: #fff; /* Make background white to hide overlaps */
   z-index: 1; /* Ensure it appears above other columns */
+}
+
+#pred-table table thead th,
+#league-table table td,
+#league-table table th {
+  height: 48px;
+  vertical-align: middle;
+}
+
+#pred-table table thead th {
+  padding: 0 0.7rem;
+}
+
+#league-table table td,
+#league-table table th {
+  padding: 0 0.7rem;
+}
+
+@media (min-width: 992px) {
+  #pred-table table thead th,
+  #league-table table td,
+  #league-table table th {
+    height: 48px;
+  }
+
+  #pred-table table thead th,
+  #league-table table td,
+  #league-table table th {
+    padding: 0 0.8rem;
+  }
 }
 
 .banner {
@@ -130,6 +168,28 @@ th {
   font-size: 1rem;
 }
 
+#league-title {
+  text-align: center;
+}
+
+.scoring-intro {
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.scoring-card {
+  border-left: 4px solid #007bff;
+}
+
+.scoring-table th {
+  background-color: #f8f9fa;
+  color: #212529;
+}
+
+.scoring-table td:first-child {
+  font-weight: 600;
+}
+
 button {
   padding: 0.5rem 1rem;
   background-color: #0077cc;
@@ -166,6 +226,60 @@ button:hover {
   height: 100px;
 }
 
+.header-nav-row {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  min-height: 56px;
+}
+
+.header-left-group {
+  justify-self: start;
+}
+
+.header-right-group {
+  justify-self: end;
+}
+
+.header-title-centered {
+  justify-self: center;
+  white-space: nowrap;
+  text-align: center;
+}
+
+@media (max-width: 767px) {
+  .header-nav-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.35rem;
+    min-height: auto;
+  }
+
+  .header-left-group {
+    justify-self: auto;
+  }
+
+  .header-right-group {
+    justify-self: auto;
+    margin-left: auto;
+    flex-wrap: wrap;
+    gap: 0.35rem;
+  }
+
+  .header-title-centered {
+    display: none;
+  }
+
+  #page-deadline-container {
+    flex-wrap: wrap;
+  }
+
+  #page-deadline-container .btn {
+    white-space: nowrap;
+  }
+}
+
 /* Optional: keep content visually separated from header */
 .page-content {
   max-width: 600px; 
@@ -183,6 +297,51 @@ button:hover {
 
 .navbar-dark .navbar-nav .nav-link:hover {
   color: #cccccc; /* Gray on hover */
+}
+
+.leaderboard-view-toggle {
+  max-width: 320px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: center;
+}
+
+.leaderboard-view-toggle .btn {
+  font-size: 0.95rem;
+  padding: 0.55rem 0.9rem;
+}
+
+.leaderboard-sort-select {
+  width: auto;
+  min-width: 220px;
+}
+
+.leaderboard-table-scroll {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  border: 1px solid #dee2e6;
+  border-radius: 0.5rem;
+  background: #fff;
+}
+
+.leaderboard-table-scroll table {
+  min-width: 640px;
+  margin-bottom: 0;
+}
+
+.leaderboard-table-scroll .table-striped > tbody > tr:nth-of-type(odd) > td,
+.leaderboard-table-scroll .table-striped > tbody > tr:nth-of-type(odd) > th {
+  background-color: rgba(0, 123, 255, 0.05);
+}
+
+.leaderboard-table-scroll th {
+  background-color: #0d6efd;
+  color: #fff;
+  white-space: nowrap;
+}
+
+.leaderboard-table-scroll td {
+  white-space: nowrap;
 }
 
 @media (max-width: 576px) {
@@ -207,21 +366,37 @@ button:hover {
   font-size: 1rem;
 }
 
-/* Draggable items styling (all screen sizes) */
-.draggable-enabled::before {
-  content: "⋮ ";
-  color: #999;
-  font-weight: bold;
-  margin-right: 0.5rem;
+/* Team movement controls */
+.team-cell-content {
+  display: grid;
+  grid-template-columns: minmax(2rem, auto) 1fr minmax(2rem, auto);
+  align-items: center;
+  gap: 0.5rem;
 }
 
-.draggable-item {
-  cursor: grab;
-  user-select: none;
+.team-name {
+  justify-self: center;
+  text-align: center;
 }
 
-.draggable-item:active {
-  cursor: grabbing;
+.move-controls {
+  display: flex;
+  align-items: center;
+  min-width: 2rem;
+}
+
+.move-controls-left {
+  justify-self: start;
+}
+
+.move-controls-right {
+  justify-self: end;
+}
+
+.move-btn {
+  min-width: 2rem;
+  padding: 0.2rem 0.5rem;
+  line-height: 1;
 }
 
 @media (max-width: 576px) {
@@ -235,21 +410,13 @@ button:hover {
     margin-bottom: 2rem;
   }
 
-  /* Mobile draggable item styling */
-  .draggable-enabled::before {
-    display: inline;
+  .team-cell-content {
+    grid-template-columns: minmax(2rem, auto) 1fr minmax(2rem, auto);
   }
 
-  .draggable-item {
-    display: flex;
-    align-items: center;
-    padding: 10px;
-    touch-action: none;
-    border-left: none !important;
-  }
-
-  .draggable-item:active {
-    opacity: 0.8;
+  .move-controls-left,
+  .move-controls-right {
+    margin: 0;
   }
 
   #pred-table {

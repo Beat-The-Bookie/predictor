@@ -1,4 +1,4 @@
-const supaclient = supabase.createClient("https://pssnuzrmazyxouoqsfhg.supabase.co", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBzc251enJtYXp5eG91b3FzZmhnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTExOTMyMjQsImV4cCI6MjA2Njc2OTIyNH0.4Vj8_1Yr6yc0KZadbdknBv548dr3_WXYfGmerswF3XY");
+const supaclient = supabase.createClient("https://ovtvjcwvhbkjljhmqacy.supabase.co", "sb_publishable_7JNqVD9EbOI42bFrFEdx1A_3_ThPzne");
 
 window.addEventListener('DOMContentLoaded', async () => {
   const params = new URLSearchParams(window.location.hash.slice(1));
